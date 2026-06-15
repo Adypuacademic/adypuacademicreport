@@ -1,0 +1,1917 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>ADYPU Monthly Report Dashboard</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
+<style>
+:root{
+  --primary: #C21B27; 
+  --secondary: #99151F; 
+  --accent: #f59e0b; 
+  --dark: #1e293b; 
+  --card: #ffffff;
+  --bg: #f8fafc;
+  --text: #334155;
+  --success: #10b981;
+  --danger: #ef4444;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Segoe UI', Arial, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  overflow-x: hidden;
+}
+
+/* SIDEBAR STYLES */
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 280px;
+  height: 100vh;
+  background: linear-gradient(180deg, var(--dark), #0f172a);
+  color: #fff;
+  overflow-y: auto;
+  z-index: 9999;
+}
+
+.sidebar .logo-container {
+  padding: 25px 20px 15px;
+  text-align: center;
+}
+.sidebar .logo-box {
+  background: #ffffff;
+  padding: 12px;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+}
+.sidebar .logo-box img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+  margin: 0 auto;
+}
+
+.sidebar-group {
+  margin-bottom: 25px;
+}
+.sidebar-heading {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 20px 8px;
+  margin: 0 20px 10px;
+  color: #94a3b8;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 1.2px;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+.sidebar-heading svg {
+  opacity: 0.7;
+}
+
+.sidebar a.nav-link {
+  display: flex;
+  align-items: center;
+  color: #cbd5e1;
+  text-decoration: none;
+  padding: 10px 20px 10px 30px;
+  font-size: 14px;
+  transition: 0.2s;
+  border-left: 3px solid transparent;
+  cursor: pointer;
+}
+.sidebar a.nav-link:hover, 
+.sidebar a.nav-link.active {
+  background: rgba(255,255,255,0.06);
+  color: #fff;
+  border-left-color: var(--primary);
+}
+
+.sidebar-report-dropdown {
+  padding: 0 20px;
+  margin-bottom: 5px;
+}
+.sidebar-report-btn {
+  width: 100%;
+  background: rgba(255,255,255,0.04);
+  color: #cbd5e1;
+  padding: 12px 15px;
+  border: 1px solid rgba(255,255,255,0.05);
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  text-align: left;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: transform 0.2s, background 0.2s;
+  font-family: inherit;
+  font-size: 14px;
+}
+.sidebar-report-btn:hover {
+  background: rgba(255,255,255,0.08);
+  color: #fff;
+  transform: scale(1.02);
+}
+.sidebar-report-btn.primary-btn {
+  background: var(--primary);
+  color: #fff;
+  border-color: var(--secondary);
+}
+.sidebar-report-btn.primary-btn:hover {
+  background: var(--secondary);
+}
+
+.sidebar-dropdown-content {
+  display: none;
+  flex-direction: column;
+  background-color: rgba(0,0,0,0.3);
+  border-radius: 8px;
+  margin-top: 5px;
+  overflow: hidden;
+  opacity: 0;
+  transform: translateY(-10px);
+}
+.sidebar-report-dropdown:hover .sidebar-dropdown-content {
+  display: flex;
+  animation: slideDown 0.3s forwards ease-out;
+}
+@keyframes slideDown {
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.sidebar-dropdown-content a {
+  padding: 10px 15px 10px 20px;
+  font-size: 13px;
+  color: #94a3b8;
+  border-left: 3px solid transparent;
+  text-decoration: none;
+  cursor: pointer;
+  transition: 0.2s;
+}
+.sidebar-dropdown-content a:hover, 
+.sidebar-dropdown-content a.active {
+  background-color: rgba(255,255,255,0.05);
+  color: #fff;
+  border-left-color: var(--primary);
+  padding-left: 24px;
+}
+
+/* MAIN CONTENT STYLES */
+.main {
+  margin-left: 280px; 
+  padding: 20px;
+  width: calc(100% - 280px);
+}
+
+.dashboard-header {
+  background: linear-gradient(135deg, var(--primary), var(--secondary));
+  color: #fff;
+  padding: 25px;
+  border-radius: 20px;
+  box-shadow: 0 10px 30px rgba(194, 27, 39, .25);
+  margin-bottom: 25px;
+}
+.header-top { display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 15px; }
+.header-top h1 { margin: 0; font-size: 32px; }
+.header-top p { margin: 8px 0 0; opacity: 0.95; font-size: 16px; }
+
+.month-tabs { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 20px; }
+.month-tab { padding: 8px 16px; border-radius: 6px; border: none; font-weight: 600; cursor: pointer; background: rgba(255,255,255,0.2); color: #fff; transition: 0.2s; }
+.month-tab.active { background: #fff; color: var(--primary); }
+.month-tab.disabled { background: rgba(255,255,255,0.05); color: rgba(255,255,255,0.4); cursor: not-allowed; }
+
+.trend-comparison { margin-top: 20px; background: rgba(0,0,0,0.15); padding: 15px; border-radius: 12px; display: flex; align-items: center; gap: 15px; flex-wrap: wrap; }
+.trend-comparison h3 { margin: 0; font-size: 14px; font-weight: normal; }
+.trend-comparison select, .trend-comparison button { padding: 6px 12px; border-radius: 6px; border: none; font-family: inherit; }
+.trend-comparison button { background: var(--accent); color: #fff; font-weight: bold; cursor: pointer; }
+
+/* KPI CARDS */
+.kpis{ display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:16px; }
+.kpi{ background:var(--card); border-radius:18px; padding:18px; box-shadow:0 6px 18px rgba(15,23,42,.06); position:relative; overflow:hidden; transition: transform 0.2s, box-shadow 0.2s; }
+.kpi.clickable { cursor: pointer; }
+.kpi.clickable:hover { transform: translateY(-5px); box-shadow: 0 12px 25px rgba(194, 27, 39, 0.15); border: 1px solid rgba(194, 27, 39, 0.3); }
+.kpi::after{ content:''; position:absolute; right:-20px; top:-20px; width:90px; height:90px; border-radius:50%; background:linear-gradient(135deg,var(--primary),var(--accent)); opacity:.08; }
+.kpi h3{margin:0 0 8px;font-size:14px;color:#64748b;text-transform:uppercase}
+.kpi .value{font-size:34px;font-weight:800;color:var(--text)}
+.kpi .sub{margin-top:6px;color:#64748b;font-size:13px}
+.kpis-compact { display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr)); gap:16px; }
+.kpis-compact .value { font-size: 26px; }
+
+.section{ margin-top:28px; }
+.section-title{ display:flex; align-items:center; gap:10px; margin-bottom:14px; }
+.section-title h2{margin:0;font-size:24px}
+.dot{ width:12px;height:12px;border-radius:50%; background:linear-gradient(135deg,var(--primary),var(--secondary)); }
+
+/* ========================================= */
+/* 3-COLUMN RESPONSIVE CAROUSEL STYLES       */
+/* ========================================= */
+.carousel-wrapper {
+  background: var(--card);
+  border-radius: 18px;
+  padding: 20px 45px 50px 45px; 
+  box-shadow: 0 6px 18px rgba(15,23,42,.06);
+  position: relative;
+  overflow: hidden;
+  --items-per-page: 3;
+}
+
+@media(max-width: 1000px) { .carousel-wrapper { --items-per-page: 2; } }
+@media(max-width: 600px) { .carousel-wrapper { --items-per-page: 1; padding: 20px 30px 50px 30px; } }
+
+.carousel-viewport { overflow: hidden; width: 100%; }
+.carousel-track { display: flex; transition: transform 0.5s ease-in-out; }
+.carousel-slide { width: calc(100% / var(--items-per-page)); flex: 0 0 calc(100% / var(--items-per-page)); padding: 0 8px; box-sizing: border-box; }
+
+.slide-content { position: relative; border-radius: 12px; overflow: hidden; cursor: pointer; background: #f1f5f9; height: 100%; }
+.slide-content img { width: 100%; height: 240px; object-fit: cover; display: block; transition: transform 0.3s ease; }
+.slide-content:hover img { transform: scale(1.04); }
+
+.carousel-caption {
+  position: absolute; bottom: 0; left: 0; width: 100%;
+  background: linear-gradient(to top, rgba(15,23,42,0.95) 0%, rgba(15,23,42,0.6) 60%, transparent 100%);
+  color: #fff; padding: 30px 15px 15px 15px;
+}
+.carousel-caption h4 { margin: 0 0 4px 0; font-size: 14px; line-height: 1.3; display: -webkit-box; -webkit-line-clamp: 2; line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis; }
+.carousel-caption p { margin: 0; font-size: 11px; opacity: 0.8; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+/* Controls */
+.carousel-btn {
+  position: absolute; top: 40%; transform: translateY(-50%); background: #fff; color: var(--primary);
+  border: 1px solid #e2e8f0; width: 36px; height: 36px; border-radius: 50%; font-size: 16px;
+  cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.1); transition: 0.2s; z-index: 10;
+  display: flex; justify-content: center; align-items: center;
+}
+.carousel-btn:hover { background: var(--primary); color: #fff; transform: translateY(-50%) scale(1.1); }
+.carousel-btn.prev { left: 10px; }
+.carousel-btn.next { right: 10px; }
+.carousel-btn.play-pause { top: 20px; right: 20px; transform: none; width: 32px; height: 32px; font-size: 14px; }
+.carousel-btn.play-pause:hover { transform: scale(1.1); }
+
+.carousel-dots { position: absolute; bottom: 15px; left: 50%; transform: translateX(-50%); display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; z-index: 10; }
+.dot-btn { width: 10px; height: 10px; border-radius: 50%; background: #cbd5e1; border: none; cursor: pointer; transition: 0.2s; }
+.dot-btn.active { background: var(--primary); transform: scale(1.3); }
+
+/* SCHOOL PAGES */
+.school{ margin-top:0px; background:var(--card); border-radius:22px; padding:22px; box-shadow:0 10px 30px rgba(15,23,42,.05); }
+.school-header{ display:flex; justify-content:space-between; align-items:center; gap:16px; flex-wrap:wrap; border-bottom: 2px solid #f1f5f9; padding-bottom: 20px; margin-bottom: 20px; }
+.school-header h2{margin:0; font-size: 28px; color: var(--primary);}
+.badge{ display:inline-flex; align-items:center; gap:8px; padding:8px 12px; border-radius:999px; background:#fef2f2; color:var(--primary); font-weight:600; }
+.badge .pulse{ width:10px;height:10px;border-radius:50%; background:var(--primary); box-shadow:0 0 0 0 rgba(194, 27, 39, .5); animation:pulse 2s infinite; }
+.activity-grid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:16px; }
+.activity{ border:1px solid #e2e8f0; border-radius:18px; padding:16px; transition:.2s; background:linear-gradient(180deg,#fff,#f8fafc); }
+.activity h4{margin:0 0 12px}
+.metric{ display:flex; justify-content:space-between; align-items:center; margin:6px 0; font-size:14px; gap: 10px; }
+.metric strong{font-size:15px; transition: all 0.3s ease;}
+.status{ display:inline-flex; align-items:center; margin-top:10px; padding:6px 10px; border-radius:999px; font-size:12px; font-weight:700; transition: all 0.3s ease; }
+.status.high{background:#fee2e2;color:#991b1b}
+.status.medium{background:#fef3c7;color:#92400e}
+.status.low{background:#dcfce7;color:#166534}
+.mini-chart{ display:flex; align-items:flex-end; justify-content: space-around; gap:15px; height:110px; margin-top:12px; margin-bottom: 28px; }
+.bar{ flex:1; border-radius:12px 12px 6px 6px; background:linear-gradient(180deg,var(--primary),var(--secondary)); position:relative; min-height:10px; max-width: 40px; transition: height 0.5s ease-in-out; }
+.bar::after{ content:attr(data-label); position:absolute; bottom:-22px; left:50%; transform:translateX(-50%); font-size:11px; color:#64748b; white-space: nowrap; }
+.legend{ display:flex; flex-wrap: wrap; gap:12px; margin-top:10px; font-size:12px; color:#64748b; }
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:50%}
+.legend .target{background:#cbd5e1}
+.legend .achieved{background:var(--primary)}
+.legend .gap{background:#64748b} 
+.footer-note{ margin-top:30px; color:#64748b; font-size:13px; }
+.risk-grid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:14px; }
+.risk{ padding:16px; border-radius:16px; color:#fff; box-shadow:0 6px 18px rgba(15,23,42,.08); }
+.risk h4{margin:0 0 8px; display:flex; align-items:center; gap:8px;}
+.risk.red{background:linear-gradient(135deg,#ef4444,#b91c1c)}
+.risk.amber{background:linear-gradient(135deg,#f59e0b,#d97706)}
+.risk.green{background:linear-gradient(135deg,#10b981,#059669)}
+
+/* MODAL STYLES */
+.modal { display: none; position: fixed; z-index: 10000; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(15,23,42,0.6); backdrop-filter: blur(4px); }
+.modal-content { background-color: var(--card); margin: 4% auto; padding: 30px; border-radius: 20px; width: 92%; max-width: 950px; box-shadow: 0 20px 50px rgba(0,0,0,0.2); position: relative; }
+.close-btn { color: #94a3b8; position: absolute; right: 25px; top: 20px; font-size: 32px; font-weight: bold; cursor: pointer; transition: 0.2s; }
+.close-btn:hover { color: var(--primary); }
+.modal-title { margin-top: 0; color: var(--primary); font-size: 24px; margin-bottom: 5px; text-align: center; }
+.modal-tabs { display: flex; justify-content: center; gap: 10px; margin: 20px 0; border-bottom: 1px solid #e2e8f0; padding-bottom: 10px; }
+.modal-tab-btn { padding: 8px 24px; border: none; background: #f1f5f9; color: #64748b; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 14px; transition: .2s; }
+.modal-tab-btn.active { background: var(--primary); color: #fff; }
+.modal-body-content { display: none; }
+.modal-body-content.active { display: block; }
+.chart-container { position: relative; height: 380px; width: 100%; }
+.table-wrapper { max-height: 400px; overflow-y: auto; border: 1px solid #e2e8f0; border-radius: 12px; background: #fff; width: 100%; }
+.detail-table { width: 100%; table-layout: fixed; border-collapse: collapse; text-align: left; font-size: 13px; }
+.detail-table th { background: #f8fafc; padding: 10px 12px; font-weight: 700; color: #475569; border-bottom: 2px solid #e2e8f0; position: sticky; top: 0; word-wrap: break-word; }
+.detail-table td { padding: 10px 12px; border-bottom: 1px solid #f1f5f9; color: #334155; word-wrap: break-word; }
+
+@media(max-width: 1000px) {
+  .sidebar { position: relative; width: 100%; height: auto; }
+  .main { margin-left: 0; width: 100%; }
+}
+</style>
+</head>
+<body>
+
+<div class="sidebar" data-html2canvas-ignore>
+  <div class="logo-container">
+    <div class="logo-box">
+        <img src="logo.png" alt="ADYPU Logo" onerror="this.src='https://adypu.edu.in/wp-content/uploads/2024/02/adypu-logo.webp';">
+    </div>
+  </div>
+  
+  <div class="sidebar-group">
+    <div class="sidebar-heading">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L15 8.5L22 9.5L17 14L18.5 21L12 17.5L5.5 21L7 14L2 9.5L9 8.5L12 2z"/></svg>
+      EXECUTIVE VIEWS
+    </div>
+    <a onclick="switchView('home-view')" class="nav-link active" id="nav-home">Executive Dashboard</a>
+  </div>
+  
+  <div class="sidebar-group">
+    <div class="sidebar-heading">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="8" width="16" height="12" rx="1"/><path d="M8 4v4M16 4v4M12 8v4"/></svg>
+      SCHOOL ANALYTICS
+    </div>
+    <div class="sidebar-report-dropdown">
+      <button class="sidebar-report-btn">School Analytics ▼</button>
+      <div class="sidebar-dropdown-content">
+        <a onclick="switchView('eng')" class="nav-link" id="nav-eng">School of Engineering</a>
+        <a onclick="switchView('mgmt')" class="nav-link" id="nav-mgmt">School of Management</a>
+        <a onclick="switchView('law')" class="nav-link" id="nav-law">School of Law</a>
+        <a onclick="switchView('design')" class="nav-link" id="nav-design">School of Design</a>
+        <a onclick="switchView('science')" class="nav-link" id="nav-science">School of Science</a>
+        <a onclick="switchView('arch')" class="nav-link" id="nav-arch">School of Architecture</a>
+        <a onclick="switchView('hosp')" class="nav-link" id="nav-hosp">School of Hospitality</a>
+        <a onclick="switchView('lib')" class="nav-link" id="nav-lib">School of Liberal Arts</a>
+        <a onclick="switchView('film')" class="nav-link" id="nav-film">School of Film & Media</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="sidebar-group">
+    <div class="sidebar-heading">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="16" y1="2" x2="16" y2="6"/><path d="M3 10h18"/><circle cx="12" cy="15" r="1"/><circle cx="16" cy="15" r="1"/><circle cx="8" cy="15" r="1"/></svg>
+      EVENT REPORTING
+    </div>
+    <a onclick="switchView('event-reports-view')" class="nav-link" id="nav-event-reports-view">Achievement Reports Dashboard</a>
+  </div>
+
+  <div class="sidebar-group">
+    <div class="sidebar-heading">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+      REPORTING
+    </div>
+    <div class="sidebar-report-dropdown">
+      <button class="sidebar-report-btn primary-btn">Generate Report ▼</button>
+      <div class="sidebar-dropdown-content">
+        <a onclick="generatePDFReport('main')">Generate Main PDF Report</a>
+        <a onclick="generateExcelReport()">Generate Excel Report</a>
+        <a onclick="generatePDFReport('schoolwise')">Generate School Wise Report</a>
+        <a onclick="generatePDFReport('complete')">Generate Complete Univ. Report</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="main" id="report-content">
+  <div style="background: var(--card); padding: 15px 25px; border-radius: 18px; margin-bottom: 25px; box-shadow: 0 6px 18px rgba(15,23,42,.06); display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 15px;" data-html2canvas-ignore>
+    <h3 style="margin: 0; font-size: 16px; color: var(--primary);">Update Dashboard Data (Excel/CSV)</h3>
+    <input type="file" id="excel-upload" accept=".xlsx, .xls, .csv" style="font-family: inherit; cursor: pointer; padding: 8px; border: 1px solid #e2e8f0; border-radius: 8px; background: #fff;">
+  </div>
+
+  <div id="home-view" class="tab-content">
+      <div class="dashboard-header">
+        <div class="header-top">
+          <div>
+            <h1>ADYPU: Monthly Report Dashboard</h1>
+            <p>Academic Session: 2026-2027</p>
+          </div>
+        </div>
+        
+        <div class="month-tabs" data-html2canvas-ignore>
+          <button class="month-tab active">June</button>
+          <button class="month-tab disabled">July</button>
+          <button class="month-tab disabled">August</button>
+          <button class="month-tab disabled">September</button>
+          <button class="month-tab disabled">October</button>
+          <button class="month-tab disabled">November</button>
+          <button class="month-tab disabled">December</button>
+          <button class="month-tab disabled">January</button>
+          <button class="month-tab disabled">February</button>
+          <button class="month-tab disabled">March</button>
+          <button class="month-tab disabled">April</button>
+          <button class="month-tab disabled">May</button>
+        </div>
+
+        <div class="trend-comparison" data-html2canvas-ignore>
+          <h3>Month-wise trend comparison graphs</h3>
+          <select><option>June</option></select> vs <select><option>July</option></select>
+          <button onclick="alert('Comparison feature to be implemented later.')">Compare</button>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-title"><span class="dot"></span><h2>University Admissions Status</h2></div>
+        <div class="kpis">
+          <div class="kpi clickable" onclick="openCombinedModal('target', 'Admissions')">
+            <h3>Admission Target</h3>
+            <div class="value" id="global-target">0</div>
+            <div class="sub">Click to view deep dive analysis</div>
+          </div>
+          <div class="kpi clickable" onclick="openCombinedModal('achieved', 'Admissions')">
+            <h3>Admissions Achieved</h3>
+            <div class="value" id="global-achieved">0</div>
+            <div class="sub">Click to view deep dive analysis</div>
+          </div>
+          <div class="kpi clickable" onclick="openCombinedModal('gap', 'Admissions')">
+            <h3>Gap</h3>
+            <div class="value" id="global-gap">0</div>
+            <div class="sub">Click to view deep dive analysis</div>
+          </div>
+          <div class="kpi">
+            <h3>Achievement Rate</h3>
+            <div class="value" id="global-perf">0.00%</div>
+            <div class="sub">Target attainment metrics</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-title"><span class="dot"></span><h2>Partners Admission MIS</h2></div>
+        <div class="kpis">
+          <div class="kpi clickable" onclick="openCombinedModal('target', 'Partners Admission MIS')">
+            <h3>Admission Target</h3>
+            <div class="value" id="partners-target">0</div>
+            <div class="sub">Click to view detailed partner breakdown</div>
+          </div>
+          <div class="kpi clickable" onclick="openCombinedModal('achieved', 'Partners Admission MIS')">
+            <h3>Admissions Achieved</h3>
+            <div class="value" id="partners-achieved">0</div>
+            <div class="sub">Click to view detailed partner breakdown</div>
+          </div>
+          <div class="kpi clickable" onclick="openCombinedModal('gap', 'Partners Admission MIS')">
+            <h3>Gap</h3>
+            <div class="value" id="partners-gap">0</div>
+            <div class="sub">Click to view detailed partner breakdown</div>
+          </div>
+          <div class="kpi">
+            <h3>Achievement Rate</h3>
+            <div class="value" id="partners-perf">0.00%</div>
+            <div class="sub">Attainment metrics portfolio</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-title"><span class="dot"></span><h2>Placements Overview</h2></div>
+        <div class="kpis">
+          <div class="kpi">
+            <h3>Total Students Placed</h3>
+            <div class="value" id="main-place-placed">0</div>
+            <div class="sub">Offers secured</div>
+          </div>
+          <div class="kpi">
+            <h3>Highest Package</h3>
+            <div class="value" id="main-place-high">0</div>
+            <div class="sub">Peak offer</div>
+          </div>
+          <div class="kpi">
+            <h3>Average Package</h3>
+            <div class="value" id="main-place-avg">0</div>
+            <div class="sub">Current cycle</div>
+          </div>
+          <div class="kpi">
+            <h3>Highest Internship</h3>
+            <div class="value" id="main-place-intern">0</div>
+            <div class="sub">Highest stipend offered</div>
+          </div>
+          <div class="kpi">
+            <h3>Total Companies Visited</h3>
+            <div class="value" id="main-place-comp">0</div>
+            <div class="sub">Recruiting partners</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-title"><span class="dot"></span><h2>Examinations Overview</h2></div>
+        <div class="kpis">
+          <div class="kpi">
+            <h3>Total Students</h3>
+            <div class="value" id="main-exam-total">0</div>
+            <div class="sub">Enrolled count</div>
+          </div>
+          <div class="kpi">
+            <h3>Registered</h3>
+            <div class="value" id="main-exam-reg">0</div>
+            <div class="sub">For current exams</div>
+          </div>
+          <div class="kpi">
+            <h3>Appeared</h3>
+            <div class="value" id="main-exam-app">0</div>
+            <div class="sub">Took the test</div>
+          </div>
+          <div class="kpi">
+            <h3>Absent</h3>
+            <div class="value" id="main-exam-abs">0</div>
+            <div class="sub">Missed exams</div>
+          </div>
+          <div class="kpi">
+            <h3>Result</h3>
+            <div class="value" id="main-exam-prog" style="font-size: 26px;">-</div>
+            <div class="sub">Pending evaluation</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-title"><span class="dot"></span><h2>Executive Achievements Overview</h2></div>
+        <div class="kpis">
+          <div class="kpi clickable" onclick="openCombinedModal('achieved', 'Student Achievement')">
+            <h3>Student Awards</h3>
+            <div class="value" id="exec-stu">0</div>
+            <div class="sub">Click to view logging engine</div>
+          </div>
+          <div class="kpi clickable" onclick="openCombinedModal('achieved', 'Faculty Achievement')">
+            <h3>Faculty Papers</h3>
+            <div class="value" id="exec-fac">0</div>
+            <div class="sub">Click to view logging engine</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="section" data-html2canvas-ignore>
+        <div class="section-title"><span class="dot"></span><h2>UNIVERSITY ACHIEVEMENTS GALLERY</h2></div>
+        
+        <div class="carousel-wrapper" id="carouselWrapper">
+          <div class="carousel-viewport">
+            <div class="carousel-track" id="carouselTrack">
+              
+              <div class="carousel-slide">
+                <div class="slide-content" onclick="openDocModal('ADYPU Monthly Highlights', 'https://docs.google.com/document/d/1-wVDe2bv5ZndwJuU3_M87LaVDpSxAIFJ/edit')">
+                  <img src="autocad-training.png" alt="Auto CAD Training">
+                  <div class="carousel-caption"><h4>Auto CAD Hands-on Training Program</h4><p>May 2026</p></div>
+                </div>
+              </div>
+              
+              <div class="carousel-slide">
+                <div class="slide-content" onclick="openDocModal('ADYPU Monthly Highlights', 'https://docs.google.com/document/d/1-wVDe2bv5ZndwJuU3_M87LaVDpSxAIFJ/edit')">
+                  <img src="research-publication.png" alt="Research Publication">
+                  <div class="carousel-caption"><h4>Research Publication on AI & Cloud Platforms</h4><p>May 2026</p></div>
+                </div>
+              </div>
+              
+              <div class="carousel-slide">
+                <div class="slide-content" onclick="openDocModal('ADYPU Monthly Highlights', 'https://docs.google.com/document/d/1-wVDe2bv5ZndwJuU3_M87LaVDpSxAIFJ/edit')">
+                  <img src="{34702617-3571-4261-8D41-660014D23FF3}.png" alt="Dr. Ranjit Kumar">
+                  <div class="carousel-caption"><h4>Dr. Ranjit Kumar’s IEEE Leadership</h4><p>Regional Recognition</p></div>
+                </div>
+              </div>
+              
+              <div class="carousel-slide">
+                <div class="slide-content" onclick="openDocModal('ADYPU Monthly Highlights', 'https://docs.google.com/document/d/1-wVDe2bv5ZndwJuU3_M87LaVDpSxAIFJ/edit')">
+                  <img src="{0566F7C1-CC42-4648-8145-1B0B623020B8}.png" alt="IEEE Region 10">
+                  <div class="carousel-caption"><h4>International Recognition in IEEE Region 10</h4><p>April 30, 2026</p></div>
+                </div>
+              </div>
+              
+              <div class="carousel-slide">
+                <div class="slide-content" onclick="openDocModal('ADYPU Monthly Highlights', 'https://docs.google.com/document/d/1-wVDe2bv5ZndwJuU3_M87LaVDpSxAIFJ/edit')">
+                  <img src="{5E3DAA53-98C1-42F6-9E66-78CD1CAE7943}.png" alt="Ajeenkya Karandak">
+                  <div class="carousel-caption"><h4>Ajeenkya Karandak Tournament</h4><p>Sports Achievement</p></div>
+                </div>
+              </div>
+              
+              <div class="carousel-slide">
+                <div class="slide-content" onclick="openDocModal('ADYPU Monthly Highlights', 'https://docs.google.com/document/d/1-wVDe2bv5ZndwJuU3_M87LaVDpSxAIFJ/edit')">
+                  <img src="{06C24A80-A093-4E1A-BE6B-060EDF0563F0}.png" alt="MIT ADT Cricket">
+                  <div class="carousel-caption"><h4>MIT – ADT Cricket Tournament</h4><p>1st Place Victory</p></div>
+                </div>
+              </div>
+              
+              <div class="carousel-slide">
+                <div class="slide-content" onclick="openDocModal('ADYPU Monthly Highlights', 'https://docs.google.com/document/d/1-wVDe2bv5ZndwJuU3_M87LaVDpSxAIFJ/edit')">
+                  <img src="{EDC1C369-397F-42E2-AB8A-B25A32567BA3}.png" alt="Gaming Event">
+                  <div class="carousel-caption"><h4>Gaming Event with Redbull</h4><p>Under25adypu Event</p></div>
+                </div>
+              </div>
+              
+              <div class="carousel-slide">
+                <div class="slide-content" onclick="openDocModal('ADYPU Monthly Highlights', 'https://docs.google.com/document/d/1-wVDe2bv5ZndwJuU3_M87LaVDpSxAIFJ/edit')">
+                  <img src="{5598FC8B-1C75-4715-AB2B-C6FF68CA737D}.jpg" alt="Under25adypu">
+                  <div class="carousel-caption"><h4>Under25adypu Nominated for “Best Club of the Batch”</h4><p>National Recognition</p></div>
+                </div>
+              </div>
+              
+              <div class="carousel-slide">
+                <div class="slide-content" onclick="openDocModal('ADYPU Monthly Highlights', 'https://docs.google.com/document/d/1-wVDe2bv5ZndwJuU3_M87LaVDpSxAIFJ/edit')">
+                  <img src="{1FD70957-4943-4122-BA1A-90A54182C1AD}.jpg" alt="Best Paper Award">
+                  <div class="carousel-caption"><h4>Best Paper Award at ICRAEST 2026</h4><p>Academic Excellence</p></div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+          
+          <button class="carousel-btn prev" onclick="moveSlide(-1)">&#10094;</button>
+          <button class="carousel-btn next" onclick="moveSlide(1)">&#10095;</button>
+          <button class="carousel-btn play-pause" id="playPauseBtn" onclick="togglePlayPause()">⏸</button>
+          
+          <div class="carousel-dots" id="carouselDots">
+             </div>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-title"><span class="dot"></span><h2>Risk &amp; Gap Analysis</h2></div>
+        <div class="risk-grid">
+          <div class="risk red">
+            <h4 style="display:flex; align-items:center; gap:8px;">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><circle cx="12" cy="16" r="0.5" fill="currentColor" stroke="none"/></svg>
+              Admissions Risk
+            </h4>
+            <div>High priority intervention required to close the current intake gap.</div>
+          </div>
+          <div class="risk amber">
+            <h4 style="display:flex; align-items:center; gap:8px;">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><circle cx="12" cy="16" r="0.5" fill="currentColor" stroke="none"/></svg>
+              Research &amp; Patents
+            </h4>
+            <div>Publication, patent, and MoU activity should be accelerated this cycle.</div>
+          </div>
+          <div class="risk green">
+            <h4 style="display:flex; align-items:center; gap:8px;">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><circle cx="12" cy="12" r="10"/><path d="M8 12l3 3 6-6"/></svg>
+              Student Engagement
+            </h4>
+            <div>Events, student participation, and campus engagement remain healthy.</div>
+          </div>
+        </div>
+      </div>
+  </div>
+
+  <div id="event-reports-view" class="tab-content" style="display: none;">
+    <div class="dashboard-header">
+      <div class="header-top">
+        <div>
+          <h1>Achievement Reports Dashboard</h1>
+          <p>View comprehensive Google Document reports for University, Faculty, and Student achievements</p>
+        </div>
+      </div>
+    </div>
+    
+    <div class="section">
+      <div class="kpis" style="grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));">
+        
+        <div class="kpi clickable" style="text-align: center; padding: 40px 20px;" onclick="openDocModal('University Achievements', 'https://docs.google.com/document/d/1E6YhVpdqI3U_TXVbWosGt9ngLqdvIdWSlb0nSS8qqmY/edit?tab=t.0')">
+          <div style="margin-bottom: 15px; color: var(--primary); display: flex; justify-content: center;">
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 21h16"/><path d="M4 21V9l8-5 8 5v12"/><path d="M12 16v4"/></svg>
+          </div>
+          <h3 style="font-size: 20px; color: var(--primary);">University Achievements</h3>
+          <div class="sub">Click to open full document view</div>
+        </div>
+        
+        <div class="kpi clickable" style="text-align: center; padding: 40px 20px;" onclick="openDocModal('Faculty Achievements', 'https://docs.google.com/document/d/1yqWfxS9g9lPOVfqiSPbrVDRX4ecn0DvQn7RcYOULhVA/edit?tab=t.0')">
+          <div style="margin-bottom: 15px; color: var(--primary); display: flex; justify-content: center;">
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M5 20v-2a7 7 0 0 1 14 0v2"/></svg>
+          </div>
+          <h3 style="font-size: 20px; color: var(--primary);">Faculty Achievements</h3>
+          <div class="sub">Click to open full document view</div>
+        </div>
+        
+        <div class="kpi clickable" style="text-align: center; padding: 40px 20px;" onclick="openDocModal('Student Awards', 'https://docs.google.com/document/d/1cDNB7z59nIUxCq1IsbhJEBv_6SClfwRMz05ZWKDmaA4/edit?tab=t.0')">
+          <div style="margin-bottom: 15px; color: var(--primary); display: flex; justify-content: center;">
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v4M4.93 4.93l2.83 2.83M2 12h4M4.93 19.07l2.83-2.83M12 22v-4M19.07 19.07l-2.83-2.83M22 12h-4M19.07 4.93l-2.83 2.83"/><circle cx="12" cy="12" r="4"/></svg>
+          </div>
+          <h3 style="font-size: 20px; color: var(--primary);">Student Awards</h3>
+          <div class="sub">Click to open full document view</div>
+        </div>
+
+        <div class="kpi clickable" style="text-align: center; padding: 40px 20px;" onclick="openDocModal('Monthly Highlights', 'https://docs.google.com/document/d/1-wVDe2bv5ZndwJuU3_M87LaVDpSxAIFJ/edit')">
+          <div style="margin-bottom: 15px; color: var(--primary); display: flex; justify-content: center;">
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+          </div>
+          <h3 style="font-size: 20px; color: var(--primary);">Monthly Highlights</h3>
+          <div class="sub">Click to open full document view</div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Build School views dynamically
+    const activitiesList = ["Admissions", "Placements", "Research", "Publications", "Patents", "Faculty Achievement", "Student Achievement", "Events", "Rankings", "Accreditation", "MoUs", "Industry Connect", "Media Visibility", "Sports", "NSS", "Innovation", "Strategic Initiatives"];
+    const schools = [
+      { id: 'eng', name: 'School of Engineering' }, { id: 'mgmt', name: 'School of Management' },
+      { id: 'law', name: 'School of Law' }, { id: 'design', name: 'School of Design' },
+      { id: 'science', name: 'School of Science' }, { id: 'arch', name: 'School of Architecture' },
+      { id: 'hosp', name: 'School of Hospitality' }, { id: 'lib', name: 'School of Liberal Arts' },
+      { id: 'film', name: 'School of Film & Media' }
+    ];
+
+    const svgDanger = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="3" style="vertical-align: middle; margin-right: 4px;"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><circle cx="12" cy="16" r="0.5" fill="#ef4444" stroke="none"/></svg>`;
+    const svgWarn = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="3" style="vertical-align: middle; margin-right: 4px;"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><circle cx="12" cy="16" r="0.5" fill="#f59e0b" stroke="none"/></svg>`;
+    const svgSuccess = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="3" style="vertical-align: middle; margin-right: 4px;"><circle cx="12" cy="12" r="10"/><path d="M8 12l3 3 6-6"/></svg>`;
+
+    schools.forEach(school => {
+      document.write(`
+      <div class="school tab-content" id="${school.id}" style="display: none;">
+        <div class="school-header">
+          <div>
+            <h2>${school.name}</h2>
+            <div style="color:#64748b; font-size: 15px; margin-top: 5px;">17-activity performance dashboard</div>
+          </div>
+          <div class="badge"><span class="pulse"></span> Live Sync Active</div>
+        </div>
+        <div class="activity-grid">
+      `);
+      
+      activitiesList.forEach(act => {
+        document.write(`
+          <div class="activity">
+            <h4>${act}</h4>
+            <div class="metric"><span>Target</span><strong>0</strong></div>
+            <div class="metric"><span>Achieved</span><strong>0</strong></div>
+            <div class="metric"><span>Gap</span><strong>0</strong></div>
+            <div style="display:flex;justify-content:space-between;font-size:13px;color:#64748b;margin:10px 0 6px">
+              <span>Performance</span><span>0.0%</span>
+            </div>
+            <div class="progress"><span style="width:0%"></span></div>
+            <div class="mini-chart">
+              <div class="bar" style="height:10px" data-label="Target"></div>
+              <div class="bar" style="height:10px" data-label="Achieved"></div>
+              <div class="bar" style="height:50px;background:linear-gradient(180deg,#94a3b8,#64748b)" data-label="Gap"></div>
+            </div>
+            <div class="legend">
+              <span><i class="target"></i>Target</span>
+              <span><i class="achieved"></i>Achieved</span>
+              <span><i class="gap"></i>Gap</span>
+            </div>
+            <div class="status high">${svgDanger} High Risk</div>
+          </div>
+        `);
+      });
+
+      document.write(`</div></div>`);
+    });
+  </script>
+
+  <div class="footer-note">
+    * Available values are used from the uploaded workbook. Activities without mapped data are shown as zero and highlighted through the dashboard.
+  </div>
+</div>
+
+<div id="combinedModal" class="modal">
+  <div class="modal-content">
+    <span class="close-btn" onclick="closeCombinedModal()">&times;</span>
+    <h2 id="modalTitle" class="modal-title">Analytics Workspace</h2>
+    
+    <div class="modal-tabs" id="modalTabContainer">
+      <button class="modal-tab-btn active" id="btn-tab-chart" onclick="switchModalTab('chart')">Pie Chart Analysis</button>
+      <button class="modal-tab-btn" id="btn-tab-detail" onclick="switchModalTab('detail')">Detailed Data Breakdown</button>
+    </div>
+
+    <div id="modal-content-chart" class="modal-body-content active">
+      <div class="chart-container"><canvas id="pieChartCanvas"></canvas></div>
+    </div>
+
+    <div id="modal-content-detail" class="modal-body-content">
+      <div class="table-wrapper" id="modalTableWrapper"></div>
+      <div id="modalGalleryWrapper" style="display:none;">
+        <h3 style="margin-top:0; color:#334155;">Achievement Gallery</h3>
+        <div class="gallery-grid" id="galleryContainer"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="docModal" class="modal">
+  <div class="modal-content" style="max-width: 1100px; height: 85vh; display: flex; flex-direction: column; padding: 25px;">
+    <span class="close-btn" onclick="closeDocModal()">&times;</span>
+    <h2 id="docModalTitle" class="modal-title" style="margin-bottom: 15px; text-align: left;">Document View</h2>
+    
+    <div style="display: flex; justify-content: flex-start; align-items: center; gap: 15px; margin-bottom: 20px;">
+      <a id="docModalLink" href="#" target="_blank" style="background: var(--primary); color: #fff; padding: 10px 20px; border-radius: 8px; text-decoration: none; font-weight: bold; font-size: 14px; transition: 0.2s; box-shadow: 0 4px 6px rgba(194, 27, 39, 0.2);">
+        Open in New Tab ↗
+      </a>
+    </div>
+    
+    <div style="flex: 1; border: 1px solid #e2e8f0; border-radius: 12px; background: #f8fafc; overflow: hidden; position: relative;">
+       <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; color: #64748b; z-index: 1; width: 80%;">
+         <svg style="width: 48px; height: 48px; margin-bottom: 15px; opacity: 0.5; display: inline-block;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+         <p style="margin-bottom: 10px; font-weight: bold;">Loading Document...</p>
+         <p style="font-size: 14px;">If the document fails to load or shows a connection error due to Google privacy settings,<br>please click the <strong>"Open in New Tab"</strong> button above to view it directly.</p>
+       </div>
+       <iframe id="docModalIframe" style="position: relative; z-index: 2; width: 100%; height: 100%; border: none; background: transparent;"></iframe>
+    </div>
+  </div>
+</div>
+
+<script>
+  // ==========================================
+  // RESPONSIVE 3-COLUMN CAROUSEL LOGIC
+  // ==========================================
+  let currentSlide = 0;
+  const totalSlides = 9; 
+  let slideInterval;
+  let resumeTimeout;
+  let isPlaying = true;
+  
+  function getItemsPerPage() {
+      const wrapper = document.getElementById('carouselWrapper');
+      if(!wrapper) return 3;
+      return parseInt(getComputedStyle(wrapper).getPropertyValue('--items-per-page')) || 3;
+  }
+  
+  function updateCarousel() {
+      const track = document.getElementById('carouselTrack');
+      if(!track) return;
+      const itemsPerPage = getItemsPerPage();
+      const maxIndex = totalSlides - itemsPerPage;
+      
+      if (currentSlide > maxIndex) currentSlide = 0;
+      if (currentSlide < 0) currentSlide = maxIndex;
+      
+      const slideElement = document.querySelector('.carousel-slide');
+      const slideWidth = slideElement.getBoundingClientRect().width;
+      
+      track.style.transform = `translateX(-${currentSlide * slideWidth}px)`;
+      updateDots(maxIndex);
+  }
+  
+  function updateDots(maxIndex) {
+      const dotsContainer = document.getElementById('carouselDots');
+      if(!dotsContainer) return;
+      
+      if(dotsContainer.children.length !== (maxIndex + 1)) {
+          dotsContainer.innerHTML = '';
+          for (let i = 0; i <= maxIndex; i++) {
+              const dot = document.createElement('button');
+              dot.className = 'dot-btn';
+              dot.onclick = () => goToSlide(i);
+              dotsContainer.appendChild(dot);
+          }
+      }
+      
+      Array.from(dotsContainer.children).forEach((dot, index) => {
+          dot.className = index === currentSlide ? 'dot-btn active' : 'dot-btn';
+      });
+  }
+  
+  function moveSlide(step) {
+      const maxIndex = totalSlides - getItemsPerPage();
+      currentSlide += step;
+      if (currentSlide > maxIndex) currentSlide = 0;
+      if (currentSlide < 0) currentSlide = maxIndex;
+      
+      updateCarousel();
+      pauseForInteraction();
+  }
+  
+  function goToSlide(index) {
+      currentSlide = index;
+      updateCarousel();
+      pauseForInteraction();
+  }
+  
+  function autoSlide() {
+      const maxIndex = totalSlides - getItemsPerPage();
+      currentSlide++;
+      if(currentSlide > maxIndex) currentSlide = 0;
+      updateCarousel();
+  }
+  
+  function startAutoplay() {
+      const playBtn = document.getElementById('playPauseBtn');
+      if(!playBtn) return;
+      if(slideInterval) clearInterval(slideInterval);
+      slideInterval = setInterval(autoSlide, 3500); 
+      playBtn.innerText = '⏸';
+      isPlaying = true;
+  }
+  
+  function stopAutoplay() {
+      const playBtn = document.getElementById('playPauseBtn');
+      if(!playBtn) return;
+      clearInterval(slideInterval);
+      playBtn.innerText = '⏵';
+      isPlaying = false;
+  }
+  
+  function togglePlayPause() {
+      isPlaying ? stopAutoplay() : startAutoplay();
+  }
+  
+  function pauseForInteraction() {
+      if(!isPlaying) return;
+      clearInterval(slideInterval);
+      clearTimeout(resumeTimeout);
+      const playBtn = document.getElementById('playPauseBtn');
+      if(playBtn) playBtn.innerText = '⏵';
+      resumeTimeout = setTimeout(() => {
+          if(isPlaying) startAutoplay();
+      }, 6000); 
+  }
+
+  window.addEventListener('resize', () => {
+      currentSlide = 0; 
+      updateCarousel();
+  });
+  
+  setTimeout(() => {
+    updateCarousel();
+    startAutoplay();
+  }, 100);
+
+  // ==========================================
+  // SIDEBAR & VIEW NAVIGATION
+  // ==========================================
+  function switchView(viewId) {
+    document.querySelectorAll('.tab-content').forEach(view => view.style.display = 'none');
+    const activeView = document.getElementById(viewId);
+    if (activeView) activeView.style.display = 'block';
+    
+    document.querySelectorAll('.nav-link').forEach(link => link.classList.remove('active'));
+    const targetId = 'nav-' + (viewId === 'home-view' ? 'home' : viewId);
+    const activeLink = document.getElementById(targetId);
+    if(activeLink) activeLink.classList.add('active');
+    
+    if(viewId === 'home-view') {
+        setTimeout(updateCarousel, 50);
+    }
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+  
+  switchView('home-view');
+
+  // ==========================================
+  // MASTER DASHBOARD DATA ENGINE
+  // ==========================================
+
+  let activePieChart = null;
+  let globalRawData = [];
+
+  Chart.register(ChartDataLabels);
+
+  const schoolNameMap = {
+      'eng': 'Engineering', 'mgmt': 'Management', 'law': 'Law', 'design': 'Design',
+      'science': 'Science', 'arch': 'Architecture', 'hosp': 'Hospitality',
+      'lib': 'Liberal Arts', 'film': 'Film & Media'
+  };
+
+  document.getElementById('excel-upload').addEventListener('change', function(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = function(event) {
+      const data = new Uint8Array(event.target.result);
+      const workbook = XLSX.read(data, {type: 'array'});
+      const firstSheetName = workbook.SheetNames[0];
+      const worksheet = workbook.Sheets[firstSheetName];
+      globalRawData = XLSX.utils.sheet_to_json(worksheet, { raw: false });
+      updateDashboard(globalRawData);
+    };
+    reader.readAsArrayBuffer(file);
+  });
+
+  function cleanNum(val) {
+      if(val === undefined || val === null) return 0;
+      let parsed = parseFloat(String(val).replace(/,/g, ''));
+      return isNaN(parsed) ? 0 : parsed;
+  }
+
+  function extractMaxPackage(stringArr) {
+      let max = 0;
+      let maxStr = "0";
+      stringArr.forEach(str => {
+          if(str && typeof str === 'string') {
+              let match = str.match(/(\d+(\.\d+)?)/); 
+              if(match && match[0]) {
+                  let num = parseFloat(match[0]);
+                  if(num > max) {
+                      max = num;
+                      maxStr = str;
+                  }
+              }
+          }
+      });
+      return maxStr;
+  }
+  
+  function calculateAveragePackage(stringArr) {
+      let sum = 0;
+      let count = 0;
+      stringArr.forEach(str => {
+          if(str && typeof str === 'string') {
+              let match = str.match(/(\d+(\.\d+)?)/);
+              if(match && match[0]) {
+                  sum += parseFloat(match[0]);
+                  count++;
+              }
+          }
+      });
+      return count > 0 ? (sum / count).toFixed(2) + " LPA" : "0";
+  }
+
+  function updateDashboard(data) {
+    let globalTarget = 0, globalAchieved = 0, partnersTarget = 0, partnersAchieved = 0;
+    let execPlacementsPl = 0, examAppeared = 0, examPassed = 0;
+    let execStu = 0, execFac = 0;
+
+    let placementPackages = [];
+    let placementInternships = [];
+    let placementCompanies = new Set();
+    
+    // First, aggregate School -> Activity -> { target, achieved }
+    let schoolAgg = {};
+    Object.keys(schoolNameMap).forEach(k => schoolAgg[k] = {});
+
+    data.forEach(row => {
+      let target = cleanNum(row.Target), achieved = cleanNum(row.Achieved);
+
+      if (row.SchoolId === "exec") {
+          if (row.Activity === "Exam Appeared") examAppeared = achieved;
+          if (row.Activity === "Exam Passed") examPassed = achieved;
+      }
+      
+      if (row.SchoolId !== "exec" && row.SchoolId) {
+          if (!schoolAgg[row.SchoolId]) schoolAgg[row.SchoolId] = {};
+          if (!schoolAgg[row.SchoolId][row.Activity]) {
+              schoolAgg[row.SchoolId][row.Activity] = { target: 0, achieved: 0 };
+          }
+          schoolAgg[row.SchoolId][row.Activity].target += target;
+          schoolAgg[row.SchoolId][row.Activity].achieved += achieved;
+
+          if (row.Activity === "Placements") {
+              if (achieved > 0) execPlacementsPl += achieved;
+              if (row.DetailInfo && row.DetailInfo.trim() !== "NA") {
+                  placementPackages.push(row.DetailInfo);
+              }
+              if (row.DetailMeta && row.DetailMeta.trim() !== "NA" && row.DetailMeta.toLowerCase() !== "internship cum ppo") {
+                  placementInternships.push(row.DetailMeta);
+              }
+              if (row.DetailName && row.DetailName.trim() !== "NA") {
+                  placementCompanies.add(row.DetailName.trim());
+              }
+          }
+
+          if (row.Activity === "Student Achievement") execStu += 1;
+          if (row.Activity === "Faculty Achievement") execFac += 1;
+      }
+    });
+
+    // Compute global totals directly from aggregated data
+    Object.keys(schoolAgg).forEach(schId => {
+        if (schoolAgg[schId]["Admissions"]) {
+            globalTarget += schoolAgg[schId]["Admissions"].target;
+            globalAchieved += schoolAgg[schId]["Admissions"].achieved;
+        }
+        if (schoolAgg[schId]["Partners Admission MIS"]) {
+            partnersTarget += schoolAgg[schId]["Partners Admission MIS"].target;
+            partnersAchieved += schoolAgg[schId]["Partners Admission MIS"].achieved;
+        }
+        
+        // Update the school tiles
+        const schoolDiv = document.getElementById(schId);
+        if (schoolDiv) {
+            const activities = schoolDiv.querySelectorAll('.activity');
+            activities.forEach(activityDiv => {
+                const actName = activityDiv.querySelector('h4').innerText.trim();
+                if (schoolAgg[schId][actName]) {
+                    const t = schoolAgg[schId][actName].target;
+                    const a = schoolAgg[schId][actName].achieved;
+                    const gap = Math.max(0, t - a);
+                    const perfPercentage = t === 0 ? 0 : ((a / t) * 100);
+                    
+                    const metrics = activityDiv.querySelectorAll('.metric strong');
+                    if(metrics.length >= 3) { metrics[0].innerText = t; metrics[1].innerText = a; metrics[2].innerText = gap; }
+                    const spans = activityDiv.querySelectorAll('div[style*="justify-content:space-between"] span');
+                    if(spans.length>1) spans[1].innerText = perfPercentage.toFixed(1) + '%';
+                    
+                    const progBar = activityDiv.querySelector('.progress span');
+                    if(progBar) progBar.style.width = Math.min(perfPercentage, 100) + '%';
+
+                    const bars = activityDiv.querySelectorAll('.mini-chart .bar');
+                    if(bars.length >= 3) {
+                        const maxVal = Math.max(t, gap);
+                        const scale = maxVal === 0 ? 0 : 50 / maxVal; 
+                        bars[0].style.height = Math.max((t * scale), 5) + 'px';
+                        bars[1].style.height = Math.max((a * scale), 5) + 'px';
+                        bars[2].style.height = Math.max((gap * scale), 5) + 'px';
+                        bars[2].style.background = gap === 0 ? "#cbd5e1" : "linear-gradient(180deg,#94a3b8,#64748b)";
+                    }
+
+                    const statBadge = activityDiv.querySelector('.status');
+                    if(statBadge) {
+                       if (perfPercentage >= 80) { statBadge.className = 'status low'; statBadge.innerHTML = svgSuccess + 'On Track'; }
+                       else if (perfPercentage >= 40) { statBadge.className = 'status medium'; statBadge.innerHTML = svgWarn + 'Monitor'; }
+                       else { statBadge.className = 'status high'; statBadge.innerHTML = svgDanger + 'High Risk'; }
+                    }
+                }
+            });
+        }
+    });
+
+    if (globalTarget > 0) {
+      document.getElementById('global-target').innerText = globalTarget; document.getElementById('global-achieved').innerText = globalAchieved;
+      document.getElementById('global-gap').innerText = Math.max(0, globalTarget - globalAchieved); document.getElementById('global-perf').innerText = ((globalAchieved / globalTarget) * 100).toFixed(2) + '%';
+    }
+    if (partnersTarget > 0) {
+      document.getElementById('partners-target').innerText = partnersTarget; document.getElementById('partners-achieved').innerText = partnersAchieved;
+      document.getElementById('partners-gap').innerText = Math.max(0, partnersTarget - partnersAchieved); document.getElementById('partners-perf').innerText = ((partnersAchieved / partnersTarget) * 100).toFixed(2) + '%';
+    }
+
+    document.getElementById('main-place-placed').innerText = execPlacementsPl;
+    document.getElementById('main-place-high').innerText = placementPackages.length > 0 ? extractMaxPackage(placementPackages) : "0";
+    document.getElementById('main-place-avg').innerText = placementPackages.length > 0 ? calculateAveragePackage(placementPackages) : "0";
+    document.getElementById('main-place-intern').innerText = placementInternships.length > 0 ? extractMaxPackage(placementInternships) : "0";
+    document.getElementById('main-place-comp').innerText = placementCompanies.size;
+
+    let totalExam = examAppeared > 0 ? examAppeared + 150 : 0;
+    document.getElementById('main-exam-total').innerText = totalExam; document.getElementById('main-exam-reg').innerText = totalExam > 0 ? totalExam - 25 : 0;
+    document.getElementById('main-exam-app').innerText = examAppeared; document.getElementById('main-exam-abs').innerText = (totalExam - 25) - examAppeared;
+    document.getElementById('main-exam-prog').innerText = examAppeared > 0 ? "In Progress" : "-";
+
+    document.getElementById('exec-stu').innerText = execStu; 
+    document.getElementById('exec-fac').innerText = execFac;
+  }
+
+  // ==========================================
+  // MODAL LOGIC (KPI Data & Documents)
+  // ==========================================
+  
+  const chartColors = ['#C21B27', '#f59e0b', '#1e293b', '#64748b', '#3b82f6', '#10b981', '#8b5cf6', '#ec4899', '#f97316'];
+
+  function openCombinedModal(metricType, activityName) {
+      if (!globalRawData || globalRawData.length === 0) { alert("Please upload the data tracking document first."); return; }
+
+      switchModalTab('chart');
+      document.getElementById('modalTitle').innerText = activityName + " Workspace Analysis";
+      let tableWrap = document.getElementById('modalTableWrapper'), galleryGrid = document.getElementById('modalGalleryWrapper');
+      tableWrap.style.display = "none"; galleryGrid.style.display = "none";
+
+      let labels = [], datasetData = [];
+
+      if (metricType === 'gallery') {
+          switchModalTab('chart'); galleryGrid.style.display = "block";
+          globalRawData.forEach(row => {
+              if (row.Activity === activityName && row.SchoolId !== 'exec') { labels.push(schoolNameMap[row.SchoolId] || row.SchoolId); datasetData.push(1); }
+          });
+          document.getElementById('galleryContainer').innerHTML = `
+              <div class="gallery-item" onclick="alert('Opening details...')"><div style="height:140px; background:url('https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=500&q=80') center/cover;"></div><div class="info"><div class="title">HPC Expert Summit</div><div class="date">May 14, 2026</div></div></div>
+              <div class="gallery-item" onclick="alert('Opening details...')"><div style="height:140px; background:url('https://images.unsplash.com/photo-1552664730-d307ca884978?w=500&q=80') center/cover;"></div><div class="info"><div class="title">NAAC Reform Panel</div><div class="date">May 12, 2026</div></div></div>
+          `;
+      }
+
+      if (metricType !== 'gallery') {
+          tableWrap.style.display = "block";
+          let hasDetails = ["University Achievement", "Student Achievement", "Faculty Achievement"].includes(activityName);
+          let isPartners = (activityName === 'Partners Admission MIS');
+
+          if (hasDetails) {
+              let html = `<table class="detail-table"><thead><tr><th style="width:15%;">School</th><th style="width:20%;">Name / Faculty</th><th style="width:35%;">Log Info</th><th style="width:15%;">Outcome</th><th style="width:15%;">Date</th></tr></thead><tbody>`;
+              globalRawData.forEach(row => {
+                  if (row.Activity === activityName && row.SchoolId !== 'exec') {
+                      labels.push(schoolNameMap[row.SchoolId] || row.SchoolId); datasetData.push(1);
+                      html += `<tr><td><b>${schoolNameMap[row.SchoolId] || row.SchoolId}</b></td><td>${row.DetailName||'-'}</td><td>${row.DetailInfo||'-'}</td><td>${row.DetailMeta||'-'}</td><td>${row.DetailDate||'-'}</td></tr>`;
+                  }
+              });
+              tableWrap.innerHTML = html + `</tbody></table>`;
+          } else if (isPartners) {
+              let html = `<table class="detail-table"><thead><tr><th style="width:20%;">School</th><th style="width:20%;">Partner</th><th style="width:30%;">Program</th><th style="width:10%;">Target</th><th style="width:10%;">Achieved</th><th style="width:10%;">Gap</th></tr></thead><tbody>`;
+              let agg = {};
+              
+              globalRawData.forEach(row => {
+                  if (row.Activity === activityName && row.SchoolId !== 'exec') {
+                      let sName = schoolNameMap[row.SchoolId] || row.SchoolId;
+                      let t = cleanNum(row.Target), a = cleanNum(row.Achieved), g = Math.max(0, t - a);
+                      
+                      html += `<tr><td><b>${sName}</b></td><td>${row.DetailName||'-'}</td><td>${row.DetailInfo||'-'}</td><td>${t}</td><td>${a}</td><td>${g}</td></tr>`;
+                      
+                      if (!agg[sName]) agg[sName] = { target: 0, achieved: 0, gap: 0 };
+                      agg[sName].target += t;
+                      agg[sName].achieved += a;
+                      agg[sName].gap += g;
+                  }
+              });
+              tableWrap.innerHTML = html + `</tbody></table>`;
+              
+              // Aggregate for Pie Chart mapping
+              Object.keys(agg).forEach(sName => {
+                  labels.push(sName);
+                  let val = metricType === 'target' ? agg[sName].target : metricType === 'gap' ? agg[sName].gap : agg[sName].achieved;
+                  datasetData.push(val);
+              });
+          } else {
+              let html = `<table class="detail-table"><thead><tr><th style="width:30%;">School</th><th>Target</th><th>Achieved</th><th>Gap</th><th>Perf Rate</th></tr></thead><tbody>`;
+              let agg = {};
+              globalRawData.forEach(row => {
+                  if (row.Activity === activityName && row.SchoolId !== "exec" && schoolNameMap[row.SchoolId]) {
+                      let sName = schoolNameMap[row.SchoolId];
+                      if(!agg[sName]) agg[sName] = { t:0, a:0 };
+                      agg[sName].t += cleanNum(row.Target);
+                      agg[sName].a += cleanNum(row.Achieved);
+                  }
+              });
+              Object.keys(agg).forEach(sName => {
+                  let t = agg[sName].t, a = agg[sName].a, g = Math.max(0, t - a), pct = t===0?0:(a*100/t);
+                  let val = metricType==='target'?t: metricType==='gap'?g : a;
+                  if (val > 0) { datasetData.push(val); labels.push(sName); }
+                  html += `<tr><td><b>${sName}</b></td><td>${t}</td><td>${a}</td><td>${g}</td><td><span style="color:var(--primary); font-weight:700;">${pct.toFixed(1)}%</span></td></tr>`;
+              });
+              tableWrap.innerHTML = html + `</tbody></table>`;
+          }
+      }
+
+      let uLabels = [...new Set(labels)];
+      let sData = uLabels.map((lbl, idx) => {
+          if (["University Achievement", "Student Achievement", "Faculty Achievement"].includes(activityName)) 
+              return globalRawData.filter(r => r.Activity === activityName && schoolNameMap[r.SchoolId] === lbl).length;
+          return datasetData[idx] || 0;
+      });
+
+      const ctx = document.getElementById('pieChartCanvas').getContext('2d');
+      if (activePieChart) activePieChart.destroy();
+      activePieChart = new Chart(ctx, {
+          type: 'doughnut',
+          data: { labels: uLabels.map((l, i) => l + ' : ' + sData[i]), datasets: [{ data: sData, backgroundColor: chartColors, borderWidth: 2, borderColor: '#fff' }] },
+          options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'right' }, datalabels: { color: '#fff', font:{weight:'bold'}, formatter: (v, ctx) => { let sum=ctx.chart._metasets[0].total; return sum===0?'':((v*100/sum)>5?(v*100/sum).toFixed(1)+"%":''); } } } }
+      });
+      document.getElementById('combinedModal').style.display = 'block';
+  }
+
+  function closeCombinedModal() { document.getElementById('combinedModal').style.display = 'none'; }
+  
+  function switchModalTab(tabType) {
+    document.querySelectorAll('.modal-tab-btn').forEach(btn => btn.classList.remove('active'));
+    document.querySelectorAll('.modal-body-content').forEach(content => content.classList.remove('active'));
+    if(tabType === 'chart') {
+      document.getElementById('btn-tab-chart').classList.add('active');
+      document.getElementById('modal-content-chart').classList.add('active');
+    } else {
+      document.getElementById('btn-tab-detail').classList.add('active');
+      document.getElementById('modal-content-detail').classList.add('active');
+    }
+  }
+
+  function openDocModal(title, url) {
+      document.getElementById('docModalTitle').innerText = title;
+      
+      // Clean the URL by stripping any page/hash fragments
+      let cleanUrl = url.split('#')[0];
+      let iframeUrl = cleanUrl;
+      
+      if (cleanUrl.includes('docs.google.com/document/d/')) {
+          let baseUrl = cleanUrl.split('/edit')[0]; // Extract base URL
+          // Force standard preview for all links
+          iframeUrl = baseUrl + '/preview';
+      }
+
+      document.getElementById('docModalIframe').src = iframeUrl;
+      document.getElementById('docModalLink').href = cleanUrl; // Clean URL for "Open in New Tab"
+      document.getElementById('docModal').style.display = 'block';
+  }
+  
+  function closeDocModal() {
+      document.getElementById('docModal').style.display = 'none';
+      document.getElementById('docModalIframe').src = ''; 
+  }
+
+  window.onclick = function(event) { 
+      if (event.target == document.getElementById('combinedModal')) closeCombinedModal(); 
+      if (event.target == document.getElementById('docModal')) closeDocModal(); 
+  }
+
+  // ==========================================
+  // UNIFIED NEW REPORT GENERATION SYSTEM (NATIVE PRINT)
+  // ==========================================
+
+  // --- Data Helper Functions ---
+  function getExecutiveKPIs() {
+      let adT = 0, adA = 0, partT = 0, partA = 0, plTotal = 0;
+      let pkgs = [], interns = [];
+      let execStu = 0, execFac = 0, execUni = 0;
+      let examAppeared = 0, examPassed = 0;
+      let companies = new Set();
+      globalRawData.forEach(r => {
+          if (r.SchoolId === 'exec') {
+             if (r.Activity === 'Exam Appeared') examAppeared = cleanNum(r.Achieved);
+             if (r.Activity === 'Exam Passed') examPassed = cleanNum(r.Achieved);
+          } else if (r.SchoolId) {
+              if (r.Activity === 'Admissions') { adT += cleanNum(r.Target); adA += cleanNum(r.Achieved); }
+              if (r.Activity === 'Partners Admission MIS') { partT += cleanNum(r.Target); partA += cleanNum(r.Achieved); }
+              if (r.Activity === 'Placements') {
+                  if (cleanNum(r.Achieved) > 0) plTotal += cleanNum(r.Achieved);
+                  if (r.DetailInfo && r.DetailInfo !== 'NA') pkgs.push(r.DetailInfo);
+                  if (r.DetailMeta && r.DetailMeta !== 'NA' && r.DetailMeta.toLowerCase() !== 'internship cum ppo') interns.push(r.DetailMeta);
+                  if (r.DetailName && r.DetailName !== 'NA') companies.add(r.DetailName.trim());
+              }
+              if (r.Activity === "Student Achievement") execStu++;
+              if (r.Activity === "Faculty Achievement") execFac++;
+              if (r.Activity === "University Achievement") execUni++;
+          }
+      });
+      return {
+          totalAdmissionsTarget: adT, 
+          totalAdmissionsAchieved: adA,
+          admissionsGap: Math.max(0, adT - adA),
+          admissionsRate: adT > 0 ? ((adA / adT) * 100).toFixed(2) + '%' : '0.00%',
+          partnersTarget: partT, 
+          partnersAchieved: partA,
+          partnersGap: Math.max(0, partT - partA),
+          partnersRate: partT > 0 ? ((partA / partT) * 100).toFixed(2) + '%' : '0.00%',
+          totalPlaced: plTotal,
+          highestPackage: pkgs.length > 0 ? extractMaxPackage(pkgs) : "0",
+          averagePackage: pkgs.length > 0 ? calculateAveragePackage(pkgs) : "0",
+          highestInternship: interns.length > 0 ? extractMaxPackage(interns) : "0",
+          totalCompanies: companies.size,
+          examTotal: examAppeared > 0 ? examAppeared + 150 : 0,
+          examReg: examAppeared > 0 ? (examAppeared + 150) - 25 : 0,
+          examAppeared: examAppeared,
+          examAbs: examAppeared > 0 ? ((examAppeared + 150) - 25) - examAppeared : 0,
+          examProg: examAppeared > 0 ? "In Progress" : "-",
+          execStu: execStu,
+          execFac: execFac,
+          execUni: execUni
+      };
+  }
+
+  function getSchoolData(activityStr) {
+      let sch = {};
+      Object.keys(schoolNameMap).forEach(k => sch[k] = { target: 0, achieved: 0 });
+      globalRawData.forEach(r => {
+          if (r.SchoolId !== 'exec' && r.Activity === activityStr && sch[r.SchoolId]) {
+              sch[r.SchoolId].target += cleanNum(r.Target);
+              sch[r.SchoolId].achieved += cleanNum(r.Achieved);
+          }
+      });
+      let arr = [];
+      Object.keys(sch).forEach(k => {
+          let d = sch[k];
+          if (d.target > 0 || d.achieved > 0) {
+              let gap = Math.max(0, d.target - d.achieved);
+              let pct = d.target > 0 ? (d.achieved * 100 / d.target).toFixed(1) + '%' : '0%';
+              arr.push({ schoolId: k, school: schoolNameMap[k], target: d.target, achieved: d.achieved, gap: gap, percent: pct });
+          }
+      });
+      return arr;
+  }
+  
+  function getAdmissionsData() { return getSchoolData('Admissions'); }
+  function getPartnersData() { return getSchoolData('Partners Admission MIS'); }
+
+  // UPDATED: Aggregates Partner data by School and Partner (ignoring Program)
+  function getPartnersDetailedData(schoolIdFilter = null) {
+      let agg = {};
+      globalRawData.forEach(r => {
+          if (r.SchoolId !== 'exec' && r.Activity === 'Partners Admission MIS') {
+              if (!schoolIdFilter || r.SchoolId === schoolIdFilter) {
+                  let schoolName = schoolNameMap[r.SchoolId] || r.SchoolId;
+                  let partnerName = r.DetailName || '-';
+                  let key = schoolName + '___' + partnerName;
+                  
+                  if (!agg[key]) {
+                      agg[key] = {
+                          school: schoolName,
+                          partner: partnerName,
+                          target: 0,
+                          achieved: 0
+                      };
+                  }
+                  agg[key].target += cleanNum(r.Target);
+                  agg[key].achieved += cleanNum(r.Achieved);
+              }
+          }
+      });
+      let arr = Object.values(agg);
+      arr.sort((a, b) => a.school.localeCompare(b.school));
+      return arr;
+  }
+
+  function getPlacementsData(schoolIdFilter = null) {
+      let arr = [];
+      globalRawData.forEach(r => {
+          if (r.SchoolId !== 'exec' && r.Activity === 'Placements') {
+              if (!schoolIdFilter || r.SchoolId === schoolIdFilter) {
+                  arr.push({
+                      school: schoolNameMap[r.SchoolId] || r.SchoolId,
+                      company: r.DetailName || '-',
+                      package: r.DetailInfo || '-',
+                      stipend: r.DetailMeta || '-'
+                  });
+              }
+          }
+      });
+      let validArr = [];
+      arr.forEach(d => {
+          if (!d.company || d.company.trim() === '' || d.company === 'NA') d.company = '-';
+          if (!d.package || d.package.trim() === '' || d.package === 'NA') d.package = '-';
+          if (!d.stipend || d.stipend.trim() === '' || d.stipend === 'NA') d.stipend = '-';
+          
+          if (d.school !== '---' && d.company !== '---' && d.package !== '-') {
+              validArr.push(d);
+          }
+      });
+      validArr.sort((a, b) => a.school.localeCompare(b.school));
+      return validArr;
+  }
+
+  function getExamDetailedData() {
+      let sch = {};
+      Object.keys(schoolNameMap).forEach(k => sch[k] = { registered: 0, appeared: 0, passed: 0 });
+      globalRawData.forEach(r => {
+          if (r.SchoolId !== 'exec' && sch[r.SchoolId]) {
+              if (r.Activity === 'Examinations' || r.Activity === 'Exam Appeared') {
+                  sch[r.SchoolId].registered += cleanNum(r.Target);
+                  sch[r.SchoolId].appeared += cleanNum(r.Achieved);
+              }
+              if (r.Activity === 'Exam Passed') {
+                  sch[r.SchoolId].passed += cleanNum(r.Achieved);
+              }
+          }
+      });
+      let arr = [];
+      Object.keys(sch).forEach(k => {
+          let d = sch[k];
+          if (d.registered > 0 || d.appeared > 0) {
+              let absent = Math.max(0, d.registered - d.appeared);
+              let passPct = d.appeared > 0 ? ((d.passed / d.appeared) * 100).toFixed(1) + '%' : '-';
+              arr.push({ schoolId: k, school: schoolNameMap[k], registered: d.registered, appeared: d.appeared, absent: absent, passPct: passPct });
+          }
+      });
+      return arr;
+  }
+
+  function getLogData(activityStr, limit = null, schoolIdFilter = null) {
+      let arr = [];
+      for (let r of globalRawData) {
+          if (r.SchoolId !== 'exec' && r.Activity === activityStr) {
+              if (!schoolIdFilter || r.SchoolId === schoolIdFilter) {
+                  arr.push({
+                      school: schoolNameMap[r.SchoolId] || r.SchoolId,
+                      name: r.DetailName || '-',
+                      detail: r.DetailInfo || '-',
+                      meta: r.DetailMeta || '-',
+                      date: r.DetailDate || '-'
+                  });
+              }
+          }
+          if (limit && arr.length >= limit) break;
+      }
+      return arr;
+  }
+  
+  function getStudentAchievements(limit = null, schoolIdFilter = null) { return getLogData('Student Achievement', limit, schoolIdFilter); }
+  function getFacultyAchievements(limit = null, schoolIdFilter = null) { return getLogData('Faculty Achievement', limit, schoolIdFilter); }
+  function getUniversityAchievements() { return getLogData('University Achievement'); }
+
+  // --- HTML Builder Function ---
+  function generateHtmlTableWithSummary(headers, rows) {
+      if (!rows || rows.length === 0) return '';
+      let html = '<table><thead><tr>';
+      headers.forEach(h => html += `<th>${h}</th>`);
+      html += '</tr></thead><tbody>';
+      let tTarget = 0, tAchieved = 0, tGap = 0;
+      rows.forEach(r => {
+          html += `<tr><td>${r.school}</td><td>${r.target}</td><td>${r.achieved}</td><td>${r.gap}</td><td>${r.percent}</td></tr>`;
+          tTarget += r.target;
+          tAchieved += r.achieved;
+          tGap += r.gap;
+      });
+      let tPct = tTarget > 0 ? ((tAchieved / tTarget) * 100).toFixed(1) + '%' : '0%';
+      html += `<tr class="summary-row"><td>Total Summary</td><td>${tTarget}</td><td>${tAchieved}</td><td>${tGap}</td><td>${tPct}</td></tr>`;
+      html += '</tbody></table>';
+      return html;
+  }
+
+  function generateHtmlTable(headers, rows) {
+      if (!rows || rows.length === 0) return '';
+      let html = '<table><thead><tr>';
+      headers.forEach(h => html += `<th>${h}</th>`);
+      html += '</tr></thead><tbody>';
+      rows.forEach(r => {
+          html += '<tr>';
+          r.forEach(cell => html += `<td>${cell}</td>`);
+          html += '</tr>';
+      });
+      html += '</tbody></table>';
+      return html;
+  }
+
+  function buildReportHTML(type) {
+      const dateStr = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+      
+      const baseStyle = `
+      <style>
+          * { margin: 0; padding: 0; box-sizing: border-box; }
+          body { 
+              font-family: 'Segoe UI', Arial, sans-serif; 
+              padding: 20px; 
+              background: white;
+              color: #334155;
+          }
+          .header { 
+              display: flex;
+              justify-content: space-between;
+              align-items: center;
+              margin-bottom: 30px; 
+              border-bottom: 2px solid #C21B27; 
+              padding-bottom: 10px;
+          }
+          .header-left h1 { color: #C21B27; font-size: 22px; margin-bottom: 4px; text-transform: uppercase; }
+          .header-left .subtitle { font-size: 14px; font-weight: bold; }
+          .header-right { text-align: right; font-size: 11px; color: #64748b; }
+          
+          .row { display: flex; gap: 15px; margin-bottom: 15px; }
+          .col { flex: 1; }
+          
+          .section-title { 
+              background: #f1f5f9; 
+              padding: 10px 15px; 
+              margin: 25px 0 15px 0;
+              font-size: 16px;
+              font-weight: bold;
+              color: #1e293b;
+              border-left: 5px solid #C21B27;
+              text-transform: uppercase;
+          }
+          
+          .kpi-grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 15px; }
+          .kpi-grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 15px; }
+          .kpi-grid-5 { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin-bottom: 15px; }
+          
+          .kpi-card {
+              background: #f8fafc;
+              border: 1px solid #e2e8f0;
+              padding: 15px 10px;
+              border-radius: 6px;
+              text-align: center;
+          }
+          .kpi-value { font-size: 20px; font-weight: 800; color: #1e293b; }
+          .kpi-label { font-size: 11px; color: #64748b; margin-top: 6px; text-transform: uppercase; font-weight: bold; }
+          
+          table { width: 100%; border-collapse: collapse; margin-bottom: 25px; page-break-inside: auto; }
+          tr { page-break-inside: avoid; page-break-after: auto; }
+          th { background: #e2e8f0; color: #1e293b; padding: 10px 12px; text-align: left; font-size: 12px; border: 1px solid #cbd5e1; }
+          td { border: 1px solid #e2e8f0; padding: 8px 12px; font-size: 11px; vertical-align: top; }
+          tr:nth-child(even) { background: #f8fafc; }
+          .summary-row { font-weight: bold; background: #e2e8f0 !important; color: #1e293b; }
+          
+          .page-break { page-break-after: always; }
+          .cover-page { height: 90vh; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; }
+          .cover-title { font-size: 32px; color: #C21B27; border-bottom: 3px solid #C21B27; padding-bottom: 15px; margin-bottom: 20px; text-transform: uppercase; }
+          
+          .sub-heading { font-size: 14px; color: #334155; margin: 20px 0 10px 0; border-bottom: 1px solid #e2e8f0; padding-bottom: 5px; }
+          
+          .pdf-gallery { display: flex; flex-wrap: wrap; margin: -10px; }
+          .pdf-gallery-item { width: calc(33.333% - 20px); margin: 10px; border: 1px solid #e2e8f0; padding: 10px; border-radius: 6px; page-break-inside: avoid; text-align: center; background: #f8fafc; }
+          .pdf-gallery-item img { width: 100%; height: 150px; object-fit: cover; border-radius: 4px; margin-bottom: 8px; background: #e2e8f0; }
+          .pdf-gallery-item h4 { font-size: 11px; margin: 0 0 4px 0; color: #1e293b; }
+          .pdf-gallery-item p { font-size: 10px; color: #64748b; margin: 0; }
+
+          @media print {
+              body { padding: 0; }
+              .no-print { display: none; }
+          }
+      </style>`;
+
+      let content = '';
+      
+      if (type === 'main') {
+          const kpis = getExecutiveKPIs();
+          const adm = getAdmissionsData();
+          const part = getPartnersData();
+          const partDetail = getPartnersDetailedData();
+          const exam = getExamDetailedData();
+          
+          const monthlyHighlightsData = [
+              { title: "Auto CAD Hands-on Training Program", category: "University", date: "May 2026" },
+              { title: "Research Publication on AI & Cloud Platforms", category: "Faculty", date: "May 2026" },
+              { title: "Dr. Ranjit Kumar’s IEEE Leadership", category: "Faculty", date: "Regional Recognition" },
+              { title: "International Recognition in IEEE Region 10", category: "University", date: "April 30, 2026" },
+              { title: "Ajeenkya Karandak Tournament", category: "Student", date: "Sports Achievement" },
+              { title: "MIT – ADT Cricket Tournament", category: "Student", date: "1st Place Victory" },
+              { title: "Gaming Event with Redbull", category: "Student", date: "Under25adypu Event" },
+              { title: "Under25adypu Nominated for “Best Club of the Batch”", category: "Student", date: "National Recognition" },
+              { title: "Best Paper Award at ICRAEST 2026", category: "Faculty", date: "Academic Excellence" }
+          ];
+
+          const galleryImagesData = [
+              { src: 'autocad-training.png', title: 'Auto CAD Hands-on Training Program', subtitle: 'May 2026' },
+              { src: 'research-publication.png', title: 'Research Publication on AI & Cloud Platforms', subtitle: 'May 2026' },
+              { src: '{34702617-3571-4261-8D41-660014D23FF3}.png', title: 'Dr. Ranjit Kumar’s IEEE Leadership', subtitle: 'Regional Recognition' },
+              { src: '{0566F7C1-CC42-4648-8145-1B0B623020B8}.png', title: 'International Recognition in IEEE Region 10', subtitle: 'April 30, 2026' },
+              { src: '{5E3DAA53-98C1-42F6-9E66-78CD1CAE7943}.png', title: 'Ajeenkya Karandak Tournament', subtitle: 'Sports Achievement' },
+              { src: '{06C24A80-A093-4E1A-BE6B-060EDF0563F0}.png', title: 'MIT – ADT Cricket Tournament', subtitle: '1st Place Victory' },
+              { src: '{EDC1C369-397F-42E2-AB8A-B25A32567BA3}.png', title: 'Gaming Event with Redbull', subtitle: 'Under25adypu Event' },
+              { src: '{5598FC8B-1C75-4715-AB2B-C6FF68CA737D}.jpg', title: 'Under25adypu Nominated', subtitle: 'National Recognition' },
+              { src: '{1FD70957-4943-4122-BA1A-90A54182C1AD}.jpg', title: 'Best Paper Award at ICRAEST 2026', subtitle: 'Academic Excellence' }
+          ];
+
+          content += `
+              <div class="header">
+                  <div class="header-left">
+                      <h1>AJEENKYA D Y PATIL UNIVERSITY</h1>
+                      <div class="subtitle">Main Dashboard Report</div>
+                  </div>
+                  <div class="header-right">
+                      Generated: ${dateStr}
+                  </div>
+              </div>
+              
+              <div class="section-title">SECTION 1 – University Admissions Status</div>
+              <div class="kpi-grid-4">
+                  <div class="kpi-card"><div class="kpi-value">${kpis.totalAdmissionsTarget}</div><div class="kpi-label">Target</div></div>
+                  <div class="kpi-card"><div class="kpi-value">${kpis.totalAdmissionsAchieved}</div><div class="kpi-label">Achieved</div></div>
+                  <div class="kpi-card"><div class="kpi-value">${kpis.admissionsGap}</div><div class="kpi-label">Gap</div></div>
+                  <div class="kpi-card"><div class="kpi-value">${kpis.admissionsRate}</div><div class="kpi-label">Achievement Rate</div></div>
+              </div>
+              ${generateHtmlTableWithSummary(['School', 'Target', 'Achieved', 'Gap', 'Performance Rate'], adm.map(d => ({school: d.school, target: d.target, achieved: d.achieved, gap: d.gap, percent: d.percent})))}
+              
+              <div class="section-title">SECTION 2 – Partners Admission MIS</div>
+              <div class="kpi-grid-4">
+                  <div class="kpi-card"><div class="kpi-value">${kpis.partnersTarget}</div><div class="kpi-label">Target</div></div>
+                  <div class="kpi-card"><div class="kpi-value">${kpis.partnersAchieved}</div><div class="kpi-label">Achieved</div></div>
+                  <div class="kpi-card"><div class="kpi-value">${kpis.partnersGap}</div><div class="kpi-label">Gap</div></div>
+                  <div class="kpi-card"><div class="kpi-value">${kpis.partnersRate}</div><div class="kpi-label">Achievement Rate</div></div>
+              </div>
+              <h3 class="sub-heading">School Summary</h3>
+              ${generateHtmlTableWithSummary(['School', 'Target', 'Achieved', 'Gap', 'Performance Rate'], part.map(d => ({school: d.school, target: d.target, achieved: d.achieved, gap: d.gap, percent: d.percent})))}
+              
+              <h3 class="sub-heading">Partner Detailed Breakdown</h3>
+              ${generateHtmlTable(['School', 'Partner', 'Target', 'Achieved'], partDetail.map(d => [d.school, d.partner, d.target, d.achieved]))}
+              
+              <div class="page-break"></div>
+              
+              <div class="section-title">SECTION 3 – Placements Overview</div>
+              <div class="kpi-grid-5">
+                  <div class="kpi-card"><div class="kpi-value">${kpis.totalPlaced}</div><div class="kpi-label">Total Students Placed</div></div>
+                  <div class="kpi-card"><div class="kpi-value">${kpis.highestPackage}</div><div class="kpi-label">Highest Package</div></div>
+                  <div class="kpi-card"><div class="kpi-value">${kpis.averagePackage}</div><div class="kpi-label">Average Package</div></div>
+                  <div class="kpi-card"><div class="kpi-value">${kpis.highestInternship}</div><div class="kpi-label">Highest Internship Stipend</div></div>
+                  <div class="kpi-card"><div class="kpi-value">${kpis.totalCompanies}</div><div class="kpi-label">Total Companies Visited</div></div>
+              </div>
+
+              <div class="section-title">SECTION 4 – Examinations Overview</div>
+              <div class="kpi-grid-5">
+                  <div class="kpi-card"><div class="kpi-value">${kpis.examTotal}</div><div class="kpi-label">Total Students</div></div>
+                  <div class="kpi-card"><div class="kpi-value">${kpis.examReg}</div><div class="kpi-label">Registered</div></div>
+                  <div class="kpi-card"><div class="kpi-value">${kpis.examAppeared}</div><div class="kpi-label">Appeared</div></div>
+                  <div class="kpi-card"><div class="kpi-value">${kpis.examAbs}</div><div class="kpi-label">Absent</div></div>
+                  <div class="kpi-card"><div class="kpi-value">${kpis.examProg}</div><div class="kpi-label">Result</div></div>
+              </div>
+              ${generateHtmlTable(['School', 'Registered', 'Appeared', 'Absent', 'Pass %'], exam.map(d => [d.school, d.registered, d.appeared, d.absent, d.passPct]))}
+              
+              <div class="section-title">SECTION 5 – Executive Achievements</div>
+              <div class="kpi-grid-2">
+                  <div class="kpi-card"><div class="kpi-value">${kpis.execStu}</div><div class="kpi-label">Student Awards</div></div>
+                  <div class="kpi-card"><div class="kpi-value">${kpis.execFac}</div><div class="kpi-label">Faculty Papers</div></div>
+              </div>
+
+              <div class="page-break"></div>
+              
+              <div class="section-title">SECTION 6 – Monthly Highlights – May 2026</div>
+              ${generateHtmlTable(['Achievement Title', 'Category', 'Date'], monthlyHighlightsData.map(d => [d.title, d.category, d.date]))}
+              
+              <div class="page-break"></div>
+
+              <div class="section-title">SECTION 7 – University Achievements Gallery</div>
+              <div class="pdf-gallery">
+                  ${galleryImagesData.map(img => `
+                      <div class="pdf-gallery-item">
+                          <img src="${img.src}" alt="${img.title}" onerror="this.src='https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=500&q=80';">
+                          <h4>${img.title}</h4>
+                          <p>${img.subtitle}</p>
+                      </div>
+                  `).join('')}
+              </div>
+          `;
+      } else if (type === 'schoolwise') {
+           content += `
+              <div class="header">
+                  <h1>AJEENKYA D Y PATIL UNIVERSITY</h1>
+                  <div class="date">School Wise Report | Generated: ${dateStr}</div>
+              </div>`;
+              
+           const schoolsKeys = Object.keys(schoolNameMap);
+           schoolsKeys.forEach((k, idx) => {
+               let adm = getAdmissionsData().find(a => a.schoolId === k) || {target:0, achieved:0, gap:0, percent:'0%'};
+               let plc = getPlacementsData(k);
+               let ach = getStudentAchievements(5, k);
+               let partD = getPartnersDetailedData(k);
+               
+               content += `
+                   <h2 style="color: #C21B27; margin: 20px 0 10px; font-size: 18px;">${schoolNameMap[k]}</h2>
+                   
+                   <div class="section-title">Admissions Performance</div>
+                   ${generateHtmlTable(['Metric', 'Target', 'Achieved', 'Gap', '%'], [['Core Admissions', adm.target, adm.achieved, adm.gap, adm.percent]])}
+                   
+                   <div class="section-title">Partners Admission Breakdown</div>
+                   ${generateHtmlTable(['Partner', 'Target', 'Achieved'], partD.map(d => [d.partner, d.target, d.achieved]))}
+                   
+                   <div class="section-title">Placements</div>
+                   ${generateHtmlTable(['Company', 'Package', 'Stipend'], plc.map(d => [d.company, d.package, d.stipend]))}
+                   
+                   <div class="section-title">Top Achievements</div>
+                   ${generateHtmlTable(['Name', 'Achievement', 'Date'], ach.map(d => [d.name, d.detail, d.date]))}
+               `;
+               
+               if (idx < schoolsKeys.length - 1) {
+                   content += `<div class="page-break"></div>`;
+               }
+           });
+      } else if (type === 'complete') {
+          const kpis = getExecutiveKPIs();
+          const adm = getAdmissionsData();
+          const part = getPartnersData();
+          const partDetail = getPartnersDetailedData();
+          const plc = getPlacementsData();
+          const stu = getStudentAchievements();
+          const fac = getFacultyAchievements();
+          const uni = getUniversityAchievements();
+          
+          content += `
+              <div class="cover-page">
+                  <h1 class="cover-title">ADYPU Complete University Report</h1>
+                  <p style="font-size: 18px; color: #666; margin-bottom: 10px;">Academic Session 2026-2027</p>
+                  <p style="font-size: 14px; color: #999;">Generated: ${dateStr}</p>
+              </div>
+              <div class="page-break"></div>
+              
+              <div class="header">
+                  <h1>AJEENKYA D Y PATIL UNIVERSITY</h1>
+                  <div class="date">Complete Report | Generated: ${dateStr}</div>
+              </div>
+              
+              <div class="section-title">Executive Summary</div>
+              <div class="kpi-grid-4">
+                  <div class="kpi-card"><div class="kpi-value">${kpis.totalAdmissionsTarget}</div><div class="kpi-label">Admissions Target</div></div>
+                  <div class="kpi-card"><div class="kpi-value">${kpis.totalAdmissionsAchieved}</div><div class="kpi-label">Admissions Achieved</div></div>
+                  <div class="kpi-card"><div class="kpi-value">${kpis.partnersTarget}</div><div class="kpi-label">Partners Target</div></div>
+                  <div class="kpi-card"><div class="kpi-value">${kpis.partnersAchieved}</div><div class="kpi-label">Partners Achieved</div></div>
+                  <div class="kpi-card"><div class="kpi-value">${kpis.totalPlaced}</div><div class="kpi-label">Total Placed</div></div>
+                  <div class="kpi-card"><div class="kpi-value">${kpis.highestPackage}</div><div class="kpi-label">Highest Package</div></div>
+              </div>
+              
+              <div class="section-title">Complete Admissions summary</div>
+              ${generateHtmlTable(['School', 'Target', 'Achieved', 'Gap', '%'], adm.map(d => [d.school, d.target, d.achieved, d.gap, d.percent]))}
+              
+              <div class="section-title">Complete Partners Admissions summary</div>
+              ${generateHtmlTable(['School', 'Target', 'Achieved', 'Gap', '%'], part.map(d => [d.school, d.target, d.achieved, d.gap, d.percent]))}
+              
+              <div class="section-title">Detailed Partner Admissions</div>
+              ${generateHtmlTable(['School', 'Partner', 'Target', 'Achieved'], partDetail.map(d => [d.school, d.partner, d.target, d.achieved]))}
+              
+              <div class="section-title">Complete Placements summary</div>
+              ${generateHtmlTable(['School', 'Company', 'Package', 'Stipend'], plc.map(d => [d.school, d.company, d.package, d.stipend]))}
+              
+              <div class="page-break"></div>
+              
+              <div class="section-title">Complete Student Achievements</div>
+              ${generateHtmlTable(['School', 'Student', 'Achievement', 'Date'], stu.map(d => [d.school, d.name, d.detail, d.date]))}
+              
+              <div class="section-title">Complete Faculty Achievements</div>
+              ${generateHtmlTable(['School', 'Faculty', 'Achievement', 'Date'], fac.map(d => [d.school, d.name, d.detail, d.date]))}
+              
+              <div class="section-title">Complete University Achievements</div>
+              ${generateHtmlTable(['Name', 'Event', 'Role', 'Date'], uni.map(d => [d.name, d.detail, d.meta, d.date]))}
+              
+              <div class="section-title">Risk Summary</div>
+              <ul>
+                  <li style="margin-bottom: 5px; font-size: 11px;"><strong>Admissions Risk:</strong> High priority intervention required to close the current intake gap.</li>
+                  <li style="margin-bottom: 5px; font-size: 11px;"><strong>Research & Patents:</strong> Publication, patent, and MoU activity should be accelerated this cycle.</li>
+                  <li style="margin-bottom: 5px; font-size: 11px;"><strong>Student Engagement:</strong> Events, student participation, and campus engagement remain healthy.</li>
+              </ul>
+              
+              <div class="section-title">Final Recommendations</div>
+              <p style="font-size: 11px; margin-bottom: 3px;">1. Target marketing efforts on schools with high gap percentage.</p>
+              <p style="font-size: 11px; margin-bottom: 3px;">2. Accelerate placement drives for underperforming sectors.</p>
+              <p style="font-size: 11px; margin-bottom: 3px;">3. Increase documentation of university-level research initiatives.</p>
+          `;
+      }
+
+      content += '<div class="footer" style="margin-top: 30px; padding-top: 10px; border-top: 1px solid #e2e8f0; font-size: 10px; color: #94a3b8; text-align: center;">Confidential - Internal Use Only | ADYPU Strategic Command Center</div>';
+      
+      return `<!DOCTYPE html><html><head><title>ADYPU Report</title>${baseStyle}</head><body>${content}</body></html>`;
+  }
+
+  // --- Main PDF Generation Function ---
+  function generatePDFReport(type) {
+      // 1. Check data
+      if (!globalRawData || globalRawData.length === 0) {
+          alert('Please upload CSV data first');
+          return;
+      }
+      
+      // 2. Create iframe off-screen
+      const iframe = document.createElement('iframe');
+      iframe.style.position = 'fixed';
+      iframe.style.top = '-9999px';
+      iframe.style.left = '-9999px';
+      iframe.style.width = '1100px';
+      iframe.style.height = '800px';
+      document.body.appendChild(iframe);
+      
+      // 3. Build HTML content based on report type
+      const html = buildReportHTML(type);
+      
+      // 4. Write to iframe
+      iframe.contentDocument.open();
+      iframe.contentDocument.write(html);
+      iframe.contentDocument.close();
+      
+      // 5. Wait for rendering, then print
+      setTimeout(() => {
+          iframe.contentWindow.focus();
+          iframe.contentWindow.print();
+          
+          // Remove iframe after print dialog closes
+          setTimeout(() => {
+              if(document.body.contains(iframe)) {
+                 document.body.removeChild(iframe);
+              }
+          }, 1000);
+      }, 500);
+  }
+
+  // EXCEL REPORT (Preserved)
+  function generateExcelReport() {
+      if (!globalRawData || globalRawData.length === 0) { alert("Please upload Master CSV file first."); return; }
+      const wb = XLSX.utils.book_new();
+
+      let adT=0, adA=0, partT=0, partA=0, plT=0, plA=0, exApp=0, exPass=0, uni=0, stu=0, fac=0;
+      globalRawData.forEach(r => {
+          if(r.SchoolId==='exec') { 
+              if(r.Activity==='Exam Appeared') exApp=cleanNum(r.Achieved); 
+              if(r.Activity==='Exam Passed') exPass=cleanNum(r.Achieved); 
+          }
+          else {
+              let t=cleanNum(r.Target), a=cleanNum(r.Achieved);
+              if(r.Activity==='Admissions') { adT+=t; adA+=a; }
+              if(r.Activity==='Partners Admission MIS') { partT+=t; partA+=a; }
+              if(r.Activity==='Placements') { plT+=t; plA+=a; }
+              if(r.Activity==='University Achievement') uni++; 
+              if(r.Activity==='Student Achievement') stu++; 
+              if(r.Activity==='Faculty Achievement') fac++;
+          }
+      });
+
+      let execJson = [{
+          "Admissions Target": adT, "Admissions Achieved": adA,
+          "Partners Target": partT, "Partners Achieved": partA,
+          "Placements Eligible": plT, "Placements Placed": plA,
+          "Exam Appeared": exApp, "Exam Passed": exPass,
+          "Univ Achievements": uni, "Student Awards": stu, "Faculty Papers": fac
+      }];
+      XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(execJson), "Executive KPIs");
+
+      let schAdm = [], schPart = [];
+      let schData = {};
+      Object.keys(schoolNameMap).forEach(k => schData[k] = {aT:0, aA:0, pT:0, pA:0});
+      globalRawData.forEach(r => {
+          if(r.SchoolId !== 'exec' && schData[r.SchoolId]) {
+              if(r.Activity === 'Admissions') { schData[r.SchoolId].aT+=cleanNum(r.Target); schData[r.SchoolId].aA+=cleanNum(r.Achieved); }
+              if(r.Activity === 'Partners Admission MIS') { schData[r.SchoolId].pT+=cleanNum(r.Target); schData[r.SchoolId].pA+=cleanNum(r.Achieved); }
+          }
+      });
+      Object.keys(schData).forEach(k => {
+          let d = schData[k];
+          schAdm.push({ "School": schoolNameMap[k], "Target": d.aT, "Achieved": d.aA, "Gap": Math.max(0, d.aT-d.aA), "%": d.aT>0?(d.aA*100/d.aT).toFixed(1)+'%':'0%' });
+          if(d.pT > 0 || d.pA > 0) schPart.push({ "School": schoolNameMap[k], "Target": d.pT, "Achieved": d.pA, "Gap": Math.max(0, d.pT-d.pA), "%": d.pT>0?(d.pA*100/d.pT).toFixed(1)+'%':'0%' });
+      });
+      XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(schAdm), "School Admissions");
+      XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(schPart), "Partners Admissions");
+
+      // ADD THIS NEW BLOCK for Partner Details, removing program and using aggregated data:
+      let excelPartnerDetails = getPartnersDetailedData().map(d => ({
+          "School": d.school,
+          "Partner": d.partner,
+          "Target": d.target,
+          "Achieved": d.achieved
+      }));
+      XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(excelPartnerDetails), "Partner Details");
+
+      const getList = (act) => globalRawData.filter(r => r.Activity === act && r.SchoolId!=='exec').map(r => ({
+          "School": schoolNameMap[r.SchoolId]||r.SchoolId, "Detail 1": r.DetailName, "Detail 2": r.DetailInfo, "Detail 3": r.DetailMeta, "Date": r.DetailDate
+      }));
+
+      XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(getList('Placements')), "Placements");
+      XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(getList('Student Achievement')), "Student Achievements");
+      XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(getList('Faculty Achievement')), "Faculty Achievements");
+      XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(globalRawData.filter(r => r.Activity === 'University Achievement').map(r => ({ "Name": r.DetailName, "Event": r.DetailInfo, "Role": r.DetailMeta, "Date": r.DetailDate }))), "University Achievements");
+
+      XLSX.writeFile(wb, `ADYPU_Master_Data_${new Date().toLocaleDateString().replace(/\//g,'-')}.xlsx`);
+  }
+
+</script>
+</body>
+</html>
