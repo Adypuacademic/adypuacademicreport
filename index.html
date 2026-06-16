@@ -1301,7 +1301,8 @@ body {
       let iframeUrl = cleanUrl;
       
       if (cleanUrl.includes('docs.google.com/document/d/')) {
-          let baseUrl = cleanUrl.split('/edit')[0]; // Extract base URL
+          // Extract base URL by stripping both /edit and /preview if they exist
+          let baseUrl = cleanUrl.split('/edit')[0].split('/preview')[0];
           // Force standard preview for all links
           iframeUrl = baseUrl + '/preview';
       }
