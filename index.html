@@ -364,9 +364,14 @@ body {
     display: flex;
     position: absolute; top: 15px; right: 15px;
     background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; color: #fff; font-size: 20px;
-    width: 44px; height: 44px; align-items: center; justify-content: center; cursor: pointer; z-index: 10001; transition: 0.2s;
+    width: 44px; height: 44px; align-items: center; justify-content: center; cursor: pointer; z-index: 10005; transition: 0.2s;
   }
   .sidebar-close-btn:hover { background: rgba(255,255,255,0.2); }
+
+  /* FIX: PUSH LOGO DOWN ON MOBILE TO PREVENT OVERLAP WITH CLOSE BUTTON */
+  .sidebar .logo-container {
+    padding-top: 75px; 
+  }
 
   .kpis, .activity-grid { grid-template-columns: repeat(2, 1fr) !important; }
   
