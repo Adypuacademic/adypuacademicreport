@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <title>ADYPU Monthly Report Dashboard</title>
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
@@ -309,18 +309,110 @@ body {
 .chart-container { position: relative; height: 380px; width: 100%; }
 .table-wrapper { max-height: 400px; overflow-y: auto; border: 1px solid #e2e8f0; border-radius: 12px; background: #fff; width: 100%; }
 .detail-table { width: 100%; table-layout: fixed; border-collapse: collapse; text-align: left; font-size: 13px; }
-.detail-table th { background: #f8fafc; padding: 10px 12px; font-weight: 700; color: #475569; border-bottom: 2px solid #e2e8f0; position: sticky; top: 0; word-wrap: break-word; }
+.detail-table th { background: #f8fafc; padding: 10px 12px; font-weight: 700; color: #475569; border-bottom: 2px solid #e2e8f0; position: sticky; top: 0; word-wrap: break-word; z-index: 10; }
 .detail-table td { padding: 10px 12px; border-bottom: 1px solid #f1f5f9; color: #334155; word-wrap: break-word; }
 
-@media(max-width: 1000px) {
-  .sidebar { position: relative; width: 100%; height: auto; }
-  .main { margin-left: 0; width: 100%; }
+/* ========================================= */
+/* MOBILE RESPONSIVE OVERRIDES               */
+/* ========================================= */
+.mobile-header { display: none; }
+.sidebar-close-btn { display: none; }
+.sidebar-overlay { display: none; }
+
+@media (max-width: 1024px) {
+  .mobile-header {
+    display: flex;
+    align-items: center;
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    color: #fff;
+    padding: 10px 15px;
+    position: sticky;
+    top: 0;
+    z-index: 9997;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+  }
+  .hamburger-btn {
+    background: none; border: none; color: #fff; font-size: 28px;
+    width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; cursor: pointer;
+    padding: 0; margin-right: 15px;
+  }
+  .mobile-logo { font-size: 18px; font-weight: bold; letter-spacing: 0.5px; }
+
+  .main { margin-left: 0 !important; width: 100% !important; padding: 15px; }
+
+  .sidebar {
+    transform: translateX(-100%);
+    transition: transform 0.3s ease-in-out;
+    position: fixed;
+    top: 0; left: 0;
+    width: 280px;
+    height: 100vh;
+    z-index: 10000;
+    box-shadow: 5px 0 25px rgba(0,0,0,0.5);
+  }
+  .sidebar.open { transform: translateX(0); }
+
+  .sidebar-overlay.active {
+    display: block;
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(15,23,42,0.6);
+    backdrop-filter: blur(2px);
+    z-index: 9999;
+  }
+
+  .sidebar-close-btn {
+    display: flex;
+    position: absolute; top: 15px; right: 15px;
+    background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; color: #fff; font-size: 20px;
+    width: 44px; height: 44px; align-items: center; justify-content: center; cursor: pointer; z-index: 10001; transition: 0.2s;
+  }
+  .sidebar-close-btn:hover { background: rgba(255,255,255,0.2); }
+
+  .kpis, .activity-grid { grid-template-columns: repeat(2, 1fr) !important; }
+  
+  .table-wrapper { overflow-x: auto; -webkit-overflow-scrolling: touch; width: 100%; }
+  .detail-table { min-width: 650px; }
+}
+
+@media (max-width: 768px) {
+  .kpis, .kpis-compact, .activity-grid, .risk-grid { grid-template-columns: 1fr !important; }
+  
+  .dashboard-header .header-top h1 { font-size: 24px; }
+  .section-title h2 { font-size: 20px; }
+  .school-header h2 { font-size: 24px; }
+  .kpi .value { font-size: 24px; }
+  
+  .header-top { flex-direction: column; gap: 8px; }
+  .kpi { padding: 15px; }
+  
+  .mini-chart { height: 80px; margin-bottom: 20px; }
+  .bar { max-width: 30px; }
+  
+  .carousel-btn { width: 44px; height: 44px; font-size: 18px; }
+  .carousel-btn.play-pause { width: 44px; height: 44px; top: 25px; right: 25px; }
+  
+  .modal-content { width: 95%; margin: 5% auto; padding: 20px 15px; }
+  .chart-container { height: 250px; }
+  .close-btn { font-size: 36px; width: 44px; height: 44px; top: 5px; right: 5px; display: flex; align-items: center; justify-content: center; }
+  
+  .modal-tabs { flex-wrap: wrap; }
+  .modal-tab-btn { flex: 1; min-width: 120px; text-align: center; font-size: 13px; padding: 10px; }
+  
+  .docModalIframe { height: 60vh; }
 }
 </style>
 </head>
 <body>
 
+<div class="sidebar-overlay" onclick="toggleSidebar()" data-html2canvas-ignore></div>
+
+<div class="mobile-header" data-html2canvas-ignore>
+  <button class="hamburger-btn" onclick="toggleSidebar()">☰</button>
+  <div class="mobile-logo">ADYPU Dashboard</div>
+</div>
+
 <div class="sidebar" data-html2canvas-ignore>
+  <button class="sidebar-close-btn" onclick="toggleSidebar()">✕</button>
   <div class="logo-container">
     <div class="logo-box">
         <img src="logo.png" alt="ADYPU Logo" onerror="this.src='https://adypu.edu.in/wp-content/uploads/2024/02/adypu-logo.webp';">
@@ -382,10 +474,6 @@ body {
 </div>
 
 <div class="main" id="report-content">
-  <!-- <div style="background: var(--card); padding: 15px 25px; border-radius: 18px; margin-bottom: 25px; box-shadow: 0 6px 18px rgba(15,23,42,.06); display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 15px;" data-html2canvas-ignore>
-    <h3 style="margin: 0; font-size: 16px; color: var(--primary);">Update Dashboard Data (Excel/CSV)</h3>
-    <input type="file" id="excel-upload" accept=".xlsx, .xls, .csv" style="font-family: inherit; cursor: pointer; padding: 8px; border: 1px solid #e2e8f0; border-radius: 8px; background: #fff;">
-  </div> -->
 
   <div id="home-view" class="tab-content">
       <div class="dashboard-header">
@@ -829,12 +917,34 @@ body {
          <p style="margin-bottom: 10px; font-weight: bold;">Loading Document...</p>
          <p style="font-size: 14px;">If the document fails to load or shows a connection error due to Google privacy settings,<br>please click the <strong>"Open in New Tab"</strong> button above to view it directly.</p>
        </div>
-       <iframe id="docModalIframe" style="position: relative; z-index: 2; width: 100%; height: 100%; border: none; background: transparent;"></iframe>
+       <iframe id="docModalIframe" class="docModalIframe" style="position: relative; z-index: 2; width: 100%; height: 100%; border: none; background: transparent;"></iframe>
     </div>
   </div>
 </div>
 
 <script>
+  // ==========================================
+  // MOBILE SIDEBAR TOGGLE LOGIC
+  // ==========================================
+  function toggleSidebar() {
+    const sidebar = document.querySelector('.sidebar');
+    const overlay = document.querySelector('.sidebar-overlay');
+    if (sidebar) sidebar.classList.toggle('open');
+    if (overlay) overlay.classList.toggle('active');
+  }
+
+  // Auto-close sidebar on mobile when navigating
+  document.querySelectorAll('.sidebar a.nav-link, .sidebar-dropdown-content a').forEach(link => {
+    link.addEventListener('click', () => {
+      if (window.innerWidth <= 1024) {
+        const sidebar = document.querySelector('.sidebar');
+        const overlay = document.querySelector('.sidebar-overlay');
+        if (sidebar) sidebar.classList.remove('open');
+        if (overlay) overlay.classList.remove('active');
+      }
+    });
+  });
+
   // ==========================================
   // RESPONSIVE 3-COLUMN CAROUSEL LOGIC
   // ==========================================
@@ -1009,9 +1119,6 @@ body {
         console.warn('Could not auto-load data.csv, user will need to upload manually:', error);
       });
   });
-
-  // Handle manual upload (overrides auto-loaded data)
-  
 
   function cleanNum(val) {
       if(val === undefined || val === null) return 0;
@@ -1296,19 +1403,16 @@ body {
   function openDocModal(title, url) {
       document.getElementById('docModalTitle').innerText = title;
       
-      // Clean the URL by stripping any page/hash fragments
       let cleanUrl = url.split('#')[0];
       let iframeUrl = cleanUrl;
       
       if (cleanUrl.includes('docs.google.com/document/d/')) {
-          // Extract base URL by stripping both /edit and /preview if they exist
           let baseUrl = cleanUrl.split('/edit')[0].split('/preview')[0];
-          // Force standard preview for all links
           iframeUrl = baseUrl + '/preview';
       }
 
       document.getElementById('docModalIframe').src = iframeUrl;
-      document.getElementById('docModalLink').href = cleanUrl; // Clean URL for "Open in New Tab"
+      document.getElementById('docModalLink').href = cleanUrl; 
       document.getElementById('docModal').style.display = 'block';
   }
   
@@ -1320,6 +1424,7 @@ body {
   window.onclick = function(event) { 
       if (event.target == document.getElementById('combinedModal')) closeCombinedModal(); 
       if (event.target == document.getElementById('docModal')) closeDocModal(); 
+      if (event.target == document.querySelector('.sidebar-overlay')) toggleSidebar();
   }
 
   // ==========================================
@@ -1838,13 +1943,11 @@ body {
 
   // --- Main PDF Generation Function ---
   function generatePDFReport(type) {
-      // 1. Check data
       if (!globalRawData || globalRawData.length === 0) {
           alert('Please upload CSV data first');
           return;
       }
       
-      // 2. Create iframe off-screen
       const iframe = document.createElement('iframe');
       iframe.style.position = 'fixed';
       iframe.style.top = '-9999px';
@@ -1853,20 +1956,16 @@ body {
       iframe.style.height = '800px';
       document.body.appendChild(iframe);
       
-      // 3. Build HTML content based on report type
       const html = buildReportHTML(type);
       
-      // 4. Write to iframe
       iframe.contentDocument.open();
       iframe.contentDocument.write(html);
       iframe.contentDocument.close();
       
-      // 5. Wait for rendering, then print
       setTimeout(() => {
           iframe.contentWindow.focus();
           iframe.contentWindow.print();
           
-          // Remove iframe after print dialog closes
           setTimeout(() => {
               if(document.body.contains(iframe)) {
                  document.body.removeChild(iframe);
@@ -1875,7 +1974,7 @@ body {
       }, 500);
   }
 
-  // EXCEL REPORT (Preserved)
+  // EXCEL REPORT
   function generateExcelReport() {
       if (!globalRawData || globalRawData.length === 0) { alert("Please upload Master CSV file first."); return; }
       const wb = XLSX.utils.book_new();
