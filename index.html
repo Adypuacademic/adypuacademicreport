@@ -7,6 +7,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <style>
 :root{
   --primary: #C21B27; 
@@ -1648,7 +1649,7 @@ body {
       return html;
   }
 
-  function buildReportHTML(type) {
+  function buildReportHTML(type, img1 = null, img2 = null) {
       const dateStr = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
       
       const baseStyle = `
@@ -1729,6 +1730,21 @@ body {
       let content = '';
       
       if (type === 'main') {
+          if (img1 && img2) {
+              content += `
+                  <div class="cover-page" style="height: auto; min-height: 90vh; display: block; text-align: center; padding-top: 20px;">
+                      <h2 style="color: #C21B27; margin-bottom: 20px; font-size: 24px; text-transform: uppercase;">Dashboard Snapshot – Page 1 of 2</h2>
+                      <img src="${img1}" style="width: 100%; max-width: 1000px; border: 1px solid #e2e8f0; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
+                  </div>
+                  <div class="page-break"></div>
+                  <div class="cover-page" style="height: auto; min-height: 90vh; display: block; text-align: center; padding-top: 20px;">
+                      <h2 style="color: #C21B27; margin-bottom: 20px; font-size: 24px; text-transform: uppercase;">Dashboard Snapshot – Page 2 of 2</h2>
+                      <img src="${img2}" style="width: 100%; max-width: 1000px; border: 1px solid #e2e8f0; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
+                  </div>
+                  <div class="page-break"></div>
+              `;
+          }
+
           const kpis = getExecutiveKPIs();
           const adm = getAdmissionsData();
           const part = getPartnersData();
@@ -1947,10 +1963,81 @@ body {
   }
 
   // --- Main PDF Generation Function ---
-  function generatePDFReport(type) {
+  async function generatePDFReport(type) {
       if (!globalRawData || globalRawData.length === 0) {
           alert('Please upload CSV data first');
           return;
+      }
+
+      let page1Img = null;
+      let page2Img = null;
+
+      if (type === 'main') {
+          // Temporarily show loading state on the button
+          const btnLinks = document.querySelectorAll('.sidebar-dropdown-content a');
+          let targetBtn = null;
+          let originalText = "";
+          btnLinks.forEach(b => {
+              if(b.getAttribute('onclick') === "generatePDFReport('main')") {
+                  targetBtn = b;
+                  originalText = b.innerText;
+                  b.innerText = "Capturing Dashboard...";
+              }
+          });
+
+          try {
+              // Create an off-screen container configured for desktop rendering
+              const offscreen = document.createElement('div');
+              offscreen.className = 'main'; // inherit dashboard styling
+              offscreen.style.position = 'fixed';
+              offscreen.style.top = '0';
+              offscreen.style.left = '-9999px';
+              offscreen.style.width = '1100px'; 
+              offscreen.style.margin = '0';
+              offscreen.style.padding = '0';
+              offscreen.style.zIndex = '-100';
+
+              // Build Page 1 structure
+              const pg1 = document.createElement('div');
+              pg1.style.padding = '30px';
+              pg1.style.background = 'var(--bg)';
+              
+              const liveHeader = document.querySelector('.dashboard-header');
+              if (liveHeader) pg1.appendChild(liveHeader.cloneNode(true));
+              
+              const liveSections = document.querySelectorAll('#home-view .section');
+              if (liveSections[0]) pg1.appendChild(liveSections[0].cloneNode(true)); // Admissions
+              if (liveSections[1]) pg1.appendChild(liveSections[1].cloneNode(true)); // Partners
+              if (liveSections[2]) pg1.appendChild(liveSections[2].cloneNode(true)); // Placements
+
+              // Build Page 2 structure
+              const pg2 = document.createElement('div');
+              pg2.style.padding = '30px';
+              pg2.style.background = 'var(--bg)';
+              if (liveSections[3]) pg2.appendChild(liveSections[3].cloneNode(true)); // Examinations
+              if (liveSections[4]) pg2.appendChild(liveSections[4].cloneNode(true)); // Exec Achievements
+              if (liveSections[5]) pg2.appendChild(liveSections[5].cloneNode(true)); // Gallery
+
+              offscreen.appendChild(pg1);
+              offscreen.appendChild(pg2);
+              document.body.appendChild(offscreen);
+
+              // Wait briefly to ensure styles are applied
+              await new Promise(r => setTimeout(r, 100));
+
+              // Capture the cloned elements as images
+              const canvas1 = await html2canvas(pg1, { scale: 2, useCORS: true, backgroundColor: '#f8fafc', logging: false });
+              page1Img = canvas1.toDataURL('image/jpeg', 0.9);
+
+              const canvas2 = await html2canvas(pg2, { scale: 2, useCORS: true, backgroundColor: '#f8fafc', logging: false });
+              page2Img = canvas2.toDataURL('image/jpeg', 0.9);
+
+              document.body.removeChild(offscreen);
+          } catch (e) {
+              console.error("Failed to capture dashboard screenshots:", e);
+          } finally {
+              if (targetBtn) targetBtn.innerText = originalText;
+          }
       }
       
       const iframe = document.createElement('iframe');
@@ -1961,7 +2048,8 @@ body {
       iframe.style.height = '800px';
       document.body.appendChild(iframe);
       
-      const html = buildReportHTML(type);
+      // Pass the captured images into the HTML builder
+      const html = buildReportHTML(type, page1Img, page2Img);
       
       iframe.contentDocument.open();
       iframe.contentDocument.write(html);
