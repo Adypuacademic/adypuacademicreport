@@ -1103,26 +1103,36 @@ body {
   };
 
   // ------------------------------------------
-  // AUTO-LOAD CSV LOGIC
+  // AUTO-LOAD EXCEL/CSV LOGIC
   // ------------------------------------------
   document.addEventListener('DOMContentLoaded', () => {
-    fetch('Updated_ADYPU_Master_Dashboard_Data_New.csv')
-      .then(response => {
-        if (!response.ok) {
-          throw new Error('Network response was not ok');
-        }
-        return response.arrayBuffer();
-      })
-      .then(data => {
-        const workbook = XLSX.read(data, {type: 'array'});
-        const firstSheetName = workbook.SheetNames[0];
-        const worksheet = workbook.Sheets[firstSheetName];
-        globalRawData = XLSX.utils.sheet_to_json(worksheet, { raw: false });
-        updateDashboard(globalRawData);
-        console.log("Successfully auto-loaded data.csv");
+    const loadDataFile = (filename) => {
+      return fetch(filename)
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('Network response was not ok for ' + filename);
+          }
+          return response.arrayBuffer();
+        })
+        .then(data => {
+          const workbook = XLSX.read(data, {type: 'array'});
+          const firstSheetName = workbook.SheetNames[0];
+          const worksheet = workbook.Sheets[firstSheetName];
+          globalRawData = XLSX.utils.sheet_to_json(worksheet, { raw: false });
+          updateDashboard(globalRawData);
+          console.log("Successfully auto-loaded " + filename);
+          return true;
+        });
+    };
+
+    // Attempt to load Excel file first, fallback to CSV if not found
+    loadDataFile('Updated_ADYPU_Master_Dashboard_Data_New.xlsx')
+      .catch(error => {
+        console.log('Could not load .xlsx, falling back to .csv...', error);
+        return loadDataFile('Updated_ADYPU_Master_Dashboard_Data_New.csv');
       })
       .catch(error => {
-        console.warn('Could not auto-load data.csv, user will need to upload manually:', error);
+        console.warn('Could not auto-load data files. You may need to upload manually.', error);
       });
   });
 
