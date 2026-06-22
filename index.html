@@ -1103,7 +1103,7 @@ body {
   };
 
   // ------------------------------------------
-  // AUTO-LOAD EXCEL/CSV LOGIC
+  // AUTO-LOAD EXCEL/CSV LOGIC (MULTI-SHEET)
   // ------------------------------------------
   document.addEventListener('DOMContentLoaded', () => {
     const loadDataFile = (filename) => {
@@ -1115,18 +1115,29 @@ body {
           return response.arrayBuffer();
         })
         .then(data => {
-          const workbook = XLSX.read(data, {type: 'array'});
-          const firstSheetName = workbook.SheetNames[0];
-          const worksheet = workbook.Sheets[firstSheetName];
-          globalRawData = XLSX.utils.sheet_to_json(worksheet, { raw: false });
+          const workbook = XLSX.read(data, { type: 'array' });
+          globalRawData = [];
+
+          // Read ALL sheets and combine them into one array
+          workbook.SheetNames.forEach(sheetName => {
+            const worksheet = workbook.Sheets[sheetName];
+            const sheetData = XLSX.utils.sheet_to_json(worksheet, { raw: false });
+            globalRawData = globalRawData.concat(sheetData);
+          });
+
           updateDashboard(globalRawData);
-          console.log("Successfully auto-loaded " + filename);
+          console.log("Successfully auto-loaded multi-sheet file: " + filename);
+          console.log("Total combined rows: " + globalRawData.length);
           return true;
         });
     };
 
-    // Attempt to load Excel file first, fallback to CSV if not found
-    loadDataFile('Updated_ADYPU_Master_Dashboard_Data_New.xlsx')
+    // Attempt to load multi-sheet Excel file first, fallback to single-sheet if not found
+    loadDataFile('ADYPU_Master_Dashboard_Data_MultiSheet.xlsx')
+      .catch(error => {
+        console.log('Could not load multi-sheet .xlsx, falling back to single-sheet...', error);
+        return loadDataFile('Updated_ADYPU_Master_Dashboard_Data_New.xlsx');
+      })
       .catch(error => {
         console.log('Could not load .xlsx, falling back to .csv...', error);
         return loadDataFile('Updated_ADYPU_Master_Dashboard_Data_New.csv');
