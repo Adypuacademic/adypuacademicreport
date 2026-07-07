@@ -719,10 +719,50 @@ body {
           <button class="carousel-btn next" onclick="moveSlide(1)">&#10095;</button>
           <button class="carousel-btn play-pause" id="playPauseBtn" onclick="togglePlayPause()">⏸</button>
           
-          <div class="carousel-dots" id="carouselDots">
-             </div>
+          <div class="carousel-dots" id="carouselDots"></div>
         </div>
       </div>
+
+      <!-- NEW ADDITIONAL GALLERY SECTION -->
+      <div class="section" data-html2canvas-ignore>
+        <div class="section-title"><span class="dot"></span><h2>ADDITIONAL MEDIA GALLERY</h2></div>
+        
+        <div class="carousel-wrapper" id="carouselWrapper2">
+          <div class="carousel-viewport">
+            <div class="carousel-track" id="carouselTrack2">
+              
+              <div class="carousel-slide">
+                <div class="slide-content">
+                  <img src="{5C6CE9FC-5251-46A4-9607-085D23687C3A}.jpg" alt="Gallery Image 1" onerror="this.src='https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=500&q=80';">
+                  <div class="carousel-caption"><h4>Monthly Dashboard Snapshot</h4><p>June 2026</p></div>
+                </div>
+              </div>
+              
+              <div class="carousel-slide">
+                <div class="slide-content">
+                  <img src="placeholder1.jpg" alt="Future Image 1" onerror="this.src='https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=500&q=80';">
+                  <div class="carousel-caption"><h4>Future Image Slot 1</h4><p>Pending</p></div>
+                </div>
+              </div>
+              
+              <div class="carousel-slide">
+                <div class="slide-content">
+                  <img src="placeholder2.jpg" alt="Future Image 2" onerror="this.src='https://images.unsplash.com/photo-1552664730-d307ca884978?w=500&q=80';">
+                  <div class="carousel-caption"><h4>Future Image Slot 2</h4><p>Pending</p></div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+          
+          <button class="carousel-btn prev" onclick="moveSlide2(-1)">&#10094;</button>
+          <button class="carousel-btn next" onclick="moveSlide2(1)">&#10095;</button>
+          <button class="carousel-btn play-pause" id="playPauseBtn2" onclick="togglePlayPause2()">⏸</button>
+          
+          <div class="carousel-dots" id="carouselDots2"></div>
+        </div>
+      </div>
+      <!-- END NEW ADDITIONAL GALLERY SECTION -->
 
       <div class="section" data-html2canvas-ignore>
         <div class="section-title"><span class="dot"></span><h2>ADYPU INCUBATOR PERFORMANCE & ROADMAP</h2></div>
@@ -952,7 +992,7 @@ body {
   });
 
   // ==========================================
-  // RESPONSIVE 3-COLUMN CAROUSEL LOGIC
+  // RESPONSIVE 3-COLUMN CAROUSEL LOGIC (GALLERY 1)
   // ==========================================
   let currentSlide = 0;
   const totalSlides = 9; 
@@ -975,10 +1015,11 @@ body {
       if (currentSlide > maxIndex) currentSlide = 0;
       if (currentSlide < 0) currentSlide = maxIndex;
       
-      const slideElement = document.querySelector('.carousel-slide');
-      const slideWidth = slideElement.getBoundingClientRect().width;
-      
-      track.style.transform = `translateX(-${currentSlide * slideWidth}px)`;
+      const slideElement = document.querySelector('#carouselTrack .carousel-slide');
+      if(slideElement) {
+        const slideWidth = slideElement.getBoundingClientRect().width;
+        track.style.transform = `translateX(-${currentSlide * slideWidth}px)`;
+      }
       updateDots(maxIndex);
   }
   
@@ -1056,14 +1097,125 @@ body {
       }, 6000); 
   }
 
+  // ==========================================
+  // RESPONSIVE 3-COLUMN CAROUSEL LOGIC (GALLERY 2)
+  // ==========================================
+  let currentSlide2 = 0;
+  const totalSlides2 = 3; 
+  let slideInterval2;
+  let resumeTimeout2;
+  let isPlaying2 = true;
+  
+  function getItemsPerPage2() {
+      const wrapper = document.getElementById('carouselWrapper2');
+      if(!wrapper) return 3;
+      return parseInt(getComputedStyle(wrapper).getPropertyValue('--items-per-page')) || 3;
+  }
+  
+  function updateCarousel2() {
+      const track = document.getElementById('carouselTrack2');
+      if(!track) return;
+      const itemsPerPage = getItemsPerPage2();
+      const maxIndex = Math.max(0, totalSlides2 - itemsPerPage);
+      
+      if (currentSlide2 > maxIndex) currentSlide2 = 0;
+      if (currentSlide2 < 0) currentSlide2 = maxIndex;
+      
+      const slideElement = document.querySelector('#carouselTrack2 .carousel-slide');
+      if(slideElement) {
+        const slideWidth = slideElement.getBoundingClientRect().width;
+        track.style.transform = `translateX(-${currentSlide2 * slideWidth}px)`;
+      }
+      updateDots2(maxIndex);
+  }
+  
+  function updateDots2(maxIndex) {
+      const dotsContainer = document.getElementById('carouselDots2');
+      if(!dotsContainer) return;
+      
+      if(dotsContainer.children.length !== (maxIndex + 1)) {
+          dotsContainer.innerHTML = '';
+          for (let i = 0; i <= maxIndex; i++) {
+              const dot = document.createElement('button');
+              dot.className = 'dot-btn';
+              dot.onclick = () => goToSlide2(i);
+              dotsContainer.appendChild(dot);
+          }
+      }
+      
+      Array.from(dotsContainer.children).forEach((dot, index) => {
+          dot.className = index === currentSlide2 ? 'dot-btn active' : 'dot-btn';
+      });
+  }
+  
+  function moveSlide2(step) {
+      const maxIndex = Math.max(0, totalSlides2 - getItemsPerPage2());
+      currentSlide2 += step;
+      if (currentSlide2 > maxIndex) currentSlide2 = 0;
+      if (currentSlide2 < 0) currentSlide2 = maxIndex;
+      
+      updateCarousel2();
+      pauseForInteraction2();
+  }
+  
+  function goToSlide2(index) {
+      currentSlide2 = index;
+      updateCarousel2();
+      pauseForInteraction2();
+  }
+  
+  function autoSlide2() {
+      const maxIndex = Math.max(0, totalSlides2 - getItemsPerPage2());
+      currentSlide2++;
+      if(currentSlide2 > maxIndex) currentSlide2 = 0;
+      updateCarousel2();
+  }
+  
+  function startAutoplay2() {
+      const playBtn = document.getElementById('playPauseBtn2');
+      if(!playBtn) return;
+      if(slideInterval2) clearInterval(slideInterval2);
+      slideInterval2 = setInterval(autoSlide2, 3500); 
+      playBtn.innerText = '⏸';
+      isPlaying2 = true;
+  }
+  
+  function stopAutoplay2() {
+      const playBtn = document.getElementById('playPauseBtn2');
+      if(!playBtn) return;
+      clearInterval(slideInterval2);
+      playBtn.innerText = '⏵';
+      isPlaying2 = false;
+  }
+  
+  function togglePlayPause2() {
+      isPlaying2 ? stopAutoplay2() : startAutoplay2();
+  }
+  
+  function pauseForInteraction2() {
+      if(!isPlaying2) return;
+      clearInterval(slideInterval2);
+      clearTimeout(resumeTimeout2);
+      const playBtn = document.getElementById('playPauseBtn2');
+      if(playBtn) playBtn.innerText = '⏵';
+      resumeTimeout2 = setTimeout(() => {
+          if(isPlaying2) startAutoplay2();
+      }, 6000); 
+  }
+
+  // Shared Resize Event
   window.addEventListener('resize', () => {
       currentSlide = 0; 
       updateCarousel();
+      currentSlide2 = 0;
+      updateCarousel2();
   });
   
   setTimeout(() => {
     updateCarousel();
     startAutoplay();
+    updateCarousel2();
+    startAutoplay2();
   }, 100);
 
   // ==========================================
@@ -1080,7 +1232,10 @@ body {
     if(activeLink) activeLink.classList.add('active');
     
     if(viewId === 'home-view') {
-        setTimeout(updateCarousel, 50);
+        setTimeout(() => {
+            updateCarousel();
+            updateCarousel2();
+        }, 50);
     }
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
