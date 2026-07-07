@@ -491,8 +491,8 @@ body {
         </div>
         
         <div class="month-tabs" data-html2canvas-ignore>
-          <button class="month-tab active">May</button>
-          <button class="month-tab disabled">June</button>
+          <button class="month-tab disabled">May</button>
+          <button class="month-tab active">June</button>
           <button class="month-tab disabled">July</button>
           <button class="month-tab disabled">August</button>
           <button class="month-tab disabled">September</button>
@@ -1132,15 +1132,15 @@ body {
         });
     };
 
-    // Attempt to load multi-sheet Excel file first, fallback to single-sheet if not found
-    loadDataFile('ADYPU_Master_Dashboard_Data_MultiSheet.xlsx')
+    // Attempt to load the new June data first, fallback to May if not found
+    loadDataFile('ADYPU_Master_Dashboard_Data_June_2026.xlsx')
       .catch(error => {
-        console.log('Could not load multi-sheet .xlsx, falling back to single-sheet...', error);
-        return loadDataFile('Updated_ADYPU_Master_Dashboard_Data_New.xlsx');
+        console.log('Could not load ADYPU_Master_Dashboard_Data_June_2026.xlsx, trying backup name...', error);
+        return loadDataFile('Dashboard_Ready_June_2026.xlsx');
       })
       .catch(error => {
-        console.log('Could not load .xlsx, falling back to .csv...', error);
-        return loadDataFile('Updated_ADYPU_Master_Dashboard_Data_New.csv');
+        console.log('Could not load June data, falling back to May...', error);
+        return loadDataFile('ADYPU_Master_Dashboard_Data_MultiSheet (1).xlsx');
       })
       .catch(error => {
         console.warn('Could not auto-load data files. You may need to upload manually.', error);
