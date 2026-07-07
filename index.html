@@ -521,23 +521,21 @@ body {
             <div class="carousel-track" id="carouselTrack2">
               
               <div class="carousel-slide">
-                <div class="slide-content">
+                <div class="slide-content" onclick="openDocModal('ADYPU Strategic Report', 'https://drive.google.com/file/d/1N8A-u1FG0NPe5FyYlccTQfebUkq8SFWU/preview')">
                   <img src="{5C6CE9FC-5251-46A4-9607-085D23687C3A}.jpg" alt="Gallery Image 1" onerror="this.src='https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=500&q=80';">
                   <div class="carousel-caption"><h4>Monthly Dashboard Snapshot</h4><p>June 2026</p></div>
                 </div>
               </div>
               
               <div class="carousel-slide">
-                <div class="slide-content">
-                  <!-- Change 'gallery-image-2.jpg' below when you get your second image -->
+                <div class="slide-content" onclick="openDocModal('ADYPU Strategic Report', 'https://drive.google.com/file/d/1N8A-u1FG0NPe5FyYlccTQfebUkq8SFWU/preview')">
                   <img src="gallery-image-2.jpg" alt="Future Image 1" onerror="this.src='https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=500&q=80';">
                   <div class="carousel-caption"><h4>Future Image Slot 1</h4><p>Pending</p></div>
                 </div>
               </div>
               
               <div class="carousel-slide">
-                <div class="slide-content">
-                  <!-- Change 'gallery-image-3.jpg' below when you get your third image -->
+                <div class="slide-content" onclick="openDocModal('ADYPU Strategic Report', 'https://drive.google.com/file/d/1N8A-u1FG0NPe5FyYlccTQfebUkq8SFWU/preview')">
                   <img src="gallery-image-3.jpg" alt="Future Image 2" onerror="this.src='https://images.unsplash.com/photo-1552664730-d307ca884978?w=500&q=80';">
                   <div class="carousel-caption"><h4>Future Image Slot 2</h4><p>Pending</p></div>
                 </div>
@@ -1593,6 +1591,12 @@ body {
       if (cleanUrl.includes('docs.google.com/document/d/')) {
           let baseUrl = cleanUrl.split('/edit')[0].split('/preview')[0];
           iframeUrl = baseUrl + '/preview';
+      } else if (cleanUrl.includes('drive.google.com/file/d/')) {
+          // Handle Google Drive file links
+          let fileId = cleanUrl.match(/\/d\/([^\/]+)/);
+          if (fileId && fileId[1]) {
+              iframeUrl = `https://drive.google.com/file/d/${fileId[1]}/preview`;
+          }
       }
 
       document.getElementById('docModalIframe').src = iframeUrl;
