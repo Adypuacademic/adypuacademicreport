@@ -512,9 +512,9 @@ body {
         </div>
       </div>
 
-      <!-- NEW ADDITIONAL GALLERY SECTION MOVED UP -->
+      <!-- RENAMED GALLERY SECTION -->
       <div class="section" data-html2canvas-ignore style="margin-top: 0;">
-        <div class="section-title"><span class="dot"></span><h2>ADDITIONAL MEDIA GALLERY</h2></div>
+        <div class="section-title"><span class="dot"></span><h2>HIGHLIGHTS OF UNIVERSITY ACHIEVEMENTS</h2></div>
         
         <div class="carousel-wrapper" id="carouselWrapper2">
           <div class="carousel-viewport">
@@ -551,7 +551,7 @@ body {
           <div class="carousel-dots" id="carouselDots2"></div>
         </div>
       </div>
-      <!-- END NEW ADDITIONAL GALLERY SECTION -->
+      <!-- END GALLERY SECTION -->
 
       <div class="section">
         <div class="section-title"><span class="dot"></span><h2>University Admissions Status</h2></div>
@@ -623,8 +623,9 @@ body {
             <div class="value" id="main-place-avg">0</div>
             <div class="sub">Current cycle</div>
           </div>
+          <!-- RENAMED: Highest Internship → Highest Stipend -->
           <div class="kpi">
-            <h3>Highest Internship</h3>
+            <h3>Highest Stipend</h3>
             <div class="value" id="main-place-intern">0</div>
             <div class="sub">Highest stipend offered</div>
           </div>
@@ -632,6 +633,12 @@ body {
             <h3>Total Companies Visited</h3>
             <div class="value" id="main-place-comp">0</div>
             <div class="sub">Recruiting partners</div>
+          </div>
+          <!-- NEW: Total Internships KPI -->
+          <div class="kpi">
+            <h3>Total Internships</h3>
+            <div class="value" id="main-place-internships">0</div>
+            <div class="sub">Internships secured</div>
           </div>
         </div>
       </div>
@@ -663,6 +670,38 @@ body {
             <h3>Result</h3>
             <div class="value" id="main-exam-prog" style="font-size: 26px;">-</div>
             <div class="sub">Pending evaluation</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- NEW: Summer Examinations Overview Section -->
+      <div class="section">
+        <div class="section-title"><span class="dot"></span><h2>Summer Examinations Overview</h2></div>
+        <div class="kpis">
+          <div class="kpi">
+            <h3>Total Students</h3>
+            <div class="value" id="summer-exam-total">1339</div>
+            <div class="sub">Summer batch enrolled</div>
+          </div>
+          <div class="kpi">
+            <h3>Registered</h3>
+            <div class="value" id="summer-exam-reg">1339</div>
+            <div class="sub">Summer exam registrations</div>
+          </div>
+          <div class="kpi">
+            <h3>Appeared</h3>
+            <div class="value" id="summer-exam-app" style="font-size: 26px;">In Progress</div>
+            <div class="sub">Summer exam appearances</div>
+          </div>
+          <div class="kpi">
+            <h3>Absent</h3>
+            <div class="value" id="summer-exam-abs" style="font-size: 26px;">In Progress</div>
+            <div class="sub">Summer exam absenteeism</div>
+          </div>
+          <div class="kpi">
+            <h3>Result</h3>
+            <div class="value" id="summer-exam-prog" style="font-size: 26px;">In Progress</div>
+            <div class="sub">Summer exam evaluation</div>
           </div>
         </div>
       </div>
@@ -1303,6 +1342,23 @@ body {
     document.getElementById('compareMonth2').value = month === 'May' ? 'June' : 'May';
     updateDashboard(globalRawData);
     updateSchoolTiles(globalRawData);
+    
+    // Update Result text based on month
+    updateResultText(month);
+  }
+
+  // ------------------------------------------
+  // UPDATE RESULT TEXT BASED ON MONTH
+  // ------------------------------------------
+  function updateResultText(month) {
+    const resultEl = document.getElementById('main-exam-prog');
+    if (month === 'June') {
+      resultEl.innerText = 'Declared';
+    } else if (month === 'May') {
+      resultEl.innerText = 'In Progress';
+    } else {
+      resultEl.innerText = 'Declared';
+    }
   }
 
   // ------------------------------------------
@@ -1411,6 +1467,7 @@ body {
         });
         document.getElementById('compareMonth1').value = 'June';
         document.getElementById('compareMonth2').value = 'May';
+        updateResultText('June');
       }
     };
 
@@ -1553,6 +1610,7 @@ body {
     let globalTarget = 0, globalAchieved = 0, partnersTarget = 0, partnersAchieved = 0;
     let execPlacementsPl = 0, examAppeared = 0, examPassed = 0;
     let execStu = 0, execFac = 0;
+    let totalInternships = 0;
 
     let placementPackages = [];
     let placementInternships = [];
@@ -1578,7 +1636,14 @@ body {
           schoolAgg[row.SchoolId][row.Activity].achieved += achieved;
 
           if (row.Activity === "Placements") {
-              if (achieved > 0 && !isNaN(achieved)) execPlacementsPl += achieved;
+              if (achieved > 0 && !isNaN(achieved)) execPlacementsPl += 1;
+              // Count internships (rows with DetailMeta containing "Internship" or stipend value)
+              if (row.DetailMeta && row.DetailMeta.trim() !== "NA" && 
+                  (row.DetailMeta.toLowerCase().includes('internship') || 
+                   row.DetailMeta.toLowerCase().includes('stipend') ||
+                   row.DetailMeta.match(/\d/))) {
+                  totalInternships += 1;
+              }
               if (row.DetailInfo && row.DetailInfo.trim() !== "NA") {
                   placementPackages.push(row.DetailInfo);
               }
@@ -1623,11 +1688,13 @@ body {
     document.getElementById('main-place-avg').innerText = placementPackages.length > 0 ? calculateAveragePackage(placementPackages) : "0";
     document.getElementById('main-place-intern').innerText = placementInternships.length > 0 ? extractMaxPackage(placementInternships) : "0";
     document.getElementById('main-place-comp').innerText = placementCompanies.size;
+    // Total Internships
+    document.getElementById('main-place-internships').innerText = totalInternships;
 
     let totalExam = examAppeared > 0 ? examAppeared + 150 : 0;
     document.getElementById('main-exam-total').innerText = totalExam; document.getElementById('main-exam-reg').innerText = totalExam > 0 ? totalExam - 25 : 0;
     document.getElementById('main-exam-app').innerText = examAppeared; document.getElementById('main-exam-abs').innerText = (totalExam - 25) - examAppeared;
-    document.getElementById('main-exam-prog').innerText = examAppeared > 0 ? "In Progress" : "-";
+    // Result text is set by updateResultText() on month switch
 
     document.getElementById('exec-stu').innerText = execStu; 
     document.getElementById('exec-fac').innerText = execFac;
@@ -1792,6 +1859,8 @@ body {
       let execStu = 0, execFac = 0, execUni = 0;
       let examAppeared = 0, examPassed = 0;
       let companies = new Set();
+      let totalInternships = 0;
+      
       globalRawData.forEach(r => {
           if (r.SchoolId === 'exec') {
              if (r.Activity === 'Exam Appeared') examAppeared = cleanNum(r.Achieved);
@@ -1800,7 +1869,13 @@ body {
               if (r.Activity === 'Admissions') { adT += cleanNum(r.Target); adA += cleanNum(r.Achieved); }
               if (r.Activity === 'Partners Admission MIS') { partT += cleanNum(r.Target); partA += cleanNum(r.Achieved); }
               if (r.Activity === 'Placements') {
-                  if (cleanNum(r.Achieved) > 0) plTotal += cleanNum(r.Achieved);
+                  if (cleanNum(r.Achieved) > 0) plTotal += 1;
+                  if (r.DetailMeta && r.DetailMeta !== 'NA' && 
+                      (r.DetailMeta.toLowerCase().includes('internship') || 
+                       r.DetailMeta.toLowerCase().includes('stipend') ||
+                       r.DetailMeta.match(/\d/))) {
+                      totalInternships += 1;
+                  }
                   if (r.DetailInfo && r.DetailInfo !== 'NA') pkgs.push(r.DetailInfo);
                   if (r.DetailMeta && r.DetailMeta !== 'NA' && r.DetailMeta.toLowerCase() !== 'internship cum ppo') interns.push(r.DetailMeta);
                   if (r.DetailName && r.DetailName !== 'NA') companies.add(r.DetailName.trim());
@@ -1820,6 +1895,7 @@ body {
           partnersGap: Math.max(0, partT - partA),
           partnersRate: partT > 0 ? ((partA / partT) * 100).toFixed(2) + '%' : '0.00%',
           totalPlaced: plTotal,
+          totalInternships: totalInternships,
           highestPackage: pkgs.length > 0 ? extractMaxPackage(pkgs) : "0",
           averagePackage: pkgs.length > 0 ? calculateAveragePackage(pkgs) : "0",
           highestInternship: interns.length > 0 ? extractMaxPackage(interns) : "0",
@@ -2037,6 +2113,7 @@ body {
           .kpi-grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 15px; }
           .kpi-grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 15px; }
           .kpi-grid-5 { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin-bottom: 15px; }
+          .kpi-grid-6 { display: grid; grid-template-columns: repeat(6, 1fr); gap: 10px; margin-bottom: 15px; }
           
           .kpi-card {
               background: #f8fafc;
@@ -2121,6 +2198,9 @@ body {
               { src: '{1FD70957-4943-4122-BA1A-90A54182C1AD}.jpg', title: 'Best Paper Award at ICRAEST 2026', subtitle: 'Academic Excellence' }
           ];
 
+          // Get result text based on current month
+          let resultText = activeMonth === 'June' ? 'Declared' : 'In Progress';
+
           content += `
               <div class="header">
                   <div class="header-left">
@@ -2157,12 +2237,13 @@ body {
               <div class="page-break"></div>
               
               <div class="section-title">SECTION 3 – Placements Overview</div>
-              <div class="kpi-grid-5">
+              <div class="kpi-grid-6">
                   <div class="kpi-card"><div class="kpi-value">${kpis.totalPlaced}</div><div class="kpi-label">Total Students Placed</div></div>
                   <div class="kpi-card"><div class="kpi-value">${kpis.highestPackage}</div><div class="kpi-label">Highest Package</div></div>
                   <div class="kpi-card"><div class="kpi-value">${kpis.averagePackage}</div><div class="kpi-label">Average Package</div></div>
-                  <div class="kpi-card"><div class="kpi-value">${kpis.highestInternship}</div><div class="kpi-label">Highest Internship Stipend</div></div>
+                  <div class="kpi-card"><div class="kpi-value">${kpis.highestInternship}</div><div class="kpi-label">Highest Stipend</div></div>
                   <div class="kpi-card"><div class="kpi-value">${kpis.totalCompanies}</div><div class="kpi-label">Total Companies Visited</div></div>
+                  <div class="kpi-card"><div class="kpi-value">${kpis.totalInternships}</div><div class="kpi-label">Total Internships</div></div>
               </div>
 
               <div class="section-title">SECTION 4 – Examinations Overview</div>
@@ -2171,11 +2252,20 @@ body {
                   <div class="kpi-card"><div class="kpi-value">${kpis.examReg}</div><div class="kpi-label">Registered</div></div>
                   <div class="kpi-card"><div class="kpi-value">${kpis.examAppeared}</div><div class="kpi-label">Appeared</div></div>
                   <div class="kpi-card"><div class="kpi-value">${kpis.examAbs}</div><div class="kpi-label">Absent</div></div>
-                  <div class="kpi-card"><div class="kpi-value">${kpis.examProg}</div><div class="kpi-label">Result</div></div>
+                  <div class="kpi-card"><div class="kpi-value">${resultText}</div><div class="kpi-label">Result</div></div>
               </div>
               ${generateHtmlTable(['School', 'Registered', 'Appeared', 'Absent', 'Pass %'], exam.map(d => [d.school, d.registered, d.appeared, d.absent, d.passPct]))}
               
-              <div class="section-title">SECTION 5 – Executive Achievements</div>
+              <div class="section-title">SECTION 5 – Summer Examinations Overview</div>
+              <div class="kpi-grid-5">
+                  <div class="kpi-card"><div class="kpi-value">1339</div><div class="kpi-label">Total Students</div></div>
+                  <div class="kpi-card"><div class="kpi-value">1339</div><div class="kpi-label">Registered</div></div>
+                  <div class="kpi-card"><div class="kpi-value">In Progress</div><div class="kpi-label">Appeared</div></div>
+                  <div class="kpi-card"><div class="kpi-value">In Progress</div><div class="kpi-label">Absent</div></div>
+                  <div class="kpi-card"><div class="kpi-value">In Progress</div><div class="kpi-label">Result</div></div>
+              </div>
+
+              <div class="section-title">SECTION 6 – Executive Achievements</div>
               <div class="kpi-grid-2">
                   <div class="kpi-card"><div class="kpi-value">${kpis.execStu}</div><div class="kpi-label">Student Awards</div></div>
                   <div class="kpi-card"><div class="kpi-value">${kpis.execFac}</div><div class="kpi-label">Faculty Papers</div></div>
@@ -2183,12 +2273,12 @@ body {
 
               <div class="page-break"></div>
               
-              <div class="section-title">SECTION 6 – Monthly Highlights – May 2026</div>
+              <div class="section-title">SECTION 7 – Monthly Highlights – May 2026</div>
               ${generateHtmlTable(['Achievement Title', 'Category', 'Date'], monthlyHighlightsData.map(d => [d.title, d.category, d.date]))}
               
               <div class="page-break"></div>
 
-              <div class="section-title">SECTION 7 – University Achievements Gallery</div>
+              <div class="section-title">SECTION 8 – University Achievements Gallery</div>
               <div class="pdf-gallery">
                   ${galleryImagesData.map(img => `
                       <div class="pdf-gallery-item">
@@ -2242,6 +2332,7 @@ body {
           const stu = getStudentAchievements();
           const fac = getFacultyAchievements();
           const uni = getUniversityAchievements();
+          let resultText = activeMonth === 'June' ? 'Declared' : 'In Progress';
           
           content += `
               <div class="cover-page">
@@ -2288,6 +2379,15 @@ body {
               
               <div class="section-title">Complete University Achievements</div>
               ${generateHtmlTable(['Name', 'Event', 'Role', 'Date'], uni.map(d => [d.name, d.detail, d.meta, d.date]))}
+              
+              <div class="section-title">Summer Examinations</div>
+              <div class="kpi-grid-5">
+                  <div class="kpi-card"><div class="kpi-value">1339</div><div class="kpi-label">Total Students</div></div>
+                  <div class="kpi-card"><div class="kpi-value">1339</div><div class="kpi-label">Registered</div></div>
+                  <div class="kpi-card"><div class="kpi-value">In Progress</div><div class="kpi-label">Appeared</div></div>
+                  <div class="kpi-card"><div class="kpi-value">In Progress</div><div class="kpi-label">Absent</div></div>
+                  <div class="kpi-card"><div class="kpi-value">In Progress</div><div class="kpi-label">Result</div></div>
+              </div>
               
               <div class="section-title">Risk Summary</div>
               <ul>
