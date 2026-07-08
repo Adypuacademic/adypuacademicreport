@@ -1443,7 +1443,16 @@ body {
 
   function cleanNum(val) {
       if(val === undefined || val === null) return 0;
-      if (typeof val === 'string' && val.toLowerCase().includes('in process')) return 0;
+      if (typeof val === 'string') {
+          let lower = val.toLowerCase();
+          if (lower.includes('in process') || lower.includes('pending') || lower.includes('na')) {
+              return 0;
+          }
+          let cleaned = val.replace(/[^0-9.]/g, '');
+          if (cleaned === '') return 0;
+          let parsed = parseFloat(cleaned);
+          return isNaN(parsed) ? 0 : parsed;
+      }
       let parsed = parseFloat(String(val).replace(/,/g, ''));
       return isNaN(parsed) ? 0 : parsed;
   }
