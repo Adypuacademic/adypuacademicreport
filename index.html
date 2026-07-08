@@ -228,6 +228,11 @@ body {
   --items-per-page: 3;
 }
 
+/* Special override for gallery with 2 items - center them */
+.carousel-wrapper.two-items {
+  --items-per-page: 2;
+}
+
 @media(max-width: 1000px) { .carousel-wrapper { --items-per-page: 2; } }
 @media(max-width: 600px) { .carousel-wrapper { --items-per-page: 1; padding: 20px 30px 50px 30px; } }
 
@@ -507,19 +512,29 @@ body {
 
         <div class="trend-comparison" data-html2canvas-ignore>
           <h3>Month-wise trend comparison graphs</h3>
-          <select id="compareMonth1"><option>May</option><option>June</option></select> vs <select id="compareMonth2"><option>May</option><option>June</option></select>
+          <select id="compareMonth1">
+            <option value="">Select Month</option>
+            <option value="May">May</option>
+            <option value="June">June</option>
+          </select> vs 
+          <select id="compareMonth2">
+            <option value="">Select Month</option>
+            <option value="May">May</option>
+            <option value="June">June</option>
+          </select>
           <button onclick="compareMonths()">Compare</button>
         </div>
       </div>
 
-      <!-- RENAMED GALLERY SECTION -->
+      <!-- RENAMED GALLERY SECTION WITH TWO-ITEMS CLASS -->
       <div class="section" data-html2canvas-ignore style="margin-top: 0;">
         <div class="section-title"><span class="dot"></span><h2>HIGHLIGHTS OF UNIVERSITY ACHIEVEMENTS</h2></div>
         
-        <div class="carousel-wrapper" id="carouselWrapper2">
+        <div class="carousel-wrapper two-items" id="carouselWrapper2">
           <div class="carousel-viewport">
             <div class="carousel-track" id="carouselTrack2">
               
+              <!-- Slide 1: Monthly Dashboard Snapshot -->
               <div class="carousel-slide">
                 <div class="slide-content" onclick="openDocModal('ADYPU Strategic Report', 'https://drive.google.com/file/d/1N8A-u1FG0NPe5FyYlccTQfebUkq8SFWU/preview')">
                   <img src="{5C6CE9FC-5251-46A4-9607-085D23687C3A}.jpg" alt="Gallery Image 1" onerror="this.src='https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=500&q=80';">
@@ -527,17 +542,11 @@ body {
                 </div>
               </div>
               
+              <!-- Slide 2: Lokmat Education fair and Health Expo -->
               <div class="carousel-slide">
-                <div class="slide-content" onclick="openDocModal('ADYPU Strategic Report', 'https://drive.google.com/file/d/1N8A-u1FG0NPe5FyYlccTQfebUkq8SFWU/preview')">
-                  <img src="gallery-image-2.jpg" alt="Future Image 1" onerror="this.src='https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=500&q=80';">
-                  <div class="carousel-caption"><h4>Future Image Slot 1</h4><p>Pending</p></div>
-                </div>
-              </div>
-              
-              <div class="carousel-slide">
-                <div class="slide-content" onclick="openDocModal('ADYPU Strategic Report', 'https://drive.google.com/file/d/1N8A-u1FG0NPe5FyYlccTQfebUkq8SFWU/preview')">
-                  <img src="gallery-image-3.jpg" alt="Future Image 2" onerror="this.src='https://images.unsplash.com/photo-1552664730-d307ca884978?w=500&q=80';">
-                  <div class="carousel-caption"><h4>Future Image Slot 2</h4><p>Pending</p></div>
+                <div class="slide-content" onclick="openDocModal('Lokmat Education fair and Health Expo', 'https://drive.google.com/file/d/1N8A-u1FG0NPe5FyYlccTQfebUkq8SFWU/preview')">
+                  <img src="Lokmat edu fair.jpeg" alt="Lokmat Education fair and Health Expo" onerror="this.src='https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=500&q=80';">
+                  <div class="carousel-caption"><h4>Lokmat Education fair and Health Expo</h4><p>June 2026</p></div>
                 </div>
               </div>
 
@@ -623,7 +632,11 @@ body {
             <div class="value" id="main-place-avg">0</div>
             <div class="sub">Current cycle</div>
           </div>
-          <!-- RENAMED: Highest Internship → Highest Stipend -->
+          <div class="kpi">
+            <h3>Total Internships</h3>
+            <div class="value" id="main-place-internships">0</div>
+            <div class="sub">Internships secured</div>
+          </div>
           <div class="kpi">
             <h3>Highest Stipend</h3>
             <div class="value" id="main-place-intern">0</div>
@@ -633,12 +646,6 @@ body {
             <h3>Total Companies Visited</h3>
             <div class="value" id="main-place-comp">0</div>
             <div class="sub">Recruiting partners</div>
-          </div>
-          <!-- NEW: Total Internships KPI -->
-          <div class="kpi">
-            <h3>Total Internships</h3>
-            <div class="value" id="main-place-internships">0</div>
-            <div class="sub">Internships secured</div>
           </div>
         </div>
       </div>
@@ -674,7 +681,7 @@ body {
         </div>
       </div>
 
-      <!-- NEW: Summer Examinations Overview Section -->
+      <!-- Summer Examinations Overview Section -->
       <div class="section">
         <div class="section-title"><span class="dot"></span><h2>Summer Examinations Overview</h2></div>
         <div class="kpis">
@@ -711,7 +718,7 @@ body {
         <div class="kpis">
           <div class="kpi clickable" onclick="openCombinedModal('achieved', 'Student Achievement')">
             <h3>Student Awards</h3>
-            <div class="value" id="exec-stu">0</div>
+            <div class="value" id="exec-stu">11</div>
             <div class="sub">Click to view logging engine</div>
           </div>
           <div class="kpi clickable" onclick="openCombinedModal('achieved', 'Faculty Achievement')">
@@ -781,7 +788,7 @@ body {
               <div class="carousel-slide">
                 <div class="slide-content" onclick="openDocModal('ADYPU Monthly Highlights', 'https://docs.google.com/document/d/1-wVDe2bv5ZndwJuU3_M87LaVDpSxAIFJ/preview')">
                   <img src="{5598FC8B-1C75-4715-AB2B-C6FF68CA737D}.jpg" alt="Under25adypu">
-                  <div class="carousel-caption"><h4>Under25adypu Nominated for “Best Club of the Batch”</h4><p>National Recognition</p></div>
+                  <div class="carousel-caption"><h4>Under25adypu Nominated for "Best Club of the Batch"</h4><p>National Recognition</p></div>
                 </div>
               </div>
               
@@ -789,6 +796,22 @@ body {
                 <div class="slide-content" onclick="openDocModal('ADYPU Monthly Highlights', 'https://docs.google.com/document/d/1-wVDe2bv5ZndwJuU3_M87LaVDpSxAIFJ/preview')">
                   <img src="{1FD70957-4943-4122-BA1A-90A54182C1AD}.jpg" alt="Best Paper Award">
                   <div class="carousel-caption"><h4>Best Paper Award at ICRAEST 2026</h4><p>Academic Excellence</p></div>
+                </div>
+              </div>
+
+              <!-- NEW IMAGE 1: health_expo_1.jpeg -->
+              <div class="carousel-slide">
+                <div class="slide-content" onclick="openDocModal('Lokmat Education fair and Health Expo', 'https://drive.google.com/file/d/1N8A-u1FG0NPe5FyYlccTQfebUkq8SFWU/preview')">
+                  <img src="health_expo_1.jpeg" alt="Lokmat Education fair and Health Expo" onerror="this.src='https://images.unsplash.com/photo-1552664730-d307ca884978?w=500&q=80';">
+                  <div class="carousel-caption"><h4>Lokmat Education fair and Health Expo</h4><p>June 2026</p></div>
+                </div>
+              </div>
+
+              <!-- NEW IMAGE 2: health_expo_2.jpeg -->
+              <div class="carousel-slide">
+                <div class="slide-content" onclick="openDocModal('Lokmat Education fair and Health Expo', 'https://drive.google.com/file/d/1N8A-u1FG0NPe5FyYlccTQfebUkq8SFWU/preview')">
+                  <img src="health_expo_2.jpeg" alt="Lokmat Education fair and Health Expo" onerror="this.src='https://images.unsplash.com/photo-1552664730-d307ca884978?w=500&q=80';">
+                  <div class="carousel-caption"><h4>Lokmat Education fair and Health Expo</h4><p>June 2026</p></div>
                 </div>
               </div>
 
@@ -1042,7 +1065,7 @@ body {
   // RESPONSIVE 3-COLUMN CAROUSEL LOGIC (GALLERY 1)
   // ==========================================
   let currentSlide = 0;
-  const totalSlides = 9; 
+  const totalSlides = 11; // 9 existing + 2 new images
   let slideInterval;
   let resumeTimeout;
   let isPlaying = true;
@@ -1148,15 +1171,15 @@ body {
   // RESPONSIVE 3-COLUMN CAROUSEL LOGIC (GALLERY 2)
   // ==========================================
   let currentSlide2 = 0;
-  const totalSlides2 = 3; 
+  const totalSlides2 = 2; // 2 slides
   let slideInterval2;
   let resumeTimeout2;
   let isPlaying2 = true;
   
   function getItemsPerPage2() {
       const wrapper = document.getElementById('carouselWrapper2');
-      if(!wrapper) return 3;
-      return parseInt(getComputedStyle(wrapper).getPropertyValue('--items-per-page')) || 3;
+      if(!wrapper) return 2; // Force 2 items per page for this gallery
+      return 2;
   }
   
   function updateCarousel2() {
@@ -1337,9 +1360,11 @@ body {
       if (mayData.length > 0) globalRawData = mayData;
       else if (juneData.length > 0) globalRawData = juneData;
     }
-    // Also update the comparison dropdowns to reflect current selection
-    document.getElementById('compareMonth1').value = month;
-    document.getElementById('compareMonth2').value = month === 'May' ? 'June' : 'May';
+    // Update comparison dropdowns to reflect current selection (but keep placeholder option)
+    // Only set if they have values selected
+    if (document.getElementById('compareMonth1').value === '') {
+      // Don't auto-set, keep as is
+    }
     updateDashboard(globalRawData);
     updateSchoolTiles(globalRawData);
     
@@ -1362,15 +1387,23 @@ body {
   }
 
   // ------------------------------------------
-  // COMPARE MONTHS FEATURE
+  // COMPARE MONTHS FEATURE - UPDATED WITH VALIDATION
   // ------------------------------------------
   function compareMonths() {
     const m1 = document.getElementById('compareMonth1').value;
     const m2 = document.getElementById('compareMonth2').value;
+    
+    // Check if both months are selected
+    if (m1 === '' || m2 === '') {
+      alert('Please select two different months to compare.');
+      return;
+    }
+    
     if (m1 === m2) {
       alert('Please select two different months to compare.');
       return;
     }
+    
     let data1 = m1 === 'May' ? mayData : juneData;
     let data2 = m2 === 'May' ? mayData : juneData;
     if (data1.length === 0 || data2.length === 0) {
@@ -1465,8 +1498,7 @@ body {
         document.querySelectorAll('.month-tab').forEach(tab => {
           tab.classList.toggle('active', tab.dataset.month === 'June');
         });
-        document.getElementById('compareMonth1').value = 'June';
-        document.getElementById('compareMonth2').value = 'May';
+        // Don't auto-set dropdowns - keep them blank
         updateResultText('June');
       }
     };
@@ -1696,7 +1728,8 @@ body {
     document.getElementById('main-exam-app').innerText = examAppeared; document.getElementById('main-exam-abs').innerText = (totalExam - 25) - examAppeared;
     // Result text is set by updateResultText() on month switch
 
-    document.getElementById('exec-stu').innerText = execStu; 
+    // Student Awards hardcoded to 11
+    document.getElementById('exec-stu').innerText = 11; 
     document.getElementById('exec-fac').innerText = execFac;
   }
 
@@ -1905,7 +1938,7 @@ body {
           examAppeared: examAppeared,
           examAbs: examAppeared > 0 ? ((examAppeared + 150) - 25) - examAppeared : 0,
           examProg: examAppeared > 0 ? "In Progress" : "-",
-          execStu: execStu,
+          execStu: 11, // Hardcoded to 11
           execFac: execFac,
           execUni: execUni
       };
@@ -2195,7 +2228,9 @@ body {
               { src: '{06C24A80-A093-4E1A-BE6B-060EDF0563F0}.png', title: 'MIT – ADT Cricket Tournament', subtitle: '1st Place Victory' },
               { src: '{EDC1C369-397F-42E2-AB8A-B25A32567BA3}.png', title: 'Gaming Event with Redbull', subtitle: 'Under25adypu Event' },
               { src: '{5598FC8B-1C75-4715-AB2B-C6FF68CA737D}.jpg', title: 'Under25adypu Nominated', subtitle: 'National Recognition' },
-              { src: '{1FD70957-4943-4122-BA1A-90A54182C1AD}.jpg', title: 'Best Paper Award at ICRAEST 2026', subtitle: 'Academic Excellence' }
+              { src: '{1FD70957-4943-4122-BA1A-90A54182C1AD}.jpg', title: 'Best Paper Award at ICRAEST 2026', subtitle: 'Academic Excellence' },
+              { src: 'health_expo_1.jpeg', title: 'Lokmat Education fair and Health Expo', subtitle: 'June 2026' },
+              { src: 'health_expo_2.jpeg', title: 'Lokmat Education fair and Health Expo', subtitle: 'June 2026' }
           ];
 
           // Get result text based on current month
@@ -2241,9 +2276,9 @@ body {
                   <div class="kpi-card"><div class="kpi-value">${kpis.totalPlaced}</div><div class="kpi-label">Total Students Placed</div></div>
                   <div class="kpi-card"><div class="kpi-value">${kpis.highestPackage}</div><div class="kpi-label">Highest Package</div></div>
                   <div class="kpi-card"><div class="kpi-value">${kpis.averagePackage}</div><div class="kpi-label">Average Package</div></div>
+                  <div class="kpi-card"><div class="kpi-value">${kpis.totalInternships}</div><div class="kpi-label">Total Internships</div></div>
                   <div class="kpi-card"><div class="kpi-value">${kpis.highestInternship}</div><div class="kpi-label">Highest Stipend</div></div>
                   <div class="kpi-card"><div class="kpi-value">${kpis.totalCompanies}</div><div class="kpi-label">Total Companies Visited</div></div>
-                  <div class="kpi-card"><div class="kpi-value">${kpis.totalInternships}</div><div class="kpi-label">Total Internships</div></div>
               </div>
 
               <div class="section-title">SECTION 4 – Examinations Overview</div>
@@ -2267,7 +2302,7 @@ body {
 
               <div class="section-title">SECTION 6 – Executive Achievements</div>
               <div class="kpi-grid-2">
-                  <div class="kpi-card"><div class="kpi-value">${kpis.execStu}</div><div class="kpi-label">Student Awards</div></div>
+                  <div class="kpi-card"><div class="kpi-value">11</div><div class="kpi-label">Student Awards</div></div>
                   <div class="kpi-card"><div class="kpi-value">${kpis.execFac}</div><div class="kpi-label">Faculty Papers</div></div>
               </div>
 
@@ -2531,7 +2566,8 @@ body {
           "Partners Target": partT, "Partners Achieved": partA,
           "Placements Eligible": plT, "Placements Placed": plA,
           "Exam Appeared": exApp, "Exam Passed": exPass,
-          "Univ Achievements": uni, "Student Awards": stu, "Faculty Papers": fac
+          "Univ Achievements": uni, "Student Awards": 11, // Hardcoded to 11
+          "Faculty Papers": fac
       }];
       XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(execJson), "Executive KPIs");
 
