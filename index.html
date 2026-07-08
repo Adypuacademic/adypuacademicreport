@@ -233,8 +233,20 @@ body {
   --items-per-page: 2;
 }
 
+/* Fix image display for top gallery - use contain instead of cover */
+.carousel-wrapper.two-items .slide-content img {
+  object-fit: contain;
+  height: 280px;
+  background: #f1f5f9;
+}
+
 @media(max-width: 1000px) { .carousel-wrapper { --items-per-page: 2; } }
-@media(max-width: 600px) { .carousel-wrapper { --items-per-page: 1; padding: 20px 30px 50px 30px; } }
+@media(max-width: 600px) { 
+  .carousel-wrapper { --items-per-page: 1; padding: 20px 30px 50px 30px; }
+  .carousel-wrapper.two-items .slide-content img {
+    height: 200px;
+  }
+}
 
 .carousel-viewport { overflow: hidden; width: 100%; }
 .carousel-track { display: flex; transition: transform 0.5s ease-in-out; }
@@ -243,6 +255,10 @@ body {
 .slide-content { position: relative; border-radius: 12px; overflow: hidden; cursor: pointer; background: #f1f5f9; height: 100%; }
 .slide-content img { width: 100%; height: 240px; object-fit: cover; display: block; transition: transform 0.3s ease; }
 .slide-content:hover img { transform: scale(1.04); }
+
+/* Non-clickable slides should not show hover effect */
+.slide-content.no-click { cursor: default; }
+.slide-content.no-click:hover img { transform: none; }
 
 .carousel-caption {
   position: absolute; bottom: 0; left: 0; width: 100%;
@@ -526,7 +542,7 @@ body {
         </div>
       </div>
 
-      <!-- RENAMED GALLERY SECTION WITH TWO-ITEMS CLASS -->
+      <!-- TOP GALLERY SECTION -->
       <div class="section" data-html2canvas-ignore style="margin-top: 0;">
         <div class="section-title"><span class="dot"></span><h2>HIGHLIGHTS OF UNIVERSITY ACHIEVEMENTS</h2></div>
         
@@ -534,17 +550,17 @@ body {
           <div class="carousel-viewport">
             <div class="carousel-track" id="carouselTrack2">
               
-              <!-- Slide 1: Monthly Dashboard Snapshot -->
+              <!-- Slide 1: Times Higher Education (THE) Sustainability Rankings 2026 - CLICKABLE -->
               <div class="carousel-slide">
-                <div class="slide-content" onclick="openDocModal('ADYPU Strategic Report', 'https://drive.google.com/file/d/1N8A-u1FG0NPe5FyYlccTQfebUkq8SFWU/preview')">
-                  <img src="{5C6CE9FC-5251-46A4-9607-085D23687C3A}.jpg" alt="Gallery Image 1" onerror="this.src='https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=500&q=80';">
-                  <div class="carousel-caption"><h4>Monthly Dashboard Snapshot</h4><p>June 2026</p></div>
+                <div class="slide-content" onclick="openDocModal('Times Higher Education (THE) Sustainability Rankings 2026', 'https://drive.google.com/file/d/1N8A-u1FG0NPe5FyYlccTQfebUkq8SFWU/preview')">
+                  <img src="{5C6CE9FC-5251-46A4-9607-085D23687C3A}.jpg" alt="Times Higher Education Sustainability Rankings" onerror="this.src='https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=500&q=80';">
+                  <div class="carousel-caption"><h4>Times Higher Education (THE) Sustainability Rankings 2026</h4><p>June 2026</p></div>
                 </div>
               </div>
               
-              <!-- Slide 2: Lokmat Education fair and Health Expo -->
+              <!-- Slide 2: Lokmat Education fair and Health Expo - NON-CLICKABLE -->
               <div class="carousel-slide">
-                <div class="slide-content" onclick="openDocModal('Lokmat Education fair and Health Expo', 'https://drive.google.com/file/d/1N8A-u1FG0NPe5FyYlccTQfebUkq8SFWU/preview')">
+                <div class="slide-content no-click">
                   <img src="Lokmat edu fair.jpeg" alt="Lokmat Education fair and Health Expo" onerror="this.src='https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=500&q=80';">
                   <div class="carousel-caption"><h4>Lokmat Education fair and Health Expo</h4><p>June 2026</p></div>
                 </div>
@@ -560,7 +576,7 @@ body {
           <div class="carousel-dots" id="carouselDots2"></div>
         </div>
       </div>
-      <!-- END GALLERY SECTION -->
+      <!-- END TOP GALLERY SECTION -->
 
       <div class="section">
         <div class="section-title"><span class="dot"></span><h2>University Admissions Status</h2></div>
