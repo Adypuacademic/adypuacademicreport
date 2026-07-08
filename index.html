@@ -1394,20 +1394,20 @@ body {
       }
     };
 
-    loadDataFile('ADYPU_Master_Dashboard_Data_MultiSheet (2).xlsx', (data) => {
+    loadDataFile('ADYPU_Master_Dashboard_Data_MultiSheet.xlsx', (data) => {
       mayData = data;
       mayLoaded = true;
       checkBothLoaded();
     }).catch(error => {
       console.log('Could not load May data, trying backup...', error);
-      loadDataFile('ADYPU_Master_Dashboard_Data_MultiSheet (1).xlsx', (data) => {
+      loadDataFile('ADYPU_Master_Dashboard_Data_MultiSheet.xlsx', (data) => {
         mayData = data;
         mayLoaded = true;
         checkBothLoaded();
       }).catch(e => console.warn('May data not available.', e));
     });
 
-    loadDataFile('Dashboard_Ready_June_2026 (1).xlsx', (data) => {
+    loadDataFile('Dashboard_Ready_June_2026.xlsx', (data) => {
       juneData = data;
       juneLoaded = true;
       checkBothLoaded();
