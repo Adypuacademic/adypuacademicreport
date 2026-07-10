@@ -628,10 +628,10 @@ body {
       <div class="section" data-html2canvas-ignore style="margin-top: 0;">
         <div class="section-title"><span class="dot"></span><h2>HIGHLIGHTS OF UNIVERSITY ACHIEVEMENTS</h2></div>
         
-        <div class="carousel-wrapper two-items" id="carouselWrapper2">
+        <div class="carousel-wrapper" id="carouselWrapper2">
           <div class="carousel-viewport">
             <div class="carousel-track" id="carouselTrack2">
-              
+
               <!-- Slide 1: Times Higher Education (THE) Sustainability Rankings 2026 - CLICKABLE -->
               <div class="carousel-slide">
                 <div class="slide-content" onclick="openDocModal('Times Higher Education (THE) Sustainability Rankings 2026', 'https://drive.google.com/file/d/1N8A-u1FG0NPe5FyYlccTQfebUkq8SFWU/preview')">
@@ -639,10 +639,26 @@ body {
                   <div class="carousel-caption"><h4>Times Higher Education (THE) Sustainability Rankings 2026</h4><p>June 2026</p></div>
                 </div>
               </div>
-              
-              <!-- Slide 2: Lokmat Education fair and Health Expo - NON-CLICKABLE -->
+
+              <!-- Slide 2: IGAUGE Certificate - FULL IMAGE VIEW -->
               <div class="carousel-slide">
-                <div class="slide-content no-click">
+                <div class="slide-content" onclick="openImageModal(this.querySelector('img'))">
+                  <img src="igauge certificate.jpeg" alt="IGAUGE Certificate" onerror="this.src='https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=500&q=80';">
+                  <div class="carousel-caption"><h4>IGAUGE Certificate</h4><p>June 2026</p></div>
+                </div>
+              </div>
+
+              <!-- Slide 3: IGAUGE Ranking - FULL IMAGE VIEW -->
+              <div class="carousel-slide">
+                <div class="slide-content" onclick="openImageModal(this.querySelector('img'))">
+                  <img src="igauge ranking.jpeg" alt="IGAUGE Ranking" onerror="this.src='https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=500&q=80';">
+                  <div class="carousel-caption"><h4>IGAUGE Ranking</h4><p>June 2026</p></div>
+                </div>
+              </div>
+
+              <!-- Slide 4: Lokmat Education fair and Health Expo - FULL IMAGE VIEW -->
+              <div class="carousel-slide">
+                <div class="slide-content" onclick="openImageModal(this.querySelector('img'))">
                   <img src="Lokmat edu fair.jpeg" alt="Lokmat Education fair and Health Expo" onerror="this.src='https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=500&q=80';">
                   <div class="carousel-caption"><h4>Lokmat Education fair and Health Expo</h4><p>June 2026</p></div>
                 </div>
@@ -1186,6 +1202,16 @@ body {
   </div>
 </div>
 
+<div id="imageModal" class="modal">
+  <div class="modal-content" style="max-width: 1100px; height: 90vh; display: flex; flex-direction: column; padding: 25px;">
+    <span class="close-btn" onclick="closeImageModal()">&times;</span>
+    <h2 id="imageModalTitle" class="modal-title" style="margin-bottom: 15px; text-align: left;">Image View</h2>
+    <div style="flex: 1; display: flex; align-items: center; justify-content: center; overflow: hidden;">
+      <img id="imageModalImg" src="" alt="" style="max-width: 100%; max-height: 100%; object-fit: contain; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.25);">
+    </div>
+  </div>
+</div>
+
 <script>
   // ==========================================
   // MOBILE SIDEBAR TOGGLE LOGIC
@@ -1319,15 +1345,15 @@ body {
   // RESPONSIVE 3-COLUMN CAROUSEL LOGIC (GALLERY 2)
   // ==========================================
   let currentSlide2 = 0;
-  const totalSlides2 = 2; // 2 slides
+  const totalSlides2 = 4; // 4 slides (THE, IGAUGE Certificate, IGAUGE Ranking, Lokmat)
   let slideInterval2;
   let resumeTimeout2;
   let isPlaying2 = true;
   
   function getItemsPerPage2() {
       const wrapper = document.getElementById('carouselWrapper2');
-      if(!wrapper) return 2; // Force 2 items per page for this gallery
-      return 2;
+      if(!wrapper) return 3;
+      return parseInt(getComputedStyle(wrapper).getPropertyValue('--items-per-page')) || 3;
   }
   
   function updateCarousel2() {
@@ -2021,12 +2047,30 @@ body {
   
   function closeDocModal() {
       document.getElementById('docModal').style.display = 'none';
-      document.getElementById('docModalIframe').src = ''; 
+      document.getElementById('docModalIframe').src = '';
   }
 
-  window.onclick = function(event) { 
-      if (event.target == document.getElementById('combinedModal')) closeCombinedModal(); 
-      if (event.target == document.getElementById('docModal')) closeDocModal(); 
+  function openImageModal(imgEl) {
+      const modal = document.getElementById('imageModal');
+      const img = document.getElementById('imageModalImg');
+      const title = document.getElementById('imageModalTitle');
+      if (!imgEl) return;
+      // Use the currently displayed source (incl. fallback) so the lightbox always shows what's on screen
+      img.src = imgEl.currentSrc || imgEl.src;
+      img.alt = imgEl.alt || '';
+      title.innerText = imgEl.alt || 'Image View';
+      modal.style.display = 'block';
+  }
+
+  function closeImageModal() {
+      document.getElementById('imageModal').style.display = 'none';
+      document.getElementById('imageModalImg').src = '';
+  }
+
+  window.onclick = function(event) {
+      if (event.target == document.getElementById('combinedModal')) closeCombinedModal();
+      if (event.target == document.getElementById('docModal')) closeDocModal();
+      if (event.target == document.getElementById('imageModal')) closeImageModal();
       if (event.target == document.querySelector('.sidebar-overlay')) toggleSidebar();
   }
 
