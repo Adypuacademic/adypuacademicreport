@@ -210,6 +210,37 @@ body {
 .kpis-compact { display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr)); gap:16px; }
 .kpis-compact .value { font-size: 26px; }
 
+/* MEETINGS GRID */
+.meetings-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+}
+.meetings-grid .kpi {
+  text-align: center;
+  padding: 24px 18px;
+}
+.meetings-grid .kpi .value {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--primary);
+}
+.meetings-grid .kpi .meeting-date {
+  font-size: 14px;
+  color: #64748b;
+  margin-top: 6px;
+}
+@media (max-width: 1024px) {
+  .meetings-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+@media (max-width: 600px) {
+  .meetings-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
 .section{ margin-top:28px; }
 .section-title{ display:flex; align-items:center; gap:10px; margin-bottom:14px; }
 .section-title h2{margin:0;font-size:24px}
@@ -334,6 +365,21 @@ body {
 .detail-table th { background: #f8fafc; padding: 10px 12px; font-weight: 700; color: #475569; border-bottom: 2px solid #e2e8f0; position: sticky; top: 0; word-wrap: break-word; z-index: 10; }
 .detail-table td { padding: 10px 12px; border-bottom: 1px solid #f1f5f9; color: #334155; word-wrap: break-word; }
 
+/* UPCOMING SCHEDULE */
+.upcoming-wrapper {
+  background: var(--card);
+  border-radius: 18px;
+  padding: 20px;
+  box-shadow: 0 6px 18px rgba(15,23,42,.06);
+  overflow: hidden;
+}
+.upcoming-wrapper img {
+  width: 100%;
+  height: auto;
+  display: block;
+  border-radius: 12px;
+}
+
 /* ========================================= */
 /* MOBILE RESPONSIVE OVERRIDES               */
 /* ========================================= */
@@ -390,7 +436,6 @@ body {
   }
   .sidebar-close-btn:hover { background: rgba(255,255,255,0.2); }
 
-  /* FIX: PUSH LOGO DOWN ON MOBILE TO PREVENT OVERLAP WITH CLOSE BUTTON */
   .sidebar .logo-container {
     padding-top: 75px; 
   }
@@ -402,7 +447,7 @@ body {
 }
 
 @media (max-width: 768px) {
-  .kpis, .kpis-compact, .activity-grid, .risk-grid { grid-template-columns: 1fr !important; }
+  .kpis, .kpis-compact, .activity-grid, .risk-grid, .meetings-grid { grid-template-columns: 1fr !important; }
   
   .dashboard-header .header-top h1 { font-size: 24px; }
   .section-title h2 { font-size: 20px; }
@@ -577,6 +622,49 @@ body {
         </div>
       </div>
       <!-- END TOP GALLERY SECTION -->
+
+      <!-- NEW SECTION: Statutory and Academic Meetings Conducted -->
+      <div class="section">
+        <div class="section-title"><span class="dot"></span><h2>Statutory and Academic Meetings Conducted</h2></div>
+        <div class="meetings-grid">
+          <div class="kpi">
+            <h3>Board of Studies (BoS)</h3>
+            <div class="value">24/04/2026</div>
+            <div class="meeting-date">Meeting held</div>
+          </div>
+          <div class="kpi">
+            <h3>Academic Council</h3>
+            <div class="value">25/05/2026</div>
+            <div class="meeting-date">Meeting held</div>
+          </div>
+          <div class="kpi">
+            <h3>Meeting with Knowledge Partner(s)</h3>
+            <div class="value">25/05/2026</div>
+            <div class="meeting-date">Meeting held</div>
+          </div>
+          <div class="kpi">
+            <h3>Curriculum Review and Revision</h3>
+            <div class="value" style="color: #94a3b8; font-size: 20px;">-</div>
+            <div class="meeting-date">Pending</div>
+          </div>
+          <div class="kpi">
+            <h3>IQAC Meeting for NAAC/NBA Accreditation</h3>
+            <div class="value">24/06/2026</div>
+            <div class="meeting-date">Meeting held</div>
+          </div>
+          <div class="kpi">
+            <h3>Budget Planning</h3>
+            <div class="value">24/06/2026</div>
+            <div class="meeting-date">Meeting held</div>
+          </div>
+          <div class="kpi">
+            <h3>Centre of Excellence (CoE) Planning</h3>
+            <div class="value">25/06/2026</div>
+            <div class="meeting-date">Meeting held</div>
+          </div>
+        </div>
+      </div>
+      <!-- END Statutory and Academic Meetings Section -->
 
       <div class="section">
         <div class="section-title"><span class="dot"></span><h2>University Admissions Status</h2></div>
@@ -859,6 +947,18 @@ body {
           </div>
         </div>
       </div>
+
+      <!--- NEW SECTION: Upcoming Schedule --->
+      <div class="section" data-html2canvas-ignore>
+        <div class="section-title"><span class="dot"></span><h2>Upcoming Schedule</h2></div>
+        <div class="upcoming-wrapper" style="background: var(--card); border-radius: 18px; padding: 20px; box-shadow: 0 6px 18px rgba(15,23,42,.06); text-align: center;">
+          <img src="upcoming schedule.jpeg" alt="Upcoming Schedule" style="max-width: 60%; max-height: 500px; width: auto; height: auto; object-fit: contain; border-radius: 8px;" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+          <div style="display: none; text-align: center; padding: 40px 20px; color: #94a3b8;">
+          <p>Upcoming schedule image not available. Please upload "upcoming schedule.jpeg".</p>
+          </div>
+        </div>
+      </div>
+      <!-- END Upcoming Schedule Section -->
 
       <div class="section">
         <div class="section-title"><span class="dot"></span><h2>Risk &amp; Gap Analysis</h2></div>
