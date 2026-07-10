@@ -260,7 +260,6 @@ body {
   --items-per-page: 3;
 }
 
-/* Special override for gallery with 2 items - center them */
 .carousel-wrapper.two-items {
   --items-per-page: 2;
 }
@@ -676,37 +675,37 @@ body {
       </div>
       <!-- END TOP GALLERY SECTION -->
 
-      <!-- Statutory and Academic Meetings Conducted - NO data-html2canvas-ignore -->
+      <!-- Statutory and Academic Meetings Conducted - UPDATED DOCUMENT LINK -->
       <div class="section">
         <div class="section-title"><span class="dot"></span><h2>Statutory and Academic Meetings Conducted</h2></div>
         <div class="meetings-grid">
           <!-- Card 1: Board of Studies -->
-          <div class="kpi clickable" onclick="openDocModal('Statutory and Academic Meetings', 'https://docs.google.com/document/d/1UxaoVpjqvtXP1NOTFh10bJi1gyCZfhvE/preview')">
+          <div class="kpi clickable" onclick="openDocModal('Statutory and Academic Meetings', 'https://drive.google.com/file/d/1a8i54F4Tz3M_XX8dpmYmdANlu9NMGj9K/preview')">
             <h3>Board of Studies (BoS)</h3>
             <div class="value">24/04/2026</div>
           </div>
           <!-- Card 2: Academic Council -->
-          <div class="kpi clickable" onclick="openDocModal('Statutory and Academic Meetings', 'https://docs.google.com/document/d/1UxaoVpjqvtXP1NOTFh10bJi1gyCZfhvE/preview')">
+          <div class="kpi clickable" onclick="openDocModal('Statutory and Academic Meetings', 'https://drive.google.com/file/d/1a8i54F4Tz3M_XX8dpmYmdANlu9NMGj9K/preview')">
             <h3>Academic Council</h3>
             <div class="value">25/05/2026</div>
           </div>
           <!-- Card 3: Meeting with Knowledge Partner(s) -->
-          <div class="kpi clickable" onclick="openDocModal('Statutory and Academic Meetings', 'https://docs.google.com/document/d/1UxaoVpjqvtXP1NOTFh10bJi1gyCZfhvE/preview')">
+          <div class="kpi clickable" onclick="openDocModal('Statutory and Academic Meetings', 'https://drive.google.com/file/d/1a8i54F4Tz3M_XX8dpmYmdANlu9NMGj9K/preview')">
             <h3>Meeting with Knowledge Partner(s)</h3>
             <div class="value">25/05/2026</div>
           </div>
           <!-- Card 4: IQAC Meeting for NAAC/NBA Accreditation -->
-          <div class="kpi clickable" onclick="openDocModal('Statutory and Academic Meetings', 'https://docs.google.com/document/d/1UxaoVpjqvtXP1NOTFh10bJi1gyCZfhvE/preview')">
+          <div class="kpi clickable" onclick="openDocModal('Statutory and Academic Meetings', 'https://drive.google.com/file/d/1a8i54F4Tz3M_XX8dpmYmdANlu9NMGj9K/preview')">
             <h3>IQAC Meeting for NAAC/NBA Accreditation</h3>
             <div class="value">24/06/2026</div>
           </div>
           <!-- Card 5: Budget Planning -->
-          <div class="kpi clickable" onclick="openDocModal('Statutory and Academic Meetings', 'https://docs.google.com/document/d/1UxaoVpjqvtXP1NOTFh10bJi1gyCZfhvE/preview')">
+          <div class="kpi clickable" onclick="openDocModal('Statutory and Academic Meetings', 'https://drive.google.com/file/d/1a8i54F4Tz3M_XX8dpmYmdANlu9NMGj9K/preview')">
             <h3>Budget Planning</h3>
             <div class="value">24/06/2026</div>
           </div>
           <!-- Card 6: Centre of Excellence (CoE) Planning -->
-          <div class="kpi clickable" onclick="openDocModal('Statutory and Academic Meetings', 'https://docs.google.com/document/d/1UxaoVpjqvtXP1NOTFh10bJi1gyCZfhvE/preview')">
+          <div class="kpi clickable" onclick="openDocModal('Statutory and Academic Meetings', 'https://drive.google.com/file/d/1a8i54F4Tz3M_XX8dpmYmdANlu9NMGj9K/preview')">
             <h3>Centre of Excellence (CoE) Planning</h3>
             <div class="value">25/06/2026</div>
           </div>
@@ -1086,7 +1085,26 @@ body {
   </div>
 
   <script>
+    // ==========================================
+    // HARDCODED STUDENT AWARDS DATA (11 awards)
+    // ==========================================
+    const hardcodedStudentAwards = [
+      { SchoolId: 'eng', Activity: 'Student Achievement', DetailName: 'Diksha Patil', DetailInfo: 'Food Technology II Year', DetailMeta: 'Certification - Knowledge enhancement', DetailDate: '' },
+      { SchoolId: 'eng', Activity: 'Student Achievement', DetailName: 'Jayesh Jadhav', DetailInfo: 'Biotechnology II Year', DetailMeta: 'Elite - Knowledge enhancement', DetailDate: '' },
+      { SchoolId: 'eng', Activity: 'Student Achievement', DetailName: 'Eeba Mubarak', DetailInfo: 'Biotechnology II Year', DetailMeta: 'Certification - Knowledge enhancement', DetailDate: '' },
+      { SchoolId: 'eng', Activity: 'Student Achievement', DetailName: 'Swaralee Prabhawalkar', DetailInfo: 'Biotechnology II Year', DetailMeta: 'Elite - Knowledge enhancement', DetailDate: '' },
+      { SchoolId: 'eng', Activity: 'Student Achievement', DetailName: 'Siya Jahagirdar', DetailInfo: 'Biotechnology II Year', DetailMeta: 'Certification - Knowledge enhancement', DetailDate: '' },
+      { SchoolId: 'eng', Activity: 'Student Achievement', DetailName: 'Shweta Shelke', DetailInfo: 'M. Tech Biotech I Year', DetailMeta: 'Elite - Knowledge enhancement', DetailDate: '' },
+      { SchoolId: 'eng', Activity: 'Student Achievement', DetailName: 'Natasha Bhangale', DetailInfo: 'Biotechnology II Year', DetailMeta: 'Elite - Knowledge enhancement', DetailDate: '' },
+      { SchoolId: 'eng', Activity: 'Student Achievement', DetailName: 'Aashi Goswami', DetailInfo: 'Biotechnology II Year', DetailMeta: 'Elite - Knowledge enhancement', DetailDate: '' },
+      { SchoolId: 'eng', Activity: 'Student Achievement', DetailName: 'Lokesh Redekar', DetailInfo: 'SOE Final Year', DetailMeta: 'Certification - Knowledge enhancement', DetailDate: '' },
+      { SchoolId: 'eng', Activity: 'Student Achievement', DetailName: 'Tanisha Bellay', DetailInfo: 'SOE Final Year', DetailMeta: 'Elite - Knowledge enhancement', DetailDate: '' },
+      { SchoolId: 'eng', Activity: 'Student Achievement', DetailName: 'Alolika Mahanag', DetailInfo: 'SOE Final Year', DetailMeta: 'Elite-Silver - Knowledge enhancement', DetailDate: '' }
+    ];
+
+    // ==========================================
     // Build School views dynamically
+    // ==========================================
     const activitiesList = ["Admissions", "Placements", "Research", "Publications", "Patents", "Faculty Achievement", "Student Achievement", "Events", "Rankings", "Accreditation", "MoUs", "Industry Connect", "Media Visibility", "Sports", "NSS", "Innovation", "Strategic Initiatives"];
     const schools = [
         { id: 'eng', name: 'School of Engineering' }, 
@@ -1914,8 +1932,14 @@ body {
   const chartColors = ['#C21B27', '#f59e0b', '#1e293b', '#64748b', '#3b82f6', '#10b981', '#8b5cf6', '#ec4899', '#f97316'];
 
   function openCombinedModal(metricType, activityName) {
-      if (!globalRawData || globalRawData.length === 0) { alert("Please upload the data tracking document first."); return; }
+      if (!globalRawData || globalRawData.length === 0) { 
+        alert("Please upload the data tracking document first."); 
+        return; 
+      }
 
+      // Check if this is Student Achievement - use hardcoded data
+      let useHardcodedData = (activityName === 'Student Achievement');
+      
       switchModalTab('chart');
       document.getElementById('modalTitle').innerText = activityName + " Workspace Analysis";
       let tableWrap = document.getElementById('modalTableWrapper'), galleryGrid = document.getElementById('modalGalleryWrapper');
@@ -1925,9 +1949,20 @@ body {
 
       if (metricType === 'gallery') {
           switchModalTab('chart'); galleryGrid.style.display = "block";
-          globalRawData.forEach(row => {
-              if (row.Activity === activityName && row.SchoolId !== 'exec') { labels.push(schoolNameMap[row.SchoolId] || row.SchoolId); datasetData.push(1); }
-          });
+          if (useHardcodedData) {
+              hardcodedStudentAwards.forEach(row => {
+                  let schoolName = schoolNameMap[row.SchoolId] || row.SchoolId;
+                  labels.push(schoolName);
+                  datasetData.push(1);
+              });
+          } else {
+              globalRawData.forEach(row => {
+                  if (row.Activity === activityName && row.SchoolId !== 'exec') { 
+                      labels.push(schoolNameMap[row.SchoolId] || row.SchoolId); 
+                      datasetData.push(1); 
+                  }
+              });
+          }
           document.getElementById('galleryContainer').innerHTML = `
               <div class="gallery-item" onclick="alert('Opening details...')"><div style="height:140px; background:url('https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=500&q=80') center/cover;"></div><div class="info"><div class="title">HPC Expert Summit</div><div class="date">May 14, 2026</div></div></div>
               <div class="gallery-item" onclick="alert('Opening details...')"><div style="height:140px; background:url('https://images.unsplash.com/photo-1552664730-d307ca884978?w=500&q=80') center/cover;"></div><div class="info"><div class="title">NAAC Reform Panel</div><div class="date">May 12, 2026</div></div></div>
@@ -1939,7 +1974,18 @@ body {
           let hasDetails = ["University Achievement", "Student Achievement", "Faculty Achievement"].includes(activityName);
           let isPartners = (activityName === 'Partners Admission MIS');
 
-          if (hasDetails) {
+          if (useHardcodedData) {
+              // HARDCODED STUDENT AWARDS - 11 entries
+              let html = `<table class="detail-table"><thead><tr><th style="width:15%;">School</th><th style="width:20%;">Student Name</th><th style="width:35%;">Program</th><th style="width:30%;">Achievement</th></tr></thead><tbody>`;
+              hardcodedStudentAwards.forEach(row => {
+                  let schoolName = schoolNameMap[row.SchoolId] || row.SchoolId;
+                  labels.push(schoolName);
+                  datasetData.push(1);
+                  html += `<tr><td><b>${schoolName}</b></td><td>${row.DetailName||'-'}</td><td>${row.DetailInfo||'-'}</td><td>${row.DetailMeta||'-'}</td></tr>`;
+              });
+              html += `</tbody></table>`;
+              tableWrap.innerHTML = html;
+          } else if (hasDetails) {
               let html = `<table class="detail-table"><thead><tr><th style="width:15%;">School</th><th style="width:20%;">Name / Faculty</th><th style="width:35%;">Log Info</th><th style="width:15%;">Outcome</th><th style="width:15%;">Date</th></tr></thead><tbody>`;
               globalRawData.forEach(row => {
                   if (row.Activity === activityName && row.SchoolId !== 'exec') {
@@ -1995,6 +2041,9 @@ body {
 
       let uLabels = [...new Set(labels)];
       let sData = uLabels.map((lbl, idx) => {
+          if (useHardcodedData) {
+              return hardcodedStudentAwards.filter(r => (schoolNameMap[r.SchoolId] || r.SchoolId) === lbl).length;
+          }
           if (["University Achievement", "Student Achievement", "Faculty Achievement"].includes(activityName)) 
               return globalRawData.filter(r => r.Activity === activityName && schoolNameMap[r.SchoolId] === lbl).length;
           return datasetData[idx] || 0;
@@ -2055,7 +2104,6 @@ body {
       const img = document.getElementById('imageModalImg');
       const title = document.getElementById('imageModalTitle');
       if (!imgEl) return;
-      // Use the currently displayed source (incl. fallback) so the lightbox always shows what's on screen
       img.src = imgEl.currentSrc || imgEl.src;
       img.alt = imgEl.alt || '';
       title.innerText = imgEl.alt || 'Image View';
