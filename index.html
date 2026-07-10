@@ -210,6 +210,37 @@ body {
 .kpis-compact { display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr)); gap:16px; }
 .kpis-compact .value { font-size: 26px; }
 
+/* MEETINGS GRID */
+.meetings-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+}
+.meetings-grid .kpi {
+  text-align: center;
+  padding: 24px 18px;
+}
+.meetings-grid .kpi .value {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--primary);
+}
+.meetings-grid .kpi .meeting-date {
+  font-size: 14px;
+  color: #64748b;
+  margin-top: 6px;
+}
+@media (max-width: 1024px) {
+  .meetings-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+@media (max-width: 600px) {
+  .meetings-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
 .section{ margin-top:28px; }
 .section-title{ display:flex; align-items:center; gap:10px; margin-bottom:14px; }
 .section-title h2{margin:0;font-size:24px}
@@ -228,8 +259,25 @@ body {
   --items-per-page: 3;
 }
 
+/* Special override for gallery with 2 items - center them */
+.carousel-wrapper.two-items {
+  --items-per-page: 2;
+}
+
+/* Fix image display for top gallery - use contain instead of cover */
+.carousel-wrapper.two-items .slide-content img {
+  object-fit: contain;
+  height: 280px;
+  background: #f1f5f9;
+}
+
 @media(max-width: 1000px) { .carousel-wrapper { --items-per-page: 2; } }
-@media(max-width: 600px) { .carousel-wrapper { --items-per-page: 1; padding: 20px 30px 50px 30px; } }
+@media(max-width: 600px) { 
+  .carousel-wrapper { --items-per-page: 1; padding: 20px 30px 50px 30px; }
+  .carousel-wrapper.two-items .slide-content img {
+    height: 200px;
+  }
+}
 
 .carousel-viewport { overflow: hidden; width: 100%; }
 .carousel-track { display: flex; transition: transform 0.5s ease-in-out; }
@@ -238,6 +286,10 @@ body {
 .slide-content { position: relative; border-radius: 12px; overflow: hidden; cursor: pointer; background: #f1f5f9; height: 100%; }
 .slide-content img { width: 100%; height: 240px; object-fit: cover; display: block; transition: transform 0.3s ease; }
 .slide-content:hover img { transform: scale(1.04); }
+
+/* Non-clickable slides should not show hover effect */
+.slide-content.no-click { cursor: default; }
+.slide-content.no-click:hover img { transform: none; }
 
 .carousel-caption {
   position: absolute; bottom: 0; left: 0; width: 100%;
@@ -313,6 +365,21 @@ body {
 .detail-table th { background: #f8fafc; padding: 10px 12px; font-weight: 700; color: #475569; border-bottom: 2px solid #e2e8f0; position: sticky; top: 0; word-wrap: break-word; z-index: 10; }
 .detail-table td { padding: 10px 12px; border-bottom: 1px solid #f1f5f9; color: #334155; word-wrap: break-word; }
 
+/* UPCOMING SCHEDULE */
+.upcoming-wrapper {
+  background: var(--card);
+  border-radius: 18px;
+  padding: 20px;
+  box-shadow: 0 6px 18px rgba(15,23,42,.06);
+  overflow: hidden;
+}
+.upcoming-wrapper img {
+  width: 100%;
+  height: auto;
+  display: block;
+  border-radius: 12px;
+}
+
 /* ========================================= */
 /* MOBILE RESPONSIVE OVERRIDES               */
 /* ========================================= */
@@ -369,7 +436,6 @@ body {
   }
   .sidebar-close-btn:hover { background: rgba(255,255,255,0.2); }
 
-  /* FIX: PUSH LOGO DOWN ON MOBILE TO PREVENT OVERLAP WITH CLOSE BUTTON */
   .sidebar .logo-container {
     padding-top: 75px; 
   }
@@ -381,7 +447,7 @@ body {
 }
 
 @media (max-width: 768px) {
-  .kpis, .kpis-compact, .activity-grid, .risk-grid { grid-template-columns: 1fr !important; }
+  .kpis, .kpis-compact, .activity-grid, .risk-grid, .meetings-grid { grid-template-columns: 1fr !important; }
   
   .dashboard-header .header-top h1 { font-size: 24px; }
   .section-title h2 { font-size: 20px; }
@@ -491,26 +557,114 @@ body {
         </div>
         
         <div class="month-tabs" data-html2canvas-ignore>
-          <button class="month-tab active">May</button>
-          <button class="month-tab disabled">June</button>
-          <button class="month-tab disabled">July</button>
-          <button class="month-tab disabled">August</button>
-          <button class="month-tab disabled">September</button>
-          <button class="month-tab disabled">October</button>
-          <button class="month-tab disabled">November</button>
-          <button class="month-tab disabled">December</button>
-          <button class="month-tab disabled">January</button>
-          <button class="month-tab disabled">February</button>
-          <button class="month-tab disabled">March</button>
-          <button class="month-tab disabled">April</button>
+          <button class="month-tab" data-month="May" onclick="switchMonth('May')">May</button>
+          <button class="month-tab active" data-month="June" onclick="switchMonth('June')">June</button>
+          <button class="month-tab disabled" data-month="July">July</button>
+          <button class="month-tab disabled" data-month="August">August</button>
+          <button class="month-tab disabled" data-month="September">September</button>
+          <button class="month-tab disabled" data-month="October">October</button>
+          <button class="month-tab disabled" data-month="November">November</button>
+          <button class="month-tab disabled" data-month="December">December</button>
+          <button class="month-tab disabled" data-month="January">January</button>
+          <button class="month-tab disabled" data-month="February">February</button>
+          <button class="month-tab disabled" data-month="March">March</button>
+          <button class="month-tab disabled" data-month="April">April</button>
         </div>
 
         <div class="trend-comparison" data-html2canvas-ignore>
           <h3>Month-wise trend comparison graphs</h3>
-          <select><option>May</option></select> vs <select><option>June</option></select>
-          <button onclick="alert('Comparison feature to be implemented later.')">Compare</button>
+          <select id="compareMonth1">
+            <option value="">Select Month</option>
+            <option value="May">May</option>
+            <option value="June">June</option>
+          </select> vs 
+          <select id="compareMonth2">
+            <option value="">Select Month</option>
+            <option value="May">May</option>
+            <option value="June">June</option>
+          </select>
+          <button onclick="compareMonths()">Compare</button>
         </div>
       </div>
+
+      <!-- TOP GALLERY SECTION -->
+      <div class="section" data-html2canvas-ignore style="margin-top: 0;">
+        <div class="section-title"><span class="dot"></span><h2>HIGHLIGHTS OF UNIVERSITY ACHIEVEMENTS</h2></div>
+        
+        <div class="carousel-wrapper two-items" id="carouselWrapper2">
+          <div class="carousel-viewport">
+            <div class="carousel-track" id="carouselTrack2">
+              
+              <!-- Slide 1: Times Higher Education (THE) Sustainability Rankings 2026 - CLICKABLE -->
+              <div class="carousel-slide">
+                <div class="slide-content" onclick="openDocModal('Times Higher Education (THE) Sustainability Rankings 2026', 'https://drive.google.com/file/d/1N8A-u1FG0NPe5FyYlccTQfebUkq8SFWU/preview')">
+                  <img src="{5C6CE9FC-5251-46A4-9607-085D23687C3A}.jpg" alt="Times Higher Education Sustainability Rankings" onerror="this.src='https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=500&q=80';">
+                  <div class="carousel-caption"><h4>Times Higher Education (THE) Sustainability Rankings 2026</h4><p>June 2026</p></div>
+                </div>
+              </div>
+              
+              <!-- Slide 2: Lokmat Education fair and Health Expo - NON-CLICKABLE -->
+              <div class="carousel-slide">
+                <div class="slide-content no-click">
+                  <img src="Lokmat edu fair.jpeg" alt="Lokmat Education fair and Health Expo" onerror="this.src='https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=500&q=80';">
+                  <div class="carousel-caption"><h4>Lokmat Education fair and Health Expo</h4><p>June 2026</p></div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+          
+          <button class="carousel-btn prev" onclick="moveSlide2(-1)">&#10094;</button>
+          <button class="carousel-btn next" onclick="moveSlide2(1)">&#10095;</button>
+          <button class="carousel-btn play-pause" id="playPauseBtn2" onclick="togglePlayPause2()">⏸</button>
+          
+          <div class="carousel-dots" id="carouselDots2"></div>
+        </div>
+      </div>
+      <!-- END TOP GALLERY SECTION -->
+
+      <!-- NEW SECTION: Statutory and Academic Meetings Conducted -->
+      <div class="section">
+        <div class="section-title"><span class="dot"></span><h2>Statutory and Academic Meetings Conducted</h2></div>
+        <div class="meetings-grid">
+          <div class="kpi">
+            <h3>Board of Studies (BoS)</h3>
+            <div class="value">24/04/2026</div>
+            <div class="meeting-date">Meeting held</div>
+          </div>
+          <div class="kpi">
+            <h3>Academic Council</h3>
+            <div class="value">25/05/2026</div>
+            <div class="meeting-date">Meeting held</div>
+          </div>
+          <div class="kpi">
+            <h3>Meeting with Knowledge Partner(s)</h3>
+            <div class="value">25/05/2026</div>
+            <div class="meeting-date">Meeting held</div>
+          </div>
+          <div class="kpi">
+            <h3>Curriculum Review and Revision</h3>
+            <div class="value" style="color: #94a3b8; font-size: 20px;">-</div>
+            <div class="meeting-date">Pending</div>
+          </div>
+          <div class="kpi">
+            <h3>IQAC Meeting for NAAC/NBA Accreditation</h3>
+            <div class="value">24/06/2026</div>
+            <div class="meeting-date">Meeting held</div>
+          </div>
+          <div class="kpi">
+            <h3>Budget Planning</h3>
+            <div class="value">24/06/2026</div>
+            <div class="meeting-date">Meeting held</div>
+          </div>
+          <div class="kpi">
+            <h3>Centre of Excellence (CoE) Planning</h3>
+            <div class="value">25/06/2026</div>
+            <div class="meeting-date">Meeting held</div>
+          </div>
+        </div>
+      </div>
+      <!-- END Statutory and Academic Meetings Section -->
 
       <div class="section">
         <div class="section-title"><span class="dot"></span><h2>University Admissions Status</h2></div>
@@ -583,7 +737,12 @@ body {
             <div class="sub">Current cycle</div>
           </div>
           <div class="kpi">
-            <h3>Highest Internship</h3>
+            <h3>Total Internships</h3>
+            <div class="value" id="main-place-internships">0</div>
+            <div class="sub">Internships secured</div>
+          </div>
+          <div class="kpi">
+            <h3>Highest Stipend</h3>
             <div class="value" id="main-place-intern">0</div>
             <div class="sub">Highest stipend offered</div>
           </div>
@@ -626,12 +785,44 @@ body {
         </div>
       </div>
 
+      <!-- Summer Examinations Overview Section -->
+      <div class="section">
+        <div class="section-title"><span class="dot"></span><h2>Summer Examinations Overview</h2></div>
+        <div class="kpis">
+          <div class="kpi">
+            <h3>Total Students</h3>
+            <div class="value" id="summer-exam-total">1339</div>
+            <div class="sub">Summer batch enrolled</div>
+          </div>
+          <div class="kpi">
+            <h3>Registered</h3>
+            <div class="value" id="summer-exam-reg">1339</div>
+            <div class="sub">Summer exam registrations</div>
+          </div>
+          <div class="kpi">
+            <h3>Appeared</h3>
+            <div class="value" id="summer-exam-app" style="font-size: 26px;">In Progress</div>
+            <div class="sub">Summer exam appearances</div>
+          </div>
+          <div class="kpi">
+            <h3>Absent</h3>
+            <div class="value" id="summer-exam-abs" style="font-size: 26px;">In Progress</div>
+            <div class="sub">Summer exam absenteeism</div>
+          </div>
+          <div class="kpi">
+            <h3>Result</h3>
+            <div class="value" id="summer-exam-prog" style="font-size: 26px;">In Progress</div>
+            <div class="sub">Summer exam evaluation</div>
+          </div>
+        </div>
+      </div>
+
       <div class="section">
         <div class="section-title"><span class="dot"></span><h2>Executive Achievements Overview</h2></div>
         <div class="kpis">
           <div class="kpi clickable" onclick="openCombinedModal('achieved', 'Student Achievement')">
             <h3>Student Awards</h3>
-            <div class="value" id="exec-stu">0</div>
+            <div class="value" id="exec-stu">11</div>
             <div class="sub">Click to view logging engine</div>
           </div>
           <div class="kpi clickable" onclick="openCombinedModal('achieved', 'Faculty Achievement')">
@@ -701,7 +892,7 @@ body {
               <div class="carousel-slide">
                 <div class="slide-content" onclick="openDocModal('ADYPU Monthly Highlights', 'https://docs.google.com/document/d/1-wVDe2bv5ZndwJuU3_M87LaVDpSxAIFJ/preview')">
                   <img src="{5598FC8B-1C75-4715-AB2B-C6FF68CA737D}.jpg" alt="Under25adypu">
-                  <div class="carousel-caption"><h4>Under25adypu Nominated for “Best Club of the Batch”</h4><p>National Recognition</p></div>
+                  <div class="carousel-caption"><h4>Under25adypu Nominated for "Best Club of the Batch"</h4><p>National Recognition</p></div>
                 </div>
               </div>
               
@@ -712,6 +903,22 @@ body {
                 </div>
               </div>
 
+              <!-- NEW IMAGE 1: health_expo_1.jpeg -->
+              <div class="carousel-slide">
+                <div class="slide-content" onclick="openDocModal('Lokmat Education fair and Health Expo', 'https://drive.google.com/file/d/1N8A-u1FG0NPe5FyYlccTQfebUkq8SFWU/preview')">
+                  <img src="health_expo_1.jpeg" alt="Lokmat Education fair and Health Expo" onerror="this.src='https://images.unsplash.com/photo-1552664730-d307ca884978?w=500&q=80';">
+                  <div class="carousel-caption"><h4>Lokmat Education fair and Health Expo</h4><p>June 2026</p></div>
+                </div>
+              </div>
+
+              <!-- NEW IMAGE 2: health_expo_2.jpeg -->
+              <div class="carousel-slide">
+                <div class="slide-content" onclick="openDocModal('Lokmat Education fair and Health Expo', 'https://drive.google.com/file/d/1N8A-u1FG0NPe5FyYlccTQfebUkq8SFWU/preview')">
+                  <img src="health_expo_2.jpeg" alt="Lokmat Education fair and Health Expo" onerror="this.src='https://images.unsplash.com/photo-1552664730-d307ca884978?w=500&q=80';">
+                  <div class="carousel-caption"><h4>Lokmat Education fair and Health Expo</h4><p>June 2026</p></div>
+                </div>
+              </div>
+
             </div>
           </div>
           
@@ -719,8 +926,7 @@ body {
           <button class="carousel-btn next" onclick="moveSlide(1)">&#10095;</button>
           <button class="carousel-btn play-pause" id="playPauseBtn" onclick="togglePlayPause()">⏸</button>
           
-          <div class="carousel-dots" id="carouselDots">
-             </div>
+          <div class="carousel-dots" id="carouselDots"></div>
         </div>
       </div>
 
@@ -741,6 +947,18 @@ body {
           </div>
         </div>
       </div>
+
+      <!--- NEW SECTION: Upcoming Schedule --->
+      <div class="section" data-html2canvas-ignore>
+        <div class="section-title"><span class="dot"></span><h2>Upcoming Schedule</h2></div>
+        <div class="upcoming-wrapper" style="background: var(--card); border-radius: 18px; padding: 20px; box-shadow: 0 6px 18px rgba(15,23,42,.06); text-align: center;">
+          <img src="upcoming schedule.jpeg" alt="Upcoming Schedule" style="max-width: 60%; max-height: 500px; width: auto; height: auto; object-fit: contain; border-radius: 8px;" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+          <div style="display: none; text-align: center; padding: 40px 20px; color: #94a3b8;">
+          <p>Upcoming schedule image not available. Please upload "upcoming schedule.jpeg".</p>
+          </div>
+        </div>
+      </div>
+      <!-- END Upcoming Schedule Section -->
 
       <div class="section">
         <div class="section-title"><span class="dot"></span><h2>Risk &amp; Gap Analysis</h2></div>
@@ -823,11 +1041,19 @@ body {
     // Build School views dynamically
     const activitiesList = ["Admissions", "Placements", "Research", "Publications", "Patents", "Faculty Achievement", "Student Achievement", "Events", "Rankings", "Accreditation", "MoUs", "Industry Connect", "Media Visibility", "Sports", "NSS", "Innovation", "Strategic Initiatives"];
     const schools = [
-      { id: 'eng', name: 'School of Engineering' }, { id: 'mgmt', name: 'School of Management' },
-      { id: 'law', name: 'School of Law' }, { id: 'design', name: 'School of Design' },
-      { id: 'science', name: 'School of Science' }, { id: 'arch', name: 'School of Architecture' },
-      { id: 'hosp', name: 'School of Hospitality' }, { id: 'lib', name: 'School of Liberal Arts' },
-      { id: 'film', name: 'School of Film & Media' }
+        { id: 'eng', name: 'School of Engineering' }, 
+        { id: 'mgmt', name: 'School of Management' },
+        { id: 'law', name: 'School of Law' }, 
+        { id: 'design', name: 'School of Design' },
+        { id: 'science', name: 'School of Science' }, 
+        { id: 'arch', name: 'School of Architecture' },
+        { id: 'hosp', name: 'School of Hospitality' }, 
+        { id: 'lib', name: 'School of Liberal Arts' },
+        { id: 'film', name: 'School of Film & Media' },
+        { id: 'SOD', name: 'School of Design' },
+        { id: 'SOHM', name: 'School of Hospitality' },
+        { id: 'SOS', name: 'School of Science' },
+        { id: 'SOFM', name: 'School of Film & Media' }
     ];
 
     const svgDanger = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="3" style="vertical-align: middle; margin-right: 4px;"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><circle cx="12" cy="16" r="0.5" fill="#ef4444" stroke="none"/></svg>`;
@@ -952,10 +1178,10 @@ body {
   });
 
   // ==========================================
-  // RESPONSIVE 3-COLUMN CAROUSEL LOGIC
+  // RESPONSIVE 3-COLUMN CAROUSEL LOGIC (GALLERY 1)
   // ==========================================
   let currentSlide = 0;
-  const totalSlides = 9; 
+  const totalSlides = 11; // 9 existing + 2 new images
   let slideInterval;
   let resumeTimeout;
   let isPlaying = true;
@@ -975,10 +1201,11 @@ body {
       if (currentSlide > maxIndex) currentSlide = 0;
       if (currentSlide < 0) currentSlide = maxIndex;
       
-      const slideElement = document.querySelector('.carousel-slide');
-      const slideWidth = slideElement.getBoundingClientRect().width;
-      
-      track.style.transform = `translateX(-${currentSlide * slideWidth}px)`;
+      const slideElement = document.querySelector('#carouselTrack .carousel-slide');
+      if(slideElement) {
+        const slideWidth = slideElement.getBoundingClientRect().width;
+        track.style.transform = `translateX(-${currentSlide * slideWidth}px)`;
+      }
       updateDots(maxIndex);
   }
   
@@ -1056,14 +1283,125 @@ body {
       }, 6000); 
   }
 
+  // ==========================================
+  // RESPONSIVE 3-COLUMN CAROUSEL LOGIC (GALLERY 2)
+  // ==========================================
+  let currentSlide2 = 0;
+  const totalSlides2 = 2; // 2 slides
+  let slideInterval2;
+  let resumeTimeout2;
+  let isPlaying2 = true;
+  
+  function getItemsPerPage2() {
+      const wrapper = document.getElementById('carouselWrapper2');
+      if(!wrapper) return 2; // Force 2 items per page for this gallery
+      return 2;
+  }
+  
+  function updateCarousel2() {
+      const track = document.getElementById('carouselTrack2');
+      if(!track) return;
+      const itemsPerPage = getItemsPerPage2();
+      const maxIndex = Math.max(0, totalSlides2 - itemsPerPage);
+      
+      if (currentSlide2 > maxIndex) currentSlide2 = 0;
+      if (currentSlide2 < 0) currentSlide2 = maxIndex;
+      
+      const slideElement = document.querySelector('#carouselTrack2 .carousel-slide');
+      if(slideElement) {
+        const slideWidth = slideElement.getBoundingClientRect().width;
+        track.style.transform = `translateX(-${currentSlide2 * slideWidth}px)`;
+      }
+      updateDots2(maxIndex);
+  }
+  
+  function updateDots2(maxIndex) {
+      const dotsContainer = document.getElementById('carouselDots2');
+      if(!dotsContainer) return;
+      
+      if(dotsContainer.children.length !== (maxIndex + 1)) {
+          dotsContainer.innerHTML = '';
+          for (let i = 0; i <= maxIndex; i++) {
+              const dot = document.createElement('button');
+              dot.className = 'dot-btn';
+              dot.onclick = () => goToSlide2(i);
+              dotsContainer.appendChild(dot);
+          }
+      }
+      
+      Array.from(dotsContainer.children).forEach((dot, index) => {
+          dot.className = index === currentSlide2 ? 'dot-btn active' : 'dot-btn';
+      });
+  }
+  
+  function moveSlide2(step) {
+      const maxIndex = Math.max(0, totalSlides2 - getItemsPerPage2());
+      currentSlide2 += step;
+      if (currentSlide2 > maxIndex) currentSlide2 = 0;
+      if (currentSlide2 < 0) currentSlide2 = maxIndex;
+      
+      updateCarousel2();
+      pauseForInteraction2();
+  }
+  
+  function goToSlide2(index) {
+      currentSlide2 = index;
+      updateCarousel2();
+      pauseForInteraction2();
+  }
+  
+  function autoSlide2() {
+      const maxIndex = Math.max(0, totalSlides2 - getItemsPerPage2());
+      currentSlide2++;
+      if(currentSlide2 > maxIndex) currentSlide2 = 0;
+      updateCarousel2();
+  }
+  
+  function startAutoplay2() {
+      const playBtn = document.getElementById('playPauseBtn2');
+      if(!playBtn) return;
+      if(slideInterval2) clearInterval(slideInterval2);
+      slideInterval2 = setInterval(autoSlide2, 3500); 
+      playBtn.innerText = '⏸';
+      isPlaying2 = true;
+  }
+  
+  function stopAutoplay2() {
+      const playBtn = document.getElementById('playPauseBtn2');
+      if(!playBtn) return;
+      clearInterval(slideInterval2);
+      playBtn.innerText = '⏵';
+      isPlaying2 = false;
+  }
+  
+  function togglePlayPause2() {
+      isPlaying2 ? stopAutoplay2() : startAutoplay2();
+  }
+  
+  function pauseForInteraction2() {
+      if(!isPlaying2) return;
+      clearInterval(slideInterval2);
+      clearTimeout(resumeTimeout2);
+      const playBtn = document.getElementById('playPauseBtn2');
+      if(playBtn) playBtn.innerText = '⏵';
+      resumeTimeout2 = setTimeout(() => {
+          if(isPlaying2) startAutoplay2();
+      }, 6000); 
+  }
+
+  // Shared Resize Event
   window.addEventListener('resize', () => {
       currentSlide = 0; 
       updateCarousel();
+      currentSlide2 = 0;
+      updateCarousel2();
   });
   
   setTimeout(() => {
     updateCarousel();
     startAutoplay();
+    updateCarousel2();
+    startAutoplay2();
   }, 100);
 
   // ==========================================
@@ -1080,7 +1418,10 @@ body {
     if(activeLink) activeLink.classList.add('active');
     
     if(viewId === 'home-view') {
-        setTimeout(updateCarousel, 50);
+        setTimeout(() => {
+            updateCarousel();
+            updateCarousel2();
+        }, 50);
     }
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
@@ -1093,62 +1434,230 @@ body {
 
   let activePieChart = null;
   let globalRawData = [];
+  let currentMonthData = [];
+  let mayData = [];
+  let juneData = [];
+  let activeMonth = 'June';
 
   Chart.register(ChartDataLabels);
 
   const schoolNameMap = {
-      'eng': 'Engineering', 'mgmt': 'Management', 'law': 'Law', 'design': 'Design',
-      'science': 'Science', 'arch': 'Architecture', 'hosp': 'Hospitality',
-      'lib': 'Liberal Arts', 'film': 'Film & Media'
+    'eng': 'Engineering', 
+    'mgmt': 'Management', 
+    'law': 'Law', 
+    'design': 'Design',
+    'science': 'Science', 
+    'arch': 'Architecture', 
+    'hosp': 'Hospitality',
+    'lib': 'Liberal Arts', 
+    'film': 'Film & Media',
+    'SOD': 'Design',
+    'SOHM': 'Hospitality', 
+    'SOS': 'Science',
+    'SOFM': 'Film & Media',
+    'TOTAL': 'Total',
+    'PHD': 'PhD'
   };
+
+  // ------------------------------------------
+  // MONTH SWITCHING LOGIC
+  // ------------------------------------------
+  function switchMonth(month) {
+    document.querySelectorAll('.month-tab').forEach(tab => {
+      tab.classList.toggle('active', tab.dataset.month === month);
+    });
+    activeMonth = month;
+    if (month === 'May' && mayData.length > 0) {
+      globalRawData = mayData;
+    } else if (month === 'June' && juneData.length > 0) {
+      globalRawData = juneData;
+    } else {
+      // fallback: use whatever data is available
+      if (mayData.length > 0) globalRawData = mayData;
+      else if (juneData.length > 0) globalRawData = juneData;
+    }
+    // Update comparison dropdowns to reflect current selection (but keep placeholder option)
+    // Only set if they have values selected
+    if (document.getElementById('compareMonth1').value === '') {
+      // Don't auto-set, keep as is
+    }
+    updateDashboard(globalRawData);
+    updateSchoolTiles(globalRawData);
+    
+    // Update Result text based on month
+    updateResultText(month);
+  }
+
+  // ------------------------------------------
+  // UPDATE RESULT TEXT BASED ON MONTH
+  // ------------------------------------------
+  function updateResultText(month) {
+    const resultEl = document.getElementById('main-exam-prog');
+    if (month === 'June') {
+      resultEl.innerText = 'Declared';
+    } else if (month === 'May') {
+      resultEl.innerText = 'In Progress';
+    } else {
+      resultEl.innerText = 'Declared';
+    }
+  }
+
+  // ------------------------------------------
+  // COMPARE MONTHS FEATURE - UPDATED WITH VALIDATION
+  // ------------------------------------------
+  function compareMonths() {
+    const m1 = document.getElementById('compareMonth1').value;
+    const m2 = document.getElementById('compareMonth2').value;
+    
+    // Check if both months are selected
+    if (m1 === '' || m2 === '') {
+      alert('Please select two different months to compare.');
+      return;
+    }
+    
+    if (m1 === m2) {
+      alert('Please select two different months to compare.');
+      return;
+    }
+    
+    let data1 = m1 === 'May' ? mayData : juneData;
+    let data2 = m2 === 'May' ? mayData : juneData;
+    if (data1.length === 0 || data2.length === 0) {
+      alert('Data for one or both months is not loaded. Please ensure both May and June data are available.');
+      return;
+    }
+    // Build comparison display in a modal
+    const modal = document.getElementById('combinedModal');
+    document.getElementById('modalTitle').innerText = `Comparison: ${m1} vs ${m2}`;
+    switchModalTab('detail');
+    const tableWrap = document.getElementById('modalTableWrapper');
+    tableWrap.style.display = 'block';
+    
+    // Compute summary per school for each month
+    let summary1 = getSchoolSummary(data1);
+    let summary2 = getSchoolSummary(data2);
+    let allSchools = new Set([...Object.keys(summary1), ...Object.keys(summary2)]);
+    let html = `<table class="detail-table"><thead><tr><th>School</th><th>${m1} Target</th><th>${m1} Achieved</th><th>${m1} Gap</th><th>${m1} %</th><th>${m2} Target</th><th>${m2} Achieved</th><th>${m2} Gap</th><th>${m2} %</th></tr></thead><tbody>`;
+    let totals1 = {target:0, achieved:0, gap:0};
+    let totals2 = {target:0, achieved:0, gap:0};
+    allSchools.forEach(school => {
+      let s1 = summary1[school] || {target:0, achieved:0, gap:0, percent:'0%'};
+      let s2 = summary2[school] || {target:0, achieved:0, gap:0, percent:'0%'};
+      totals1.target += s1.target; totals1.achieved += s1.achieved; totals1.gap += s1.gap;
+      totals2.target += s2.target; totals2.achieved += s2.achieved; totals2.gap += s2.gap;
+      html += `<tr><td><b>${school}</b></td><td>${s1.target}</td><td>${s1.achieved}</td><td>${s1.gap}</td><td>${s1.percent}</td><td>${s2.target}</td><td>${s2.achieved}</td><td>${s2.gap}</td><td>${s2.percent}</td></tr>`;
+    });
+    let pct1 = totals1.target > 0 ? ((totals1.achieved/totals1.target)*100).toFixed(1)+'%' : '0%';
+    let pct2 = totals2.target > 0 ? ((totals2.achieved/totals2.target)*100).toFixed(1)+'%' : '0%';
+    html += `<tr class="summary-row"><td>Total</td><td>${totals1.target}</td><td>${totals1.achieved}</td><td>${totals1.gap}</td><td>${pct1}</td><td>${totals2.target}</td><td>${totals2.achieved}</td><td>${totals2.gap}</td><td>${pct2}</td></tr>`;
+    html += '</tbody></table>';
+    tableWrap.innerHTML = html;
+    document.getElementById('modal-content-detail').classList.add('active');
+    document.getElementById('modal-content-chart').classList.remove('active');
+    document.getElementById('btn-tab-detail').classList.add('active');
+    document.getElementById('btn-tab-chart').classList.remove('active');
+    modal.style.display = 'block';
+  }
+
+  function getSchoolSummary(data) {
+    let summary = {};
+    data.forEach(row => {
+      if (row.SchoolId && row.SchoolId !== 'exec' && row.Activity === 'Admissions') {
+        let name = schoolNameMap[row.SchoolId] || row.SchoolId;
+        if (!summary[name]) summary[name] = {target:0, achieved:0, gap:0, percent:'0%'};
+        summary[name].target += cleanNum(row.Target);
+        summary[name].achieved += cleanNum(row.Achieved);
+      }
+    });
+    Object.keys(summary).forEach(key => {
+      let s = summary[key];
+      s.gap = Math.max(0, s.target - s.achieved);
+      s.percent = s.target > 0 ? ((s.achieved/s.target)*100).toFixed(1)+'%' : '0%';
+    });
+    return summary;
+  }
 
   // ------------------------------------------
   // AUTO-LOAD EXCEL/CSV LOGIC (MULTI-SHEET)
   // ------------------------------------------
   document.addEventListener('DOMContentLoaded', () => {
-    const loadDataFile = (filename) => {
+    const loadDataFile = (filename, callback) => {
       return fetch(filename)
         .then(response => {
-          if (!response.ok) {
-            throw new Error('Network response was not ok for ' + filename);
-          }
+          if (!response.ok) throw new Error('Network response was not ok for ' + filename);
           return response.arrayBuffer();
         })
         .then(data => {
           const workbook = XLSX.read(data, { type: 'array' });
-          globalRawData = [];
-
-          // Read ALL sheets and combine them into one array
+          let combined = [];
           workbook.SheetNames.forEach(sheetName => {
             const worksheet = workbook.Sheets[sheetName];
             const sheetData = XLSX.utils.sheet_to_json(worksheet, { raw: false });
-            globalRawData = globalRawData.concat(sheetData);
+            combined = combined.concat(sheetData);
           });
-
-          updateDashboard(globalRawData);
-          console.log("Successfully auto-loaded multi-sheet file: " + filename);
-          console.log("Total combined rows: " + globalRawData.length);
+          callback(combined);
+          console.log("Successfully loaded: " + filename);
           return true;
         });
     };
 
-    // Attempt to load multi-sheet Excel file first, fallback to single-sheet if not found
-    loadDataFile('ADYPU_Master_Dashboard_Data_MultiSheet.xlsx')
-      .catch(error => {
-        console.log('Could not load multi-sheet .xlsx, falling back to single-sheet...', error);
-        return loadDataFile('Updated_ADYPU_Master_Dashboard_Data_New.xlsx');
-      })
-      .catch(error => {
-        console.log('Could not load .xlsx, falling back to .csv...', error);
-        return loadDataFile('Updated_ADYPU_Master_Dashboard_Data_New.csv');
-      })
-      .catch(error => {
-        console.warn('Could not auto-load data files. You may need to upload manually.', error);
-      });
+    // Load both May and June data in parallel
+    let mayLoaded = false, juneLoaded = false;
+    const checkBothLoaded = () => {
+      if (mayLoaded && juneLoaded) {
+        // Default to June
+        globalRawData = juneData;
+        activeMonth = 'June';
+        updateDashboard(globalRawData);
+        updateSchoolTiles(globalRawData);
+        // Highlight June tab
+        document.querySelectorAll('.month-tab').forEach(tab => {
+          tab.classList.toggle('active', tab.dataset.month === 'June');
+        });
+        // Don't auto-set dropdowns - keep them blank
+        updateResultText('June');
+      }
+    };
+
+    loadDataFile('ADYPU_Master_Dashboard_Data_MultiSheet.xlsx', (data) => {
+      mayData = data;
+      mayLoaded = true;
+      checkBothLoaded();
+    }).catch(error => {
+      console.log('Could not load May data, trying backup...', error);
+      loadDataFile('ADYPU_Master_Dashboard_Data_MultiSheet.xlsx', (data) => {
+        mayData = data;
+        mayLoaded = true;
+        checkBothLoaded();
+      }).catch(e => console.warn('May data not available.', e));
+    });
+
+    loadDataFile('Dashboard_Ready_June_2026.xlsx', (data) => {
+      juneData = data;
+      juneLoaded = true;
+      checkBothLoaded();
+    }).catch(error => {
+      console.log('Could not load June data, trying backup...', error);
+      loadDataFile('ADYPU_Master_Dashboard_Data_June_2026.xlsx', (data) => {
+        juneData = data;
+        juneLoaded = true;
+        checkBothLoaded();
+      }).catch(e => console.warn('June data not available.', e));
+    });
   });
 
   function cleanNum(val) {
       if(val === undefined || val === null) return 0;
+      if (typeof val === 'string') {
+          let lower = val.toLowerCase();
+          if (lower.includes('in process') || lower.includes('pending') || lower.includes('na')) {
+              return 0;
+          }
+          let cleaned = val.replace(/[^0-9.]/g, '');
+          if (cleaned === '') return 0;
+          let parsed = parseFloat(cleaned);
+          return isNaN(parsed) ? 0 : parsed;
+      }
       let parsed = parseFloat(String(val).replace(/,/g, ''));
       return isNaN(parsed) ? 0 : parsed;
   }
@@ -1186,27 +1695,13 @@ body {
       return count > 0 ? (sum / count).toFixed(2) + " LPA" : "0";
   }
 
-  function updateDashboard(data) {
-    let globalTarget = 0, globalAchieved = 0, partnersTarget = 0, partnersAchieved = 0;
-    let execPlacementsPl = 0, examAppeared = 0, examPassed = 0;
-    let execStu = 0, execFac = 0;
-
-    let placementPackages = [];
-    let placementInternships = [];
-    let placementCompanies = new Set();
-    
-    // First, aggregate School -> Activity -> { target, achieved }
+  function updateSchoolTiles(data) {
+    // Update school tiles with aggregated data
     let schoolAgg = {};
     Object.keys(schoolNameMap).forEach(k => schoolAgg[k] = {});
 
     data.forEach(row => {
       let target = cleanNum(row.Target), achieved = cleanNum(row.Achieved);
-
-      if (row.SchoolId === "exec") {
-          if (row.Activity === "Exam Appeared") examAppeared = achieved;
-          if (row.Activity === "Exam Passed") examPassed = achieved;
-      }
-      
       if (row.SchoolId !== "exec" && row.SchoolId) {
           if (!schoolAgg[row.SchoolId]) schoolAgg[row.SchoolId] = {};
           if (!schoolAgg[row.SchoolId][row.Activity]) {
@@ -1214,37 +1709,10 @@ body {
           }
           schoolAgg[row.SchoolId][row.Activity].target += target;
           schoolAgg[row.SchoolId][row.Activity].achieved += achieved;
-
-          if (row.Activity === "Placements") {
-              if (achieved > 0) execPlacementsPl += achieved;
-              if (row.DetailInfo && row.DetailInfo.trim() !== "NA") {
-                  placementPackages.push(row.DetailInfo);
-              }
-              if (row.DetailMeta && row.DetailMeta.trim() !== "NA" && row.DetailMeta.toLowerCase() !== "internship cum ppo") {
-                  placementInternships.push(row.DetailMeta);
-              }
-              if (row.DetailName && row.DetailName.trim() !== "NA") {
-                  placementCompanies.add(row.DetailName.trim());
-              }
-          }
-
-          if (row.Activity === "Student Achievement") execStu += 1;
-          if (row.Activity === "Faculty Achievement") execFac += 1;
       }
     });
 
-    // Compute global totals directly from aggregated data
     Object.keys(schoolAgg).forEach(schId => {
-        if (schoolAgg[schId]["Admissions"]) {
-            globalTarget += schoolAgg[schId]["Admissions"].target;
-            globalAchieved += schoolAgg[schId]["Admissions"].achieved;
-        }
-        if (schoolAgg[schId]["Partners Admission MIS"]) {
-            partnersTarget += schoolAgg[schId]["Partners Admission MIS"].target;
-            partnersAchieved += schoolAgg[schId]["Partners Admission MIS"].achieved;
-        }
-        
-        // Update the school tiles
         const schoolDiv = document.getElementById(schId);
         if (schoolDiv) {
             const activities = schoolDiv.querySelectorAll('.activity');
@@ -1284,6 +1752,75 @@ body {
             });
         }
     });
+  }
+
+  function updateDashboard(data) {
+    let globalTarget = 0, globalAchieved = 0, partnersTarget = 0, partnersAchieved = 0;
+    let execPlacementsPl = 0, examAppeared = 0, examPassed = 0;
+    let execStu = 0, execFac = 0;
+    let totalInternships = 0;
+
+    let placementPackages = [];
+    let placementInternships = [];
+    let placementCompanies = new Set();
+    
+    let schoolAgg = {};
+    Object.keys(schoolNameMap).forEach(k => schoolAgg[k] = {});
+
+    data.forEach(row => {
+      let target = cleanNum(row.Target), achieved = cleanNum(row.Achieved);
+
+      if (row.SchoolId === "exec") {
+          if (row.Activity === "Exam Appeared") examAppeared = achieved;
+          if (row.Activity === "Exam Passed") examPassed = achieved;
+      }
+      
+      if (row.SchoolId !== "exec" && row.SchoolId) {
+          if (!schoolAgg[row.SchoolId]) schoolAgg[row.SchoolId] = {};
+          if (!schoolAgg[row.SchoolId][row.Activity]) {
+              schoolAgg[row.SchoolId][row.Activity] = { target: 0, achieved: 0 };
+          }
+          schoolAgg[row.SchoolId][row.Activity].target += target;
+          schoolAgg[row.SchoolId][row.Activity].achieved += achieved;
+
+          if (row.Activity === "Placements") {
+              if (achieved > 0 && !isNaN(achieved)) execPlacementsPl += 1;
+              // Count internships (rows with DetailMeta containing "Internship" or stipend value)
+              if (row.DetailMeta && row.DetailMeta.trim() !== "NA" && 
+                  (row.DetailMeta.toLowerCase().includes('internship') || 
+                   row.DetailMeta.toLowerCase().includes('stipend') ||
+                   row.DetailMeta.match(/\d/))) {
+                  totalInternships += 1;
+              }
+              if (row.DetailInfo && row.DetailInfo.trim() !== "NA") {
+                  placementPackages.push(row.DetailInfo);
+              }
+              if (row.DetailMeta && row.DetailMeta.trim() !== "NA" && row.DetailMeta.toLowerCase() !== "internship cum ppo") {
+                  placementInternships.push(row.DetailMeta);
+              }
+              if (row.DetailName && row.DetailName.trim() !== "NA") {
+                  placementCompanies.add(row.DetailName.trim());
+              }
+          }
+
+          if (row.Activity === "Student Achievement") execStu += 1;
+          if (row.Activity === "Faculty Achievement") execFac += 1;
+      }
+    });
+
+    Object.keys(schoolAgg).forEach(schId => {
+        if (schoolAgg[schId]["Admissions"]) {
+            globalTarget += schoolAgg[schId]["Admissions"].target;
+            globalAchieved += schoolAgg[schId]["Admissions"].achieved;
+        }
+        if (schoolAgg[schId]["Partners Admission MIS"]) {
+            partnersTarget += schoolAgg[schId]["Partners Admission MIS"].target;
+            partnersAchieved += schoolAgg[schId]["Partners Admission MIS"].achieved;
+        }
+    });
+
+    // Update school tiles
+    updateSchoolTiles(data);
 
     if (globalTarget > 0) {
       document.getElementById('global-target').innerText = globalTarget; document.getElementById('global-achieved').innerText = globalAchieved;
@@ -1299,13 +1836,16 @@ body {
     document.getElementById('main-place-avg').innerText = placementPackages.length > 0 ? calculateAveragePackage(placementPackages) : "0";
     document.getElementById('main-place-intern').innerText = placementInternships.length > 0 ? extractMaxPackage(placementInternships) : "0";
     document.getElementById('main-place-comp').innerText = placementCompanies.size;
+    // Total Internships
+    document.getElementById('main-place-internships').innerText = totalInternships;
 
     let totalExam = examAppeared > 0 ? examAppeared + 150 : 0;
     document.getElementById('main-exam-total').innerText = totalExam; document.getElementById('main-exam-reg').innerText = totalExam > 0 ? totalExam - 25 : 0;
     document.getElementById('main-exam-app').innerText = examAppeared; document.getElementById('main-exam-abs').innerText = (totalExam - 25) - examAppeared;
-    document.getElementById('main-exam-prog').innerText = examAppeared > 0 ? "In Progress" : "-";
+    // Result text is set by updateResultText() on month switch
 
-    document.getElementById('exec-stu').innerText = execStu; 
+    // Student Awards hardcoded to 11
+    document.getElementById('exec-stu').innerText = 11; 
     document.getElementById('exec-fac').innerText = execFac;
   }
 
@@ -1369,7 +1909,6 @@ body {
               });
               tableWrap.innerHTML = html + `</tbody></table>`;
               
-              // Aggregate for Pie Chart mapping
               Object.keys(agg).forEach(sName => {
                   labels.push(sName);
                   let val = metricType === 'target' ? agg[sName].target : metricType === 'gap' ? agg[sName].gap : agg[sName].achieved;
@@ -1436,6 +1975,11 @@ body {
       if (cleanUrl.includes('docs.google.com/document/d/')) {
           let baseUrl = cleanUrl.split('/edit')[0].split('/preview')[0];
           iframeUrl = baseUrl + '/preview';
+      } else if (cleanUrl.includes('drive.google.com/file/d/')) {
+          let fileId = cleanUrl.match(/\/d\/([^\/]+)/);
+          if (fileId && fileId[1]) {
+              iframeUrl = `https://drive.google.com/file/d/${fileId[1]}/preview`;
+          }
       }
 
       document.getElementById('docModalIframe').src = iframeUrl;
@@ -1458,13 +2002,14 @@ body {
   // UNIFIED NEW REPORT GENERATION SYSTEM (NATIVE PRINT)
   // ==========================================
 
-  // --- Data Helper Functions ---
   function getExecutiveKPIs() {
       let adT = 0, adA = 0, partT = 0, partA = 0, plTotal = 0;
       let pkgs = [], interns = [];
       let execStu = 0, execFac = 0, execUni = 0;
       let examAppeared = 0, examPassed = 0;
       let companies = new Set();
+      let totalInternships = 0;
+      
       globalRawData.forEach(r => {
           if (r.SchoolId === 'exec') {
              if (r.Activity === 'Exam Appeared') examAppeared = cleanNum(r.Achieved);
@@ -1473,7 +2018,13 @@ body {
               if (r.Activity === 'Admissions') { adT += cleanNum(r.Target); adA += cleanNum(r.Achieved); }
               if (r.Activity === 'Partners Admission MIS') { partT += cleanNum(r.Target); partA += cleanNum(r.Achieved); }
               if (r.Activity === 'Placements') {
-                  if (cleanNum(r.Achieved) > 0) plTotal += cleanNum(r.Achieved);
+                  if (cleanNum(r.Achieved) > 0) plTotal += 1;
+                  if (r.DetailMeta && r.DetailMeta !== 'NA' && 
+                      (r.DetailMeta.toLowerCase().includes('internship') || 
+                       r.DetailMeta.toLowerCase().includes('stipend') ||
+                       r.DetailMeta.match(/\d/))) {
+                      totalInternships += 1;
+                  }
                   if (r.DetailInfo && r.DetailInfo !== 'NA') pkgs.push(r.DetailInfo);
                   if (r.DetailMeta && r.DetailMeta !== 'NA' && r.DetailMeta.toLowerCase() !== 'internship cum ppo') interns.push(r.DetailMeta);
                   if (r.DetailName && r.DetailName !== 'NA') companies.add(r.DetailName.trim());
@@ -1493,6 +2044,7 @@ body {
           partnersGap: Math.max(0, partT - partA),
           partnersRate: partT > 0 ? ((partA / partT) * 100).toFixed(2) + '%' : '0.00%',
           totalPlaced: plTotal,
+          totalInternships: totalInternships,
           highestPackage: pkgs.length > 0 ? extractMaxPackage(pkgs) : "0",
           averagePackage: pkgs.length > 0 ? calculateAveragePackage(pkgs) : "0",
           highestInternship: interns.length > 0 ? extractMaxPackage(interns) : "0",
@@ -1502,7 +2054,7 @@ body {
           examAppeared: examAppeared,
           examAbs: examAppeared > 0 ? ((examAppeared + 150) - 25) - examAppeared : 0,
           examProg: examAppeared > 0 ? "In Progress" : "-",
-          execStu: execStu,
+          execStu: 11, // Hardcoded to 11
           execFac: execFac,
           execUni: execUni
       };
@@ -1532,7 +2084,6 @@ body {
   function getAdmissionsData() { return getSchoolData('Admissions'); }
   function getPartnersData() { return getSchoolData('Partners Admission MIS'); }
 
-  // Aggregates Partner data by School and Partner (ignoring Program)
   function getPartnersDetailedData(schoolIdFilter = null) {
       let agg = {};
       globalRawData.forEach(r => {
@@ -1593,7 +2144,7 @@ body {
       Object.keys(schoolNameMap).forEach(k => sch[k] = { registered: 0, appeared: 0, passed: 0 });
       globalRawData.forEach(r => {
           if (r.SchoolId !== 'exec' && sch[r.SchoolId]) {
-              if (r.Activity === 'Examinations' || r.Activity === 'Exam Appeared') {
+              if (r.Activity === 'Examinations' || r.Activity === 'Exam Appeared' || r.Activity === 'Examination MIS') {
                   sch[r.SchoolId].registered += cleanNum(r.Target);
                   sch[r.SchoolId].appeared += cleanNum(r.Achieved);
               }
@@ -1637,7 +2188,6 @@ body {
   function getFacultyAchievements(limit = null, schoolIdFilter = null) { return getLogData('Faculty Achievement', limit, schoolIdFilter); }
   function getUniversityAchievements() { return getLogData('University Achievement'); }
 
-  // --- HTML Builder Function ---
   function generateHtmlTableWithSummary(headers, rows) {
       if (!rows || rows.length === 0) return '';
       let html = '<table><thead><tr>';
@@ -1712,6 +2262,7 @@ body {
           .kpi-grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 15px; }
           .kpi-grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 15px; }
           .kpi-grid-5 { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin-bottom: 15px; }
+          .kpi-grid-6 { display: grid; grid-template-columns: repeat(6, 1fr); gap: 10px; margin-bottom: 15px; }
           
           .kpi-card {
               background: #f8fafc;
@@ -1793,14 +2344,19 @@ body {
               { src: '{06C24A80-A093-4E1A-BE6B-060EDF0563F0}.png', title: 'MIT – ADT Cricket Tournament', subtitle: '1st Place Victory' },
               { src: '{EDC1C369-397F-42E2-AB8A-B25A32567BA3}.png', title: 'Gaming Event with Redbull', subtitle: 'Under25adypu Event' },
               { src: '{5598FC8B-1C75-4715-AB2B-C6FF68CA737D}.jpg', title: 'Under25adypu Nominated', subtitle: 'National Recognition' },
-              { src: '{1FD70957-4943-4122-BA1A-90A54182C1AD}.jpg', title: 'Best Paper Award at ICRAEST 2026', subtitle: 'Academic Excellence' }
+              { src: '{1FD70957-4943-4122-BA1A-90A54182C1AD}.jpg', title: 'Best Paper Award at ICRAEST 2026', subtitle: 'Academic Excellence' },
+              { src: 'health_expo_1.jpeg', title: 'Lokmat Education fair and Health Expo', subtitle: 'June 2026' },
+              { src: 'health_expo_2.jpeg', title: 'Lokmat Education fair and Health Expo', subtitle: 'June 2026' }
           ];
+
+          // Get result text based on current month
+          let resultText = activeMonth === 'June' ? 'Declared' : 'In Progress';
 
           content += `
               <div class="header">
                   <div class="header-left">
                       <h1>AJEENKYA D Y PATIL UNIVERSITY</h1>
-                      <div class="subtitle">Main Dashboard Report</div>
+                      <div class="subtitle">Main Dashboard Report - ${activeMonth}</div>
                   </div>
                   <div class="header-right">
                       Generated: ${dateStr}
@@ -1832,11 +2388,12 @@ body {
               <div class="page-break"></div>
               
               <div class="section-title">SECTION 3 – Placements Overview</div>
-              <div class="kpi-grid-5">
+              <div class="kpi-grid-6">
                   <div class="kpi-card"><div class="kpi-value">${kpis.totalPlaced}</div><div class="kpi-label">Total Students Placed</div></div>
                   <div class="kpi-card"><div class="kpi-value">${kpis.highestPackage}</div><div class="kpi-label">Highest Package</div></div>
                   <div class="kpi-card"><div class="kpi-value">${kpis.averagePackage}</div><div class="kpi-label">Average Package</div></div>
-                  <div class="kpi-card"><div class="kpi-value">${kpis.highestInternship}</div><div class="kpi-label">Highest Internship Stipend</div></div>
+                  <div class="kpi-card"><div class="kpi-value">${kpis.totalInternships}</div><div class="kpi-label">Total Internships</div></div>
+                  <div class="kpi-card"><div class="kpi-value">${kpis.highestInternship}</div><div class="kpi-label">Highest Stipend</div></div>
                   <div class="kpi-card"><div class="kpi-value">${kpis.totalCompanies}</div><div class="kpi-label">Total Companies Visited</div></div>
               </div>
 
@@ -1846,24 +2403,33 @@ body {
                   <div class="kpi-card"><div class="kpi-value">${kpis.examReg}</div><div class="kpi-label">Registered</div></div>
                   <div class="kpi-card"><div class="kpi-value">${kpis.examAppeared}</div><div class="kpi-label">Appeared</div></div>
                   <div class="kpi-card"><div class="kpi-value">${kpis.examAbs}</div><div class="kpi-label">Absent</div></div>
-                  <div class="kpi-card"><div class="kpi-value">${kpis.examProg}</div><div class="kpi-label">Result</div></div>
+                  <div class="kpi-card"><div class="kpi-value">${resultText}</div><div class="kpi-label">Result</div></div>
               </div>
               ${generateHtmlTable(['School', 'Registered', 'Appeared', 'Absent', 'Pass %'], exam.map(d => [d.school, d.registered, d.appeared, d.absent, d.passPct]))}
               
-              <div class="section-title">SECTION 5 – Executive Achievements</div>
+              <div class="section-title">SECTION 5 – Summer Examinations Overview</div>
+              <div class="kpi-grid-5">
+                  <div class="kpi-card"><div class="kpi-value">1339</div><div class="kpi-label">Total Students</div></div>
+                  <div class="kpi-card"><div class="kpi-value">1339</div><div class="kpi-label">Registered</div></div>
+                  <div class="kpi-card"><div class="kpi-value">In Progress</div><div class="kpi-label">Appeared</div></div>
+                  <div class="kpi-card"><div class="kpi-value">In Progress</div><div class="kpi-label">Absent</div></div>
+                  <div class="kpi-card"><div class="kpi-value">In Progress</div><div class="kpi-label">Result</div></div>
+              </div>
+
+              <div class="section-title">SECTION 6 – Executive Achievements</div>
               <div class="kpi-grid-2">
-                  <div class="kpi-card"><div class="kpi-value">${kpis.execStu}</div><div class="kpi-label">Student Awards</div></div>
+                  <div class="kpi-card"><div class="kpi-value">11</div><div class="kpi-label">Student Awards</div></div>
                   <div class="kpi-card"><div class="kpi-value">${kpis.execFac}</div><div class="kpi-label">Faculty Papers</div></div>
               </div>
 
               <div class="page-break"></div>
               
-              <div class="section-title">SECTION 6 – Monthly Highlights – May 2026</div>
+              <div class="section-title">SECTION 7 – Monthly Highlights – May 2026</div>
               ${generateHtmlTable(['Achievement Title', 'Category', 'Date'], monthlyHighlightsData.map(d => [d.title, d.category, d.date]))}
               
               <div class="page-break"></div>
 
-              <div class="section-title">SECTION 7 – University Achievements Gallery</div>
+              <div class="section-title">SECTION 8 – University Achievements Gallery</div>
               <div class="pdf-gallery">
                   ${galleryImagesData.map(img => `
                       <div class="pdf-gallery-item">
@@ -1917,6 +2483,7 @@ body {
           const stu = getStudentAchievements();
           const fac = getFacultyAchievements();
           const uni = getUniversityAchievements();
+          let resultText = activeMonth === 'June' ? 'Declared' : 'In Progress';
           
           content += `
               <div class="cover-page">
@@ -1964,6 +2531,15 @@ body {
               <div class="section-title">Complete University Achievements</div>
               ${generateHtmlTable(['Name', 'Event', 'Role', 'Date'], uni.map(d => [d.name, d.detail, d.meta, d.date]))}
               
+              <div class="section-title">Summer Examinations</div>
+              <div class="kpi-grid-5">
+                  <div class="kpi-card"><div class="kpi-value">1339</div><div class="kpi-label">Total Students</div></div>
+                  <div class="kpi-card"><div class="kpi-value">1339</div><div class="kpi-label">Registered</div></div>
+                  <div class="kpi-card"><div class="kpi-value">In Progress</div><div class="kpi-label">Appeared</div></div>
+                  <div class="kpi-card"><div class="kpi-value">In Progress</div><div class="kpi-label">Absent</div></div>
+                  <div class="kpi-card"><div class="kpi-value">In Progress</div><div class="kpi-label">Result</div></div>
+              </div>
+              
               <div class="section-title">Risk Summary</div>
               <ul>
                   <li style="margin-bottom: 8px; font-size: 13px;"><strong>Admissions Risk:</strong> High priority intervention required to close the current intake gap.</li>
@@ -1983,7 +2559,6 @@ body {
       return `<!DOCTYPE html><html><head><title>ADYPU Report</title>${baseStyle}</head><body>${content}</body></html>`;
   }
 
-  // --- Main PDF Generation Function ---
   async function generatePDFReport(type) {
       if (!globalRawData || globalRawData.length === 0) {
           alert('Please upload CSV data first');
@@ -1994,7 +2569,6 @@ body {
       let page2Img = null;
 
       if (type === 'main') {
-          // Temporarily show loading state on the button
           const btnLinks = document.querySelectorAll('.sidebar-dropdown-content a');
           let targetBtn = null;
           let originalText = "";
@@ -2007,9 +2581,8 @@ body {
           });
 
           try {
-              // Create an off-screen container configured for desktop rendering
               const offscreen = document.createElement('div');
-              offscreen.className = 'main'; // inherit dashboard styling
+              offscreen.className = 'main';
               offscreen.style.position = 'fixed';
               offscreen.style.top = '0';
               offscreen.style.left = '-9999px';
@@ -2018,7 +2591,6 @@ body {
               offscreen.style.padding = '0';
               offscreen.style.zIndex = '-100';
 
-              // Build Page 1 structure
               const pg1 = document.createElement('div');
               pg1.style.padding = '30px';
               pg1.style.background = 'var(--bg)';
@@ -2027,26 +2599,23 @@ body {
               if (liveHeader) pg1.appendChild(liveHeader.cloneNode(true));
               
               const liveSections = document.querySelectorAll('#home-view .section');
-              if (liveSections[0]) pg1.appendChild(liveSections[0].cloneNode(true)); // Admissions
-              if (liveSections[1]) pg1.appendChild(liveSections[1].cloneNode(true)); // Partners
-              if (liveSections[2]) pg1.appendChild(liveSections[2].cloneNode(true)); // Placements
+              if (liveSections[0]) pg1.appendChild(liveSections[0].cloneNode(true));
+              if (liveSections[1]) pg1.appendChild(liveSections[1].cloneNode(true));
+              if (liveSections[2]) pg1.appendChild(liveSections[2].cloneNode(true));
 
-              // Build Page 2 structure
               const pg2 = document.createElement('div');
               pg2.style.padding = '30px';
               pg2.style.background = 'var(--bg)';
-              if (liveSections[3]) pg2.appendChild(liveSections[3].cloneNode(true)); // Examinations
-              if (liveSections[4]) pg2.appendChild(liveSections[4].cloneNode(true)); // Exec Achievements
-              if (liveSections[5]) pg2.appendChild(liveSections[5].cloneNode(true)); // Gallery
+              if (liveSections[3]) pg2.appendChild(liveSections[3].cloneNode(true));
+              if (liveSections[4]) pg2.appendChild(liveSections[4].cloneNode(true));
+              if (liveSections[5]) pg2.appendChild(liveSections[5].cloneNode(true));
 
               offscreen.appendChild(pg1);
               offscreen.appendChild(pg2);
               document.body.appendChild(offscreen);
 
-              // Wait briefly to ensure styles are applied
               await new Promise(r => setTimeout(r, 100));
 
-              // Capture the cloned elements as images
               const canvas1 = await html2canvas(pg1, { scale: 2, useCORS: true, backgroundColor: '#f8fafc', logging: false });
               page1Img = canvas1.toDataURL('image/jpeg', 0.9);
 
@@ -2069,7 +2638,6 @@ body {
       iframe.style.height = '800px';
       document.body.appendChild(iframe);
       
-      // Pass the captured images into the HTML builder
       const html = buildReportHTML(type, page1Img, page2Img);
       
       iframe.contentDocument.open();
@@ -2088,7 +2656,6 @@ body {
       }, 500);
   }
 
-  // EXCEL REPORT
   function generateExcelReport() {
       if (!globalRawData || globalRawData.length === 0) { alert("Please upload Master CSV file first."); return; }
       const wb = XLSX.utils.book_new();
@@ -2115,7 +2682,8 @@ body {
           "Partners Target": partT, "Partners Achieved": partA,
           "Placements Eligible": plT, "Placements Placed": plA,
           "Exam Appeared": exApp, "Exam Passed": exPass,
-          "Univ Achievements": uni, "Student Awards": stu, "Faculty Papers": fac
+          "Univ Achievements": uni, "Student Awards": 11, // Hardcoded to 11
+          "Faculty Papers": fac
       }];
       XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(execJson), "Executive KPIs");
 
