@@ -220,15 +220,16 @@ body {
   text-align: center;
   padding: 24px 18px;
 }
+.meetings-grid .kpi h3 {
+  font-size: 15px;
+  text-transform: none;
+  color: var(--text);
+  margin-bottom: 8px;
+}
 .meetings-grid .kpi .value {
   font-size: 18px;
-  font-weight: 700;
-  color: var(--primary);
-}
-.meetings-grid .kpi .meeting-date {
-  font-size: 14px;
+  font-weight: 600;
   color: #64748b;
-  margin-top: 6px;
 }
 @media (max-width: 1024px) {
   .meetings-grid {
@@ -365,16 +366,20 @@ body {
 .detail-table th { background: #f8fafc; padding: 10px 12px; font-weight: 700; color: #475569; border-bottom: 2px solid #e2e8f0; position: sticky; top: 0; word-wrap: break-word; z-index: 10; }
 .detail-table td { padding: 10px 12px; border-bottom: 1px solid #f1f5f9; color: #334155; word-wrap: break-word; }
 
-/* UPCOMING SCHEDULE */
+/* UPCOMING SCHEDULE - CENTERED */
 .upcoming-wrapper {
   background: var(--card);
   border-radius: 18px;
   padding: 20px;
   box-shadow: 0 6px 18px rgba(15,23,42,.06);
   overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 .upcoming-wrapper img {
-  width: 100%;
+  max-width: 100%;
+  width: auto;
   height: auto;
   display: block;
   border-radius: 12px;
@@ -386,6 +391,38 @@ body {
 .mobile-header { display: none; }
 .sidebar-close-btn { display: none; }
 .sidebar-overlay { display: none; }
+
+/* PRINT STYLES */
+@media print {
+  .sidebar, .mobile-header, .sidebar-overlay, .sidebar-close-btn, .trend-comparison, .month-tabs, .no-print, [data-html2canvas-ignore] {
+    display: none !important;
+  }
+  .main {
+    margin: 0 !important;
+    padding: 20px !important;
+    width: 100% !important;
+  }
+  .kpi, .meetings-grid .kpi {
+    box-shadow: none !important;
+    border: 1px solid #e2e8f0 !important;
+    break-inside: avoid;
+  }
+  .meetings-grid {
+    break-inside: avoid;
+  }
+  .upcoming-wrapper {
+    break-inside: avoid;
+  }
+  .carousel-wrapper {
+    break-inside: avoid;
+  }
+  .section {
+    page-break-inside: avoid;
+  }
+  .slide-content img {
+    max-height: 200px;
+  }
+}
 
 @media (max-width: 1024px) {
   .mobile-header {
@@ -623,44 +660,39 @@ body {
       </div>
       <!-- END TOP GALLERY SECTION -->
 
-      <!-- NEW SECTION: Statutory and Academic Meetings Conducted -->
+      <!-- Statutory and Academic Meetings Conducted - NO data-html2canvas-ignore -->
       <div class="section">
         <div class="section-title"><span class="dot"></span><h2>Statutory and Academic Meetings Conducted</h2></div>
         <div class="meetings-grid">
-          <div class="kpi">
+          <!-- Card 1: Board of Studies -->
+          <div class="kpi clickable" onclick="openDocModal('Statutory and Academic Meetings', 'https://docs.google.com/document/d/1UxaoVpjqvtXP1NOTFh10bJi1gyCZfhvE/preview')">
             <h3>Board of Studies (BoS)</h3>
             <div class="value">24/04/2026</div>
-            <div class="meeting-date">Meeting held</div>
           </div>
-          <div class="kpi">
+          <!-- Card 2: Academic Council -->
+          <div class="kpi clickable" onclick="openDocModal('Statutory and Academic Meetings', 'https://docs.google.com/document/d/1UxaoVpjqvtXP1NOTFh10bJi1gyCZfhvE/preview')">
             <h3>Academic Council</h3>
             <div class="value">25/05/2026</div>
-            <div class="meeting-date">Meeting held</div>
           </div>
-          <div class="kpi">
+          <!-- Card 3: Meeting with Knowledge Partner(s) -->
+          <div class="kpi clickable" onclick="openDocModal('Statutory and Academic Meetings', 'https://docs.google.com/document/d/1UxaoVpjqvtXP1NOTFh10bJi1gyCZfhvE/preview')">
             <h3>Meeting with Knowledge Partner(s)</h3>
             <div class="value">25/05/2026</div>
-            <div class="meeting-date">Meeting held</div>
           </div>
-          <div class="kpi">
-            <h3>Curriculum Review and Revision</h3>
-            <div class="value" style="color: #94a3b8; font-size: 20px;">-</div>
-            <div class="meeting-date">Pending</div>
-          </div>
-          <div class="kpi">
+          <!-- Card 4: IQAC Meeting for NAAC/NBA Accreditation -->
+          <div class="kpi clickable" onclick="openDocModal('Statutory and Academic Meetings', 'https://docs.google.com/document/d/1UxaoVpjqvtXP1NOTFh10bJi1gyCZfhvE/preview')">
             <h3>IQAC Meeting for NAAC/NBA Accreditation</h3>
             <div class="value">24/06/2026</div>
-            <div class="meeting-date">Meeting held</div>
           </div>
-          <div class="kpi">
+          <!-- Card 5: Budget Planning -->
+          <div class="kpi clickable" onclick="openDocModal('Statutory and Academic Meetings', 'https://docs.google.com/document/d/1UxaoVpjqvtXP1NOTFh10bJi1gyCZfhvE/preview')">
             <h3>Budget Planning</h3>
             <div class="value">24/06/2026</div>
-            <div class="meeting-date">Meeting held</div>
           </div>
-          <div class="kpi">
+          <!-- Card 6: Centre of Excellence (CoE) Planning -->
+          <div class="kpi clickable" onclick="openDocModal('Statutory and Academic Meetings', 'https://docs.google.com/document/d/1UxaoVpjqvtXP1NOTFh10bJi1gyCZfhvE/preview')">
             <h3>Centre of Excellence (CoE) Planning</h3>
             <div class="value">25/06/2026</div>
-            <div class="meeting-date">Meeting held</div>
           </div>
         </div>
       </div>
@@ -930,7 +962,7 @@ body {
         </div>
       </div>
 
-      <div class="section" data-html2canvas-ignore>
+      <div class="section">
         <div class="section-title"><span class="dot"></span><h2>ADYPU INCUBATOR PERFORMANCE & ROADMAP</h2></div>
         <div class="kpis">
           <div class="kpi clickable" style="text-align: center; padding: 30px 20px;" onclick="openDocModal('ADYPU Incubator Portfolio', 'https://drive.google.com/file/d/1RaXdR6tHVa1GmDYaKD0GTraoJXHcRB1z/preview')">
@@ -948,13 +980,13 @@ body {
         </div>
       </div>
 
-      <!--- NEW SECTION: Upcoming Schedule --->
-      <div class="section" data-html2canvas-ignore>
+      <!-- Upcoming Schedule - NO data-html2canvas-ignore -->
+      <div class="section">
         <div class="section-title"><span class="dot"></span><h2>Upcoming Schedule</h2></div>
-        <div class="upcoming-wrapper" style="background: var(--card); border-radius: 18px; padding: 20px; box-shadow: 0 6px 18px rgba(15,23,42,.06); text-align: center;">
-          <img src="upcoming schedule.jpeg" alt="Upcoming Schedule" style="max-width: 60%; max-height: 500px; width: auto; height: auto; object-fit: contain; border-radius: 8px;" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+        <div class="upcoming-wrapper">
+          <img src="upcoming schedule.jpeg" alt="Upcoming Schedule" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
           <div style="display: none; text-align: center; padding: 40px 20px; color: #94a3b8;">
-          <p>Upcoming schedule image not available. Please upload "upcoming schedule.jpeg".</p>
+            <p>Upcoming schedule image not available. Please upload "upcoming schedule.jpeg".</p>
           </div>
         </div>
       </div>
@@ -2591,36 +2623,32 @@ body {
               offscreen.style.padding = '0';
               offscreen.style.zIndex = '-100';
 
+              // Get ALL sections from home-view, excluding those with data-html2canvas-ignore
+              const allSections = document.querySelectorAll('#home-view .section');
               const pg1 = document.createElement('div');
               pg1.style.padding = '30px';
               pg1.style.background = 'var(--bg)';
               
+              // Add header
               const liveHeader = document.querySelector('.dashboard-header');
               if (liveHeader) pg1.appendChild(liveHeader.cloneNode(true));
               
-              const liveSections = document.querySelectorAll('#home-view .section');
-              if (liveSections[0]) pg1.appendChild(liveSections[0].cloneNode(true));
-              if (liveSections[1]) pg1.appendChild(liveSections[1].cloneNode(true));
-              if (liveSections[2]) pg1.appendChild(liveSections[2].cloneNode(true));
+              // Add all non-ignored sections to pg1 (will be split across pages by the PDF)
+              allSections.forEach(section => {
+                  // Skip sections with data-html2canvas-ignore attribute
+                  if (!section.hasAttribute('data-html2canvas-ignore')) {
+                      pg1.appendChild(section.cloneNode(true));
+                  }
+              });
 
-              const pg2 = document.createElement('div');
-              pg2.style.padding = '30px';
-              pg2.style.background = 'var(--bg)';
-              if (liveSections[3]) pg2.appendChild(liveSections[3].cloneNode(true));
-              if (liveSections[4]) pg2.appendChild(liveSections[4].cloneNode(true));
-              if (liveSections[5]) pg2.appendChild(liveSections[5].cloneNode(true));
-
+              // We only need one page now since all sections are included
               offscreen.appendChild(pg1);
-              offscreen.appendChild(pg2);
               document.body.appendChild(offscreen);
 
               await new Promise(r => setTimeout(r, 100));
 
-              const canvas1 = await html2canvas(pg1, { scale: 2, useCORS: true, backgroundColor: '#f8fafc', logging: false });
+              const canvas1 = await html2canvas(pg1, { scale: 2, useCORS: true, backgroundColor: '#f8fafc', logging: false, height: pg1.scrollHeight });
               page1Img = canvas1.toDataURL('image/jpeg', 0.9);
-
-              const canvas2 = await html2canvas(pg2, { scale: 2, useCORS: true, backgroundColor: '#f8fafc', logging: false });
-              page2Img = canvas2.toDataURL('image/jpeg', 0.9);
 
               document.body.removeChild(offscreen);
           } catch (e) {
@@ -2638,7 +2666,7 @@ body {
       iframe.style.height = '800px';
       document.body.appendChild(iframe);
       
-      const html = buildReportHTML(type, page1Img, page2Img);
+      const html = buildReportHTML(type, page1Img, null);
       
       iframe.contentDocument.open();
       iframe.contentDocument.write(html);
