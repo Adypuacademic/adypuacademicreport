@@ -188,6 +188,33 @@ body {
 .header-top h1 { margin: 0; font-size: 32px; }
 .header-top p { margin: 8px 0 0; opacity: 0.95; font-size: 16px; }
 
+/* FLOATING BANNER — overlay on right side, content keeps full width */
+.dashboard-header{position:relative;}
+.header-banner-float{
+  position:absolute;
+  right:25px;
+  bottom:105px;
+  width:520px;
+  border-radius:14px;
+  overflow:hidden;
+  z-index:1;
+  box-shadow:0 8px 24px rgba(0,0,0,.25);
+}
+.header-banner-float img{
+  width:100%;
+  height:auto;
+  display:block;
+}
+@media(max-width:1200px){
+  .header-banner-float{width:400px;}
+}
+@media(max-width:1024px){
+  .header-banner-float{width:300px;right:15px;}
+}
+@media(max-width:768px){
+  .header-banner-float{display:none;}
+}
+
 .month-tabs { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 20px; }
 .month-tab { padding: 8px 16px; border-radius: 6px; border: none; font-weight: 600; cursor: pointer; background: rgba(255,255,255,0.2); color: #fff; transition: 0.2s; }
 .month-tab.active { background: #fff; color: var(--primary); }
@@ -484,7 +511,10 @@ body {
 
 @media (max-width: 768px) {
   .kpis, .kpis-compact, .activity-grid, .risk-grid, .meetings-grid { grid-template-columns: 1fr !important; }
-  
+
+  .banner-wrapper { margin: 0 -15px 15px; }
+  .dashboard-banner { height: 140px; }
+
   .dashboard-header .header-top h1 { font-size: 24px; }
   .section-title h2 { font-size: 20px; }
   .school-header h2 { font-size: 24px; }
@@ -591,7 +621,7 @@ body {
             <p>Academic Session: 2026-2027</p>
           </div>
         </div>
-        
+
         <div class="month-tabs" data-html2canvas-ignore>
           <button class="month-tab" data-month="May" onclick="switchMonth('May')">May</button>
           <button class="month-tab active" data-month="June" onclick="switchMonth('June')">June</button>
@@ -613,13 +643,17 @@ body {
             <option value="">Select Month</option>
             <option value="May">May</option>
             <option value="June">June</option>
-          </select> vs 
+          </select> vs
           <select id="compareMonth2">
             <option value="">Select Month</option>
             <option value="May">May</option>
             <option value="June">June</option>
           </select>
           <button onclick="compareMonths()">Compare</button>
+        </div>
+
+        <div class="header-banner-float">
+          <img src="dashboard_banner.jpeg" alt="ADYPU Dashboard Banner">
         </div>
       </div>
 
