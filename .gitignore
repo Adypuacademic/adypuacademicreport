@@ -1,0 +1,19 @@
+# Working notes / handoff docs — local only
+*.md
+
+# Backups from refactors
+*.bak
+*.orig
+index.html.bak
+
+# OS / editor junk
+Thumbs.db
+desktop.ini
+.DS_Store
+.vscode/
+.idea/
+
+# Temp + generated output
+~$*
+*.tmp
+ADYPU_Master_Data_*.xlsx
