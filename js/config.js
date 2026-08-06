@@ -77,20 +77,18 @@
 
   function extractMaxPackage(stringArr) {
       let max = 0;
-      let maxStr = "0";
       stringArr.forEach(str => {
           if(str && typeof str === 'string') {
-              let match = str.match(/(\d+(\.\d+)?)/); 
+              let match = str.match(/(\d+(\.\d+)?)/);
               if(match && match[0]) {
                   let num = parseFloat(match[0]);
                   if(num > max) {
                       max = num;
-                      maxStr = str;
                   }
               }
           }
       });
-      return maxStr;
+      return max > 0 ? max + " LPA" : "0";
   }
   
   function calculateAveragePackage(stringArr) {
