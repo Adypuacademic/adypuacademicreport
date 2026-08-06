@@ -53,16 +53,17 @@
       }).catch(e => console.warn('May data not available.', e));
     });
 
-    loadDataFile('Dashboard_Ready_June_2026.xlsx', (data) => {
-      juneData = data;
-      juneLoaded = true;
-      checkBothLoaded();
-    }).catch(error => {
-      console.log('Could not load June data, trying backup...', error);
-      loadDataFile('ADYPU_Master_Dashboard_Data_June_2026.xlsx', (data) => {
-        juneData = data;
+    fetch('ADYPU_Master_Dashboard_Data_June_2026.xlsx')
+      .then(response => {
+        if (!response.ok) throw new Error('Network response was not ok for June raw file');
+        return response.arrayBuffer();
+      })
+      .then(data => {
+        const workbook = XLSX.read(data, { type: 'array' });
+        juneData = JuneAdapter.buildJuneData(workbook);
         juneLoaded = true;
         checkBothLoaded();
-      }).catch(e => console.warn('June data not available.', e));
-    });
+        console.log('Successfully loaded and adapted: ADYPU_Master_Dashboard_Data_June_2026.xlsx');
+      })
+      .catch(error => console.warn('June data not available.', error));
   });
