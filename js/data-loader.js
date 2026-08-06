@@ -57,12 +57,5 @@
       juneData = data;
       juneLoaded = true;
       checkBothLoaded();
-    }).catch(error => {
-      console.log('Could not load June data, trying backup...', error);
-      loadDataFile('ADYPU_Master_Dashboard_Data_June_2026.xlsx', (data) => {
-        juneData = data;
-        juneLoaded = true;
-        checkBothLoaded();
-      }).catch(e => console.warn('June data not available.', e));
-    });
+    }).catch(error => console.warn('June data not available.', error));
   });
