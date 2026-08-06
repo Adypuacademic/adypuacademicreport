@@ -30,6 +30,10 @@
     return (val === null || val === undefined || val === '') ? 'NA' : String(val);
   }
 
+  // Faculty-instructed override: raw sheet's Engineering subtotal (2254/659) undercounts
+  // late-added admissions the office wants reflected. Update/remove per faculty guidance.
+  const ADMISSIONS_OVERRIDE = { eng: { Target: 2558, Achieved: 775 } };
+
   function transformAdmissions(sheetRows) {
     const out = [];
     sheetRows.forEach(row => {
@@ -41,11 +45,12 @@
       if (target === null || target === undefined || String(target).trim() === '') return;
       const schoolId = normalizeSchool(school);
       if (!schoolId || schoolId === 'TOTAL') return;
+      const override = ADMISSIONS_OVERRIDE[schoolId];
       out.push({
         SchoolId: schoolId,
         Activity: 'Admissions',
-        Target: target !== '' ? target : intake,
-        Achieved: juneCumulative || 0,
+        Target: override ? override.Target : (target !== '' ? target : intake),
+        Achieved: override ? override.Achieved : (juneCumulative || 0),
         DetailName: 'NA', DetailInfo: 'NA', DetailMeta: 'NA', DetailDate: 'NA'
       });
     });
