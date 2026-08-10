@@ -51,4 +51,7 @@ Open `http://localhost:8000`.
 
 ## Adding a New Month
 
-Drop the new raw report `.xlsx` in the root with the expected filename, matching the prior file's sheet/column structure. The adapter picks it up automatically on next load.
+1. Drop the raw report in the root as `ADYPU_Master_Dashboard_Data_<Month>_2026.xlsx`, matching the prior file's sheet/column structure.
+2. Add one entry to `SOURCES` in `js/data-loader.js` and set `DEFAULT_MONTH` if the new month should be the landing view.
+3. Enable the month's tab in `index.html` (drop `disabled`, add `onclick="switchMonth('<Month>')"`) and add it as an `<option>` in both compare dropdowns.
+4. If the admissions office has confirmed figures that differ from the raw sheet, add them to `ADMISSIONS_OVERRIDE` in `js/june-adapter.js` under the new month.

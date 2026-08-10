@@ -27,9 +27,8 @@
   let activePieChart = null;
   let globalRawData = [];
   let currentMonthData = [];
-  let mayData = [];
-  let juneData = [];
-  let activeMonth = 'June';
+  let monthData = { May: [], June: [], July: [] };
+  let activeMonth = 'July';
 
   Chart.register(ChartDataLabels);
   // ------------------------------------------
@@ -40,14 +39,12 @@
       tab.classList.toggle('active', tab.dataset.month === month);
     });
     activeMonth = month;
-    if (month === 'May' && mayData.length > 0) {
-      globalRawData = mayData;
-    } else if (month === 'June' && juneData.length > 0) {
-      globalRawData = juneData;
+    if ((monthData[month] || []).length > 0) {
+      globalRawData = monthData[month];
     } else {
       // fallback: use whatever data is available
-      if (mayData.length > 0) globalRawData = mayData;
-      else if (juneData.length > 0) globalRawData = juneData;
+      const loaded = Object.keys(monthData).find(m => monthData[m].length > 0);
+      if (loaded) globalRawData = monthData[loaded];
     }
     // Update comparison dropdowns to reflect current selection (but keep placeholder option)
     // Only set if they have values selected
@@ -66,13 +63,7 @@
   // ------------------------------------------
   function updateResultText(month) {
     const resultEl = document.getElementById('main-exam-prog');
-    if (month === 'June') {
-      resultEl.innerText = 'Declared';
-    } else if (month === 'May') {
-      resultEl.innerText = 'In Progress';
-    } else {
-      resultEl.innerText = 'Declared';
-    }
+    resultEl.innerText = month === 'May' ? 'In Progress' : 'Declared';
   }
 
   // ------------------------------------------
@@ -93,10 +84,10 @@
       return;
     }
     
-    let data1 = m1 === 'May' ? mayData : juneData;
-    let data2 = m2 === 'May' ? mayData : juneData;
+    let data1 = monthData[m1] || [];
+    let data2 = monthData[m2] || [];
     if (data1.length === 0 || data2.length === 0) {
-      alert('Data for one or both months is not loaded. Please ensure both May and June data are available.');
+      alert('Data for one or both months is not loaded. Please ensure both selected months are available.');
       return;
     }
     // Build comparison display in a modal

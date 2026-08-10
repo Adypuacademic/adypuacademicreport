@@ -30,11 +30,16 @@
     return (val === null || val === undefined || val === '') ? 'NA' : String(val);
   }
 
-  // Faculty-instructed override: raw sheet's Engineering subtotal (2254/659) undercounts
-  // late-added admissions the office wants reflected. Update/remove per faculty guidance.
-  const ADMISSIONS_OVERRIDE = { eng: { Target: 2558, Achieved: 775 } };
+  // Faculty-instructed override: raw sheet's Engineering subtotal undercounts late-added
+  // admissions the office wants reflected. Target 2558 holds the university total at 4009
+  // (PhD row carries no Target, so it is excluded from both sums). Achieved carries a
+  // constant +116 over the raw Engineering figure. Update/remove per faculty guidance.
+  const ADMISSIONS_OVERRIDE = {
+    June: { eng: { Target: 2558, Achieved: 775 } },
+    July: { eng: { Target: 2558, Achieved: 780 } }
+  };
 
-  function transformAdmissions(sheetRows) {
+  function transformAdmissions(sheetRows, overrides) {
     const out = [];
     sheetRows.forEach(row => {
       const school = row[0];
@@ -45,7 +50,7 @@
       if (target === null || target === undefined || String(target).trim() === '') return;
       const schoolId = normalizeSchool(school);
       if (!schoolId || schoolId === 'TOTAL') return;
-      const override = ADMISSIONS_OVERRIDE[schoolId];
+      const override = (overrides || {})[schoolId];
       out.push({
         SchoolId: schoolId,
         Activity: 'Admissions',
@@ -187,10 +192,11 @@
     return out;
   }
 
-  function buildJuneData(workbook) {
+  // month selects which admissions override applies; the sheet layout is identical month to month.
+  function buildMonthData(workbook, month) {
     const sheet = name => XLSX.utils.sheet_to_json(workbook.Sheets[name], { header: 1, raw: true });
     return [].concat(
-      transformAdmissions(sheet('ADYPU Admission MIS')),
+      transformAdmissions(sheet('ADYPU Admission MIS'), ADMISSIONS_OVERRIDE[month]),
       transformPartners(sheet('Partners Admission MIS')),
       transformPlacements(sheet('Placement Internship')),
       transformStudentAchievement(sheet('Student Achievement & Activitie')),
@@ -203,6 +209,6 @@
   window.JuneAdapter = {
     normalizeSchool, transformAdmissions, transformPartners, transformPlacements,
     transformStudentAchievement, transformFacultyAchievement, transformUniversityAchievement,
-    transformExaminationMIS, buildJuneData
+    transformExaminationMIS, buildMonthData
   };
 })();

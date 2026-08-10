@@ -350,7 +350,7 @@
           ];
 
           // Get result text based on current month
-          let resultText = activeMonth === 'June' ? 'Declared' : 'In Progress';
+          let resultText = activeMonth === 'May' ? 'In Progress' : 'Declared';
 
           content += `
               <div class="header">
@@ -483,7 +483,7 @@
           const stu = getStudentAchievements();
           const fac = getFacultyAchievements();
           const uni = getUniversityAchievements();
-          let resultText = activeMonth === 'June' ? 'Declared' : 'In Progress';
+          let resultText = activeMonth === 'May' ? 'In Progress' : 'Declared';
           
           content += `
               <div class="cover-page">

@@ -75,33 +75,30 @@
       return isNaN(parsed) ? 0 : parsed;
   }
 
+  // Package cells sometimes carry monthly stipends ("60k stipend", "15k") instead of an
+  // annual figure. Those are not LPA and would dwarf every real package, so skip them.
+  function parseLPA(str) {
+      if(!str || typeof str !== 'string') return null;
+      if(/stipend/i.test(str) || /\d\s*k\b/i.test(str)) return null;
+      let match = str.match(/(\d+(\.\d+)?)/);
+      return match && match[0] ? parseFloat(match[0]) : null;
+  }
+
   function extractMaxPackage(stringArr) {
       let max = 0;
       stringArr.forEach(str => {
-          if(str && typeof str === 'string') {
-              let match = str.match(/(\d+(\.\d+)?)/);
-              if(match && match[0]) {
-                  let num = parseFloat(match[0]);
-                  if(num > max) {
-                      max = num;
-                  }
-              }
-          }
+          let num = parseLPA(str);
+          if(num !== null && num > max) max = num;
       });
       return max > 0 ? max + " LPA" : "0";
   }
-  
+
   function calculateAveragePackage(stringArr) {
       let sum = 0;
       let count = 0;
       stringArr.forEach(str => {
-          if(str && typeof str === 'string') {
-              let match = str.match(/(\d+(\.\d+)?)/);
-              if(match && match[0]) {
-                  sum += parseFloat(match[0]);
-                  count++;
-              }
-          }
+          let num = parseLPA(str);
+          if(num !== null) { sum += num; count++; }
       });
       return count > 0 ? (sum / count).toFixed(2) + " LPA" : "0";
   }
