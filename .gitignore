@@ -5,6 +5,9 @@ index.html.bak
 
 docs/
 
+# Raw drop folder — source files get copied into the repo root before use
+info/
+
 # OS / editor junk
 Thumbs.db
 desktop.ini

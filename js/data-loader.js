@@ -47,6 +47,7 @@
       });
       // Don't auto-set dropdowns - keep them blank
       updateResultText(month);
+      renderMeetings(month);
     };
 
     Promise.all(SOURCES.map(source =>

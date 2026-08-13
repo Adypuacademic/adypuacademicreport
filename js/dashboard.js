@@ -53,9 +53,39 @@
     }
     updateDashboard(globalRawData);
     updateSchoolTiles(globalRawData);
-    
+
     // Update Result text based on month
     updateResultText(month);
+    renderMeetings(month);
+  }
+
+  // ------------------------------------------
+  // STATUTORY & ACADEMIC MEETINGS (per month)
+  // ------------------------------------------
+  const MEETINGS_DOC = 'https://drive.google.com/file/d/1a8i54F4Tz3M_XX8dpmYmdANlu9NMGj9K/preview';
+  const MEETINGS = {
+    May: [
+      { name: 'Board of Studies (BoS)', date: '24/04/2026', doc: MEETINGS_DOC },
+      { name: 'Academic Council', date: '25/05/2026', doc: MEETINGS_DOC },
+      { name: 'Meeting with Knowledge Partner(s)', date: '25/05/2026', doc: MEETINGS_DOC },
+      { name: 'IQAC Meeting for NAAC/NBA Accreditation', date: '24/06/2026', doc: MEETINGS_DOC },
+      { name: 'Budget Planning', date: '24/06/2026', doc: MEETINGS_DOC },
+      { name: 'Centre of Excellence (CoE) Planning', date: '25/06/2026', doc: MEETINGS_DOC }
+    ],
+    July: [
+      { name: 'Board of Examinations Meeting (BOE)', date: '15/07/2026', doc: 'boe-meeting-notice-agenda.pdf' }
+    ]
+  };
+  MEETINGS.June = MEETINGS.May;
+
+  function renderMeetings(month) {
+    const grid = document.getElementById('meetings-grid');
+    if (!grid) return;
+    grid.innerHTML = (MEETINGS[month] || []).map(m => `
+      <div class="kpi clickable" onclick="openDocModal('${m.name.replace(/'/g, "\\'")}', '${m.doc}')">
+        <h3>${m.name}</h3>
+        <div class="value">${m.date}</div>
+      </div>`).join('');
   }
 
   // ------------------------------------------

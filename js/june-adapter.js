@@ -30,32 +30,35 @@
     return (val === null || val === undefined || val === '') ? 'NA' : String(val);
   }
 
-  // Faculty-instructed override: raw sheet's Engineering subtotal undercounts late-added
-  // admissions the office wants reflected. Target 2558 holds the university total at 4009
-  // (PhD row carries no Target, so it is excluded from both sums). Achieved carries a
-  // constant +116 over the raw Engineering figure. Update/remove per faculty guidance.
+  // Faculty-instructed override: Target 2558 holds the university total at 4009 (PhD row
+  // carries no Target, so it is excluded from both sums). July takes its Achieved straight
+  // from the sheet — the July column's program rows sum exactly, no undercount to patch.
+  // Fields left out fall through to the raw figure. Update/remove per faculty guidance.
   const ADMISSIONS_OVERRIDE = {
     June: { eng: { Target: 2558, Achieved: 775 } },
-    July: { eng: { Target: 2558, Achieved: 780 } }
+    July: { eng: { Target: 2558 } }
   };
 
-  function transformAdmissions(sheetRows, overrides) {
+  // Each month adds three columns (Month Admission / Cumulative / Balance) to the sheet.
+  const CUMULATIVE_COL = { June: 8, July: 11 };
+
+  function transformAdmissions(sheetRows, overrides, cumulativeCol) {
     const out = [];
     sheetRows.forEach(row => {
       const school = row[0];
       const intake = row[2];
       const target = row[3];
-      const juneCumulative = row[8];
+      const cumulative = row[cumulativeCol];
       if (school === null || school === undefined || String(school).trim() === '') return;
       if (target === null || target === undefined || String(target).trim() === '') return;
       const schoolId = normalizeSchool(school);
       if (!schoolId || schoolId === 'TOTAL') return;
-      const override = (overrides || {})[schoolId];
+      const override = (overrides || {})[schoolId] || {};
       out.push({
         SchoolId: schoolId,
         Activity: 'Admissions',
-        Target: override ? override.Target : (target !== '' ? target : intake),
-        Achieved: override ? override.Achieved : (juneCumulative || 0),
+        Target: override.Target !== undefined ? override.Target : (target !== '' ? target : intake),
+        Achieved: override.Achieved !== undefined ? override.Achieved : (cumulative || 0),
         DetailName: 'NA', DetailInfo: 'NA', DetailMeta: 'NA', DetailDate: 'NA'
       });
     });
@@ -192,11 +195,12 @@
     return out;
   }
 
-  // month selects which admissions override applies; the sheet layout is identical month to month.
+  // month selects the admissions override and which month's cumulative column to read;
+  // every other sheet is cumulative already, so its layout is identical month to month.
   function buildMonthData(workbook, month) {
     const sheet = name => XLSX.utils.sheet_to_json(workbook.Sheets[name], { header: 1, raw: true });
     return [].concat(
-      transformAdmissions(sheet('ADYPU Admission MIS'), ADMISSIONS_OVERRIDE[month]),
+      transformAdmissions(sheet('ADYPU Admission MIS'), ADMISSIONS_OVERRIDE[month], CUMULATIVE_COL[month]),
       transformPartners(sheet('Partners Admission MIS')),
       transformPlacements(sheet('Placement Internship')),
       transformStudentAchievement(sheet('Student Achievement & Activitie')),
