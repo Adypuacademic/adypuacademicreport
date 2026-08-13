@@ -2,7 +2,8 @@
   // RESPONSIVE 3-COLUMN CAROUSEL LOGIC (GALLERY 1)
   // ==========================================
   let currentSlide = 0;
-  const totalSlides = 11; // 9 existing + 2 new images
+  // Counted from the DOM so adding a slide to index.html needs no JS change
+  const totalSlides = () => document.querySelectorAll('#carouselTrack .carousel-slide').length;
   let slideInterval;
   let resumeTimeout;
   let isPlaying = true;
@@ -17,7 +18,7 @@
       const track = document.getElementById('carouselTrack');
       if(!track) return;
       const itemsPerPage = getItemsPerPage();
-      const maxIndex = totalSlides - itemsPerPage;
+      const maxIndex = totalSlides() - itemsPerPage;
       
       if (currentSlide > maxIndex) currentSlide = 0;
       if (currentSlide < 0) currentSlide = maxIndex;
@@ -50,7 +51,7 @@
   }
   
   function moveSlide(step) {
-      const maxIndex = totalSlides - getItemsPerPage();
+      const maxIndex = totalSlides() - getItemsPerPage();
       currentSlide += step;
       if (currentSlide > maxIndex) currentSlide = 0;
       if (currentSlide < 0) currentSlide = maxIndex;
@@ -66,7 +67,7 @@
   }
   
   function autoSlide() {
-      const maxIndex = totalSlides - getItemsPerPage();
+      const maxIndex = totalSlides() - getItemsPerPage();
       currentSlide++;
       if(currentSlide > maxIndex) currentSlide = 0;
       updateCarousel();
@@ -108,7 +109,7 @@
   // RESPONSIVE 3-COLUMN CAROUSEL LOGIC (GALLERY 2)
   // ==========================================
   let currentSlide2 = 0;
-  const totalSlides2 = 4; // 4 slides (THE, IGAUGE Certificate, IGAUGE Ranking, Lokmat)
+  const totalSlides2 = () => document.querySelectorAll('#carouselTrack2 .carousel-slide').length;
   let slideInterval2;
   let resumeTimeout2;
   let isPlaying2 = true;
@@ -123,7 +124,7 @@
       const track = document.getElementById('carouselTrack2');
       if(!track) return;
       const itemsPerPage = getItemsPerPage2();
-      const maxIndex = Math.max(0, totalSlides2 - itemsPerPage);
+      const maxIndex = Math.max(0, totalSlides2() - itemsPerPage);
       
       if (currentSlide2 > maxIndex) currentSlide2 = 0;
       if (currentSlide2 < 0) currentSlide2 = maxIndex;
@@ -156,7 +157,7 @@
   }
   
   function moveSlide2(step) {
-      const maxIndex = Math.max(0, totalSlides2 - getItemsPerPage2());
+      const maxIndex = Math.max(0, totalSlides2() - getItemsPerPage2());
       currentSlide2 += step;
       if (currentSlide2 > maxIndex) currentSlide2 = 0;
       if (currentSlide2 < 0) currentSlide2 = maxIndex;
@@ -172,7 +173,7 @@
   }
   
   function autoSlide2() {
-      const maxIndex = Math.max(0, totalSlides2 - getItemsPerPage2());
+      const maxIndex = Math.max(0, totalSlides2() - getItemsPerPage2());
       currentSlide2++;
       if(currentSlide2 > maxIndex) currentSlide2 = 0;
       updateCarousel2();

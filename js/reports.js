@@ -409,10 +409,10 @@
               
               <div class="section-title">SECTION 5 – Summer Examinations Overview</div>
               <div class="kpi-grid-5">
-                  <div class="kpi-card"><div class="kpi-value">1339</div><div class="kpi-label">Total Students</div></div>
-                  <div class="kpi-card"><div class="kpi-value">1339</div><div class="kpi-label">Registered</div></div>
-                  <div class="kpi-card"><div class="kpi-value">In Progress</div><div class="kpi-label">Appeared</div></div>
-                  <div class="kpi-card"><div class="kpi-value">In Progress</div><div class="kpi-label">Absent</div></div>
+                  <div class="kpi-card"><div class="kpi-value">1370</div><div class="kpi-label">Total Students</div></div>
+                  <div class="kpi-card"><div class="kpi-value">1370</div><div class="kpi-label">Registered</div></div>
+                  <div class="kpi-card"><div class="kpi-value">1348</div><div class="kpi-label">Appeared</div></div>
+                  <div class="kpi-card"><div class="kpi-value">22</div><div class="kpi-label">Absent</div></div>
                   <div class="kpi-card"><div class="kpi-value">In Progress</div><div class="kpi-label">Result</div></div>
               </div>
 
@@ -533,10 +533,10 @@
               
               <div class="section-title">Summer Examinations</div>
               <div class="kpi-grid-5">
-                  <div class="kpi-card"><div class="kpi-value">1339</div><div class="kpi-label">Total Students</div></div>
-                  <div class="kpi-card"><div class="kpi-value">1339</div><div class="kpi-label">Registered</div></div>
-                  <div class="kpi-card"><div class="kpi-value">In Progress</div><div class="kpi-label">Appeared</div></div>
-                  <div class="kpi-card"><div class="kpi-value">In Progress</div><div class="kpi-label">Absent</div></div>
+                  <div class="kpi-card"><div class="kpi-value">1370</div><div class="kpi-label">Total Students</div></div>
+                  <div class="kpi-card"><div class="kpi-value">1370</div><div class="kpi-label">Registered</div></div>
+                  <div class="kpi-card"><div class="kpi-value">1348</div><div class="kpi-label">Appeared</div></div>
+                  <div class="kpi-card"><div class="kpi-value">22</div><div class="kpi-label">Absent</div></div>
                   <div class="kpi-card"><div class="kpi-value">In Progress</div><div class="kpi-label">Result</div></div>
               </div>
               
