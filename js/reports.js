@@ -193,14 +193,17 @@
       let html = '<table><thead><tr>';
       headers.forEach(h => html += `<th>${h}</th>`);
       html += '</tr></thead><tbody>';
-      let tTarget = 0, tAchieved = 0, tGap = 0;
+      let tTarget = 0, tAchieved = 0;
       rows.forEach(r => {
           html += `<tr><td>${r.school}</td><td>${r.target}</td><td>${r.achieved}</td><td>${r.gap}</td><td>${r.percent}</td></tr>`;
           tTarget += r.target;
           tAchieved += r.achieved;
-          tGap += r.gap;
       });
-      let tPct = tTarget > 0 ? ((tAchieved / tTarget) * 100).toFixed(1) + '%' : '0%';
+      // Derive the totals the same way the KPI cards do, rather than summing the
+      // per-row gaps: a school that overshoots its target clamps to 0 on its own
+      // row, and adding those up drifts away from the headline figure.
+      let tGap = Math.max(0, tTarget - tAchieved);
+      let tPct = tTarget > 0 ? ((tAchieved / tTarget) * 100).toFixed(2) + '%' : '0.00%';
       html += `<tr class="summary-row"><td>Total Summary</td><td>${tTarget}</td><td>${tAchieved}</td><td>${tGap}</td><td>${tPct}</td></tr>`;
       html += '</tbody></table>';
       return html;
@@ -220,7 +223,8 @@
       return html;
   }
 
-  function buildReportHTML(type, img1 = null, img2 = null) {
+  // Used by the 'schoolwise' and 'complete' reports only; 'main' prints the live page.
+  function buildReportHTML(type) {
       const dateStr = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
       
       const baseStyle = `
@@ -300,147 +304,8 @@
       </style>`;
 
       let content = '';
-      
-      if (type === 'main') {
-          if (img1 && img2) {
-              content += `
-                  <div class="cover-page" style="height: auto; min-height: 90vh; display: block; text-align: center; padding-top: 20px;">
-                      <h2 style="color: #C21B27; margin-bottom: 20px; font-size: 24px; text-transform: uppercase;">Dashboard Snapshot – Page 1 of 2</h2>
-                      <img src="${img1}" style="width: 100%; max-width: 1000px; border: 1px solid #e2e8f0; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
-                  </div>
-                  <div class="page-break"></div>
-                  <div class="cover-page" style="height: auto; min-height: 90vh; display: block; text-align: center; padding-top: 20px;">
-                      <h2 style="color: #C21B27; margin-bottom: 20px; font-size: 24px; text-transform: uppercase;">Dashboard Snapshot – Page 2 of 2</h2>
-                      <img src="${img2}" style="width: 100%; max-width: 1000px; border: 1px solid #e2e8f0; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
-                  </div>
-                  <div class="page-break"></div>
-              `;
-          }
 
-          const kpis = getExecutiveKPIs();
-          const adm = getAdmissionsData();
-          const part = getPartnersData();
-          const partDetail = getPartnersDetailedData();
-          const exam = getExamDetailedData();
-          
-          const monthlyHighlightsData = [
-              { title: "Auto CAD Hands-on Training Program", category: "University", date: "May 2026" },
-              { title: "Research Publication on AI & Cloud Platforms", category: "Faculty", date: "May 2026" },
-              { title: "Dr. Ranjit Kumar’s IEEE Leadership", category: "Faculty", date: "Regional Recognition" },
-              { title: "International Recognition in IEEE Region 10", category: "University", date: "April 30, 2026" },
-              { title: "Ajeenkya Karandak Tournament", category: "Student", date: "Sports Achievement" },
-              { title: "MIT – ADT Cricket Tournament", category: "Student", date: "1st Place Victory" },
-              { title: "Gaming Event with Redbull", category: "Student", date: "Under25adypu Event" },
-              { title: "Under25adypu Nominated for “Best Club of the Batch”", category: "Student", date: "National Recognition" },
-              { title: "Best Paper Award at ICRAEST 2026", category: "Faculty", date: "Academic Excellence" }
-          ];
-
-          const galleryImagesData = [
-              { src: 'autocad-training.png', title: 'Auto CAD Hands-on Training Program', subtitle: 'May 2026' },
-              { src: 'research-publication.png', title: 'Research Publication on AI & Cloud Platforms', subtitle: 'May 2026' },
-              { src: '{34702617-3571-4261-8D41-660014D23FF3}.png', title: 'Dr. Ranjit Kumar’s IEEE Leadership', subtitle: 'Regional Recognition' },
-              { src: '{0566F7C1-CC42-4648-8145-1B0B623020B8}.png', title: 'International Recognition in IEEE Region 10', subtitle: 'April 30, 2026' },
-              { src: '{5E3DAA53-98C1-42F6-9E66-78CD1CAE7943}.png', title: 'Ajeenkya Karandak Tournament', subtitle: 'Sports Achievement' },
-              { src: '{06C24A80-A093-4E1A-BE6B-060EDF0563F0}.png', title: 'MIT – ADT Cricket Tournament', subtitle: '1st Place Victory' },
-              { src: '{EDC1C369-397F-42E2-AB8A-B25A32567BA3}.png', title: 'Gaming Event with Redbull', subtitle: 'Under25adypu Event' },
-              { src: '{5598FC8B-1C75-4715-AB2B-C6FF68CA737D}.jpg', title: 'Under25adypu Nominated', subtitle: 'National Recognition' },
-              { src: '{1FD70957-4943-4122-BA1A-90A54182C1AD}.jpg', title: 'Best Paper Award at ICRAEST 2026', subtitle: 'Academic Excellence' },
-              { src: 'health_expo_1.jpeg', title: 'Lokmat Education fair and Health Expo', subtitle: 'June 2026' },
-              { src: 'health_expo_2.jpeg', title: 'Lokmat Education fair and Health Expo', subtitle: 'June 2026' }
-          ];
-
-          // Get result text based on current month
-          let resultText = activeMonth === 'May' ? 'In Progress' : 'Declared';
-
-          content += `
-              <div class="header">
-                  <div class="header-left">
-                      <h1>AJEENKYA D Y PATIL UNIVERSITY</h1>
-                      <div class="subtitle">Main Dashboard Report - ${activeMonth}</div>
-                  </div>
-                  <div class="header-right">
-                      Generated: ${dateStr}
-                  </div>
-              </div>
-              
-              <div class="section-title">SECTION 1 – University Admissions Status</div>
-              <div class="kpi-grid-4">
-                  <div class="kpi-card"><div class="kpi-value">${kpis.totalAdmissionsTarget}</div><div class="kpi-label">Target</div></div>
-                  <div class="kpi-card"><div class="kpi-value">${kpis.totalAdmissionsAchieved}</div><div class="kpi-label">Achieved</div></div>
-                  <div class="kpi-card"><div class="kpi-value">${kpis.admissionsGap}</div><div class="kpi-label">Gap</div></div>
-                  <div class="kpi-card"><div class="kpi-value">${kpis.admissionsRate}</div><div class="kpi-label">Achievement Rate</div></div>
-              </div>
-              ${generateHtmlTableWithSummary(['School', 'Target', 'Achieved', 'Gap', 'Performance Rate'], adm.map(d => ({school: d.school, target: d.target, achieved: d.achieved, gap: d.gap, percent: d.percent})))}
-              
-              <div class="section-title">SECTION 2 – Partners Admission MIS</div>
-              <div class="kpi-grid-4">
-                  <div class="kpi-card"><div class="kpi-value">${kpis.partnersTarget}</div><div class="kpi-label">Target</div></div>
-                  <div class="kpi-card"><div class="kpi-value">${kpis.partnersAchieved}</div><div class="kpi-label">Achieved</div></div>
-                  <div class="kpi-card"><div class="kpi-value">${kpis.partnersGap}</div><div class="kpi-label">Gap</div></div>
-                  <div class="kpi-card"><div class="kpi-value">${kpis.partnersRate}</div><div class="kpi-label">Achievement Rate</div></div>
-              </div>
-              <h3 class="sub-heading">School Summary</h3>
-              ${generateHtmlTableWithSummary(['School', 'Target', 'Achieved', 'Gap', 'Performance Rate'], part.map(d => ({school: d.school, target: d.target, achieved: d.achieved, gap: d.gap, percent: d.percent})))}
-              
-              <h3 class="sub-heading">Partner Detailed Breakdown</h3>
-              ${generateHtmlTable(['School', 'Partner', 'Target', 'Achieved'], partDetail.map(d => [d.school, d.partner, d.target, d.achieved]))}
-              
-              <div class="page-break"></div>
-              
-              <div class="section-title">SECTION 3 – Placements Overview</div>
-              <div class="kpi-grid-6">
-                  <div class="kpi-card"><div class="kpi-value">${kpis.totalPlaced}</div><div class="kpi-label">Total Students Placed</div></div>
-                  <div class="kpi-card"><div class="kpi-value">${kpis.highestPackage}</div><div class="kpi-label">Highest Package</div></div>
-                  <div class="kpi-card"><div class="kpi-value">${kpis.averagePackage}</div><div class="kpi-label">Average Package</div></div>
-                  <div class="kpi-card"><div class="kpi-value">${kpis.totalInternships}</div><div class="kpi-label">Total Internships</div></div>
-                  <div class="kpi-card"><div class="kpi-value">${kpis.highestInternship}</div><div class="kpi-label">Highest Stipend</div></div>
-                  <div class="kpi-card"><div class="kpi-value">${kpis.totalCompanies}</div><div class="kpi-label">Total Companies Visited</div></div>
-              </div>
-
-              <div class="section-title">SECTION 4 – Examinations Overview</div>
-              <div class="kpi-grid-5">
-                  <div class="kpi-card"><div class="kpi-value">${kpis.examTotal}</div><div class="kpi-label">Total Students</div></div>
-                  <div class="kpi-card"><div class="kpi-value">${kpis.examReg}</div><div class="kpi-label">Registered</div></div>
-                  <div class="kpi-card"><div class="kpi-value">${kpis.examAppeared}</div><div class="kpi-label">Appeared</div></div>
-                  <div class="kpi-card"><div class="kpi-value">${kpis.examAbs}</div><div class="kpi-label">Absent</div></div>
-                  <div class="kpi-card"><div class="kpi-value">${resultText}</div><div class="kpi-label">Result</div></div>
-              </div>
-              ${generateHtmlTable(['School', 'Registered', 'Appeared', 'Absent', 'Pass %'], exam.map(d => [d.school, d.registered, d.appeared, d.absent, d.passPct]))}
-              
-              <div class="section-title">SECTION 5 – Summer Examinations Overview</div>
-              <div class="kpi-grid-5">
-                  <div class="kpi-card"><div class="kpi-value">1370</div><div class="kpi-label">Total Students</div></div>
-                  <div class="kpi-card"><div class="kpi-value">1370</div><div class="kpi-label">Registered</div></div>
-                  <div class="kpi-card"><div class="kpi-value">1348</div><div class="kpi-label">Appeared</div></div>
-                  <div class="kpi-card"><div class="kpi-value">22</div><div class="kpi-label">Absent</div></div>
-                  <div class="kpi-card"><div class="kpi-value">In Progress</div><div class="kpi-label">Result</div></div>
-              </div>
-
-              <div class="section-title">SECTION 6 – Executive Achievements</div>
-              <div class="kpi-grid-2">
-                  <div class="kpi-card"><div class="kpi-value">11</div><div class="kpi-label">Student Awards</div></div>
-                  <div class="kpi-card"><div class="kpi-value">${kpis.execFac}</div><div class="kpi-label">Faculty Papers</div></div>
-              </div>
-
-              <div class="page-break"></div>
-              
-              <div class="section-title">SECTION 7 – Monthly Highlights – May 2026</div>
-              ${generateHtmlTable(['Achievement Title', 'Category', 'Date'], monthlyHighlightsData.map(d => [d.title, d.category, d.date]))}
-              
-              <div class="page-break"></div>
-
-              <div class="section-title">SECTION 8 – University Achievements Gallery</div>
-              <div class="pdf-gallery">
-                  ${galleryImagesData.map(img => `
-                      <div class="pdf-gallery-item">
-                          <img src="${img.src}" alt="${img.title}" onerror="this.src='https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=500&q=80';">
-                          <h4>${img.title}</h4>
-                          <p>${img.subtitle}</p>
-                      </div>
-                  `).join('')}
-              </div>
-          `;
-      } else if (type === 'schoolwise') {
+      if (type === 'schoolwise') {
            content += `
               <div class="header">
                   <h1>AJEENKYA D Y PATIL UNIVERSITY</h1>
@@ -559,73 +424,62 @@
       return `<!DOCTYPE html><html><head><title>ADYPU Report</title>${baseStyle}</head><body>${content}</body></html>`;
   }
 
+  // ==========================================
+  // MAIN REPORT — native print of the live dashboard
+  //
+  // The dashboard is the single source of truth: whatever the page renders for
+  // the selected month is exactly what prints, galleries and all. Nothing here
+  // re-declares figures, so the report can never drift from the screen. The
+  // appendix carries the per-school raw data that sits behind the dashboard's
+  // drill-down modals, which a screenshot of the page would lose.
+  // ==========================================
+  function buildPrintAppendix() {
+      const meta = document.getElementById('print-meta');
+      if (meta) {
+          const dateStr = new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
+          meta.innerText = `Monthly Report — ${activeMonth} 2026   ·   Generated ${dateStr}`;
+      }
+
+      const host = document.getElementById('print-appendix');
+      if (!host) return;
+      if (!globalRawData || globalRawData.length === 0) { host.innerHTML = ''; return; }
+
+      const block = (title, table) => table ? `<h2 class="print-appendix-title">${title}</h2>${table}` : '';
+      const schoolCols = ['School', 'Target', 'Achieved', 'Gap', 'Performance Rate'];
+
+      host.innerHTML = `
+        <h1 class="print-appendix-heading">Appendix — Detailed Data (${activeMonth})</h1>
+        ${block('University Admissions by School', generateHtmlTableWithSummary(schoolCols, getAdmissionsData()))}
+        ${block('Partners Admission by School', generateHtmlTableWithSummary(schoolCols, getPartnersData()))}
+        ${block('Partners Admission — Partner Breakdown', generateHtmlTable(['School', 'Partner', 'Target', 'Achieved'],
+            getPartnersDetailedData().map(d => [d.school, d.partner, d.target, d.achieved])))}
+        ${block('Placements — Company Detail', generateHtmlTable(['School', 'Company', 'Package', 'Stipend'],
+            getPlacementsData().map(d => [d.school, d.company, d.package, d.stipend])))}
+        ${block('Examinations by School', generateHtmlTable(['School', 'Registered', 'Appeared', 'Absent', 'Pass %'],
+            getExamDetailedData().map(d => [d.school, d.registered, d.appeared, d.absent, d.passPct])))}
+        ${block('Student Awards', generateHtmlTable(['School', 'Student Name', 'Program', 'Achievement'],
+            hardcodedStudentAwards.map(r => [schoolNameMap[r.SchoolId] || r.SchoolId, r.DetailName || '-', r.DetailInfo || '-', r.DetailMeta || '-'])))}
+        ${block('Faculty Papers', generateHtmlTable(['School', 'Faculty', 'Log Info', 'Outcome', 'Date'],
+            getFacultyAchievements().map(d => [d.school, d.name, d.detail, d.meta, d.date])))}
+        <div class="print-appendix-footer">Confidential — Internal Use Only | ADYPU Strategic Command Center</div>
+      `;
+  }
+
+  // Ctrl+P must produce the same artifact as the sidebar menu item
+  window.addEventListener('beforeprint', buildPrintAppendix);
+
   async function generatePDFReport(type) {
       if (!globalRawData || globalRawData.length === 0) {
           alert('Please upload CSV data first');
           return;
       }
 
-      let page1Img = null;
-      let page2Img = null;
-
       if (type === 'main') {
-          const btnLinks = document.querySelectorAll('.sidebar-dropdown-content a');
-          let targetBtn = null;
-          let originalText = "";
-          btnLinks.forEach(b => {
-              if(b.getAttribute('onclick') === "generatePDFReport('main')") {
-                  targetBtn = b;
-                  originalText = b.innerText;
-                  b.innerText = "Capturing Dashboard...";
-              }
-          });
-
-          try {
-              const offscreen = document.createElement('div');
-              offscreen.className = 'main';
-              offscreen.style.position = 'fixed';
-              offscreen.style.top = '0';
-              offscreen.style.left = '-9999px';
-              offscreen.style.width = '1100px'; 
-              offscreen.style.margin = '0';
-              offscreen.style.padding = '0';
-              offscreen.style.zIndex = '-100';
-
-              // Get ALL sections from home-view, excluding those with data-html2canvas-ignore
-              const allSections = document.querySelectorAll('#home-view .section');
-              const pg1 = document.createElement('div');
-              pg1.style.padding = '30px';
-              pg1.style.background = 'var(--bg)';
-              
-              // Add header
-              const liveHeader = document.querySelector('.dashboard-header');
-              if (liveHeader) pg1.appendChild(liveHeader.cloneNode(true));
-              
-              // Add all non-ignored sections to pg1 (will be split across pages by the PDF)
-              allSections.forEach(section => {
-                  // Skip sections with data-html2canvas-ignore attribute
-                  if (!section.hasAttribute('data-html2canvas-ignore')) {
-                      pg1.appendChild(section.cloneNode(true));
-                  }
-              });
-
-              // We only need one page now since all sections are included
-              offscreen.appendChild(pg1);
-              document.body.appendChild(offscreen);
-
-              await new Promise(r => setTimeout(r, 100));
-
-              const canvas1 = await html2canvas(pg1, { scale: 2, useCORS: true, backgroundColor: '#f8fafc', logging: false, height: pg1.scrollHeight });
-              page1Img = canvas1.toDataURL('image/jpeg', 0.9);
-
-              document.body.removeChild(offscreen);
-          } catch (e) {
-              console.error("Failed to capture dashboard screenshots:", e);
-          } finally {
-              if (targetBtn) targetBtn.innerText = originalText;
-          }
+          buildPrintAppendix();
+          window.print();
+          return;
       }
-      
+
       const iframe = document.createElement('iframe');
       iframe.style.position = 'fixed';
       iframe.style.top = '-9999px';
@@ -634,7 +488,7 @@
       iframe.style.height = '800px';
       document.body.appendChild(iframe);
       
-      const html = buildReportHTML(type, page1Img, null);
+      const html = buildReportHTML(type);
       
       iframe.contentDocument.open();
       iframe.contentDocument.write(html);

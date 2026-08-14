@@ -303,6 +303,10 @@ body {
 .slide-content img { width: 100%; height: 240px; object-fit: cover; display: block; transition: transform 0.3s ease; }
 .slide-content:hover img { transform: scale(1.04); }
 
+/* Tall source images (phone screenshots) would crop to an unreadable band under
+   object-fit: cover, so show the whole frame and letterbox the gap instead. */
+.slide-content img.portrait { object-fit: contain; background: #f1f5f9; }
+
 /* Non-clickable slides should not show hover effect */
 .slide-content.no-click { cursor: default; }
 .slide-content.no-click:hover img { transform: none; }
@@ -407,38 +411,6 @@ body {
 .sidebar-close-btn { display: none; }
 .sidebar-overlay { display: none; }
 
-/* PRINT STYLES */
-@media print {
-  .sidebar, .mobile-header, .sidebar-overlay, .sidebar-close-btn, .trend-comparison, .month-tabs, .no-print, [data-html2canvas-ignore] {
-    display: none !important;
-  }
-  .main {
-    margin: 0 !important;
-    padding: 20px !important;
-    width: 100% !important;
-  }
-  .kpi, .meetings-grid .kpi {
-    box-shadow: none !important;
-    border: 1px solid #e2e8f0 !important;
-    break-inside: avoid;
-  }
-  .meetings-grid {
-    break-inside: avoid;
-  }
-  .upcoming-wrapper {
-    break-inside: avoid;
-  }
-  .carousel-wrapper {
-    break-inside: avoid;
-  }
-  .section {
-    page-break-inside: avoid;
-  }
-  .slide-content img {
-    max-height: 200px;
-  }
-}
-
 @media (max-width: 1024px) {
   .mobile-header {
     display: flex;
@@ -526,4 +498,141 @@ body {
   .modal-tab-btn { flex: 1; min-width: 120px; text-align: center; font-size: 13px; padding: 10px; }
   
   .docModalIframe { height: 60vh; }
+}
+
+/* Print-only blocks — revealed by @media print below */
+.print-letterhead, .print-appendix { display: none; }
+
+/* =============================================== */
+/* PRINT STYLES                                    */
+/* The main report is a native print of this page, */
+/* so the dashboard is the only source of truth    */
+/* for every figure in the PDF.                    */
+/* MUST stay last in this file: the mobile media   */
+/* queries above also match at paper width, and    */
+/* several of them use !important.                 */
+/* =============================================== */
+@media print {
+  @page { margin: 13mm; }
+
+  /* Without this Chrome strips every background, and the report loses the brand
+     header, the risk cards and the gallery captions. */
+  * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  /* Screen-only navigation and controls. The galleries are deliberately NOT in
+     this list — they carry the achievement photos the report exists to show. */
+  .sidebar, .mobile-header, .sidebar-overlay, .sidebar-close-btn,
+  .trend-comparison, .no-print, .modal, .footer-note,
+  .carousel-btn, .carousel-dots {
+    display: none !important;
+  }
+
+  body { background: #fff; }
+  .main { margin: 0 !important; padding: 0 !important; width: 100% !important; }
+
+  .print-letterhead { display: block; text-align: center; margin-bottom: 14px; }
+  .print-letterhead img { height: 52px; width: auto; }
+  .print-meta { margin-top: 5px; font-size: 9px; color: #64748b; letter-spacing: 0.3px; }
+
+  /* HEADER — banner drops below the title so the two cannot collide at paper width */
+  .dashboard-header { border-radius: 12px; box-shadow: none !important; padding: 16px; margin-bottom: 16px; break-inside: avoid; }
+  .dashboard-header .header-top { flex-direction: row; }
+  .dashboard-header .header-top h1 { font-size: 20px !important; }
+  .dashboard-header .header-top p { font-size: 11px; margin-top: 4px; }
+  .header-banner-float {
+    display: block !important;
+    position: static !important;
+    width: 100% !important;
+    right: auto !important;
+    margin-top: 10px;
+    box-shadow: none !important;
+  }
+
+  /* Only the month being reported on; the other tabs are navigation */
+  .month-tabs { margin-top: 10px; }
+  .month-tab { display: none !important; }
+  .month-tab.active { display: inline-block !important; padding: 5px 14px; font-size: 12px; }
+
+  /* A section holding 13 gallery slides is taller than a page, so it has to be
+     allowed to break. Individual cards stay intact instead. */
+  .section { break-inside: auto; margin-top: 16px; }
+  .section-title { break-after: avoid; margin-bottom: 8px; }
+  .section-title h2 { font-size: 14px !important; }
+  .dot { width: 8px; height: 8px; }
+
+  /* Restore a dense KPI row: the mobile queries above collapse these to 1–2
+     columns, which is wrong for paper. auto-fit lets a 4-, 5- or 6-card row
+     each fill the width exactly as it does on a wide screen. */
+  .kpis, .kpis-compact {
+    grid-template-columns: repeat(auto-fit, minmax(105px, 1fr)) !important;
+    gap: 8px !important;
+  }
+  .meetings-grid { grid-template-columns: repeat(4, 1fr) !important; gap: 8px !important; }
+  .risk-grid { grid-template-columns: repeat(3, 1fr) !important; gap: 8px !important; }
+  .kpis, .kpis-compact, .meetings-grid, .risk-grid, .upcoming-wrapper { break-inside: avoid; }
+
+  .kpi, .meetings-grid .kpi {
+    box-shadow: none !important;
+    border: 1px solid #e2e8f0 !important;
+    border-radius: 10px;
+    padding: 10px 9px !important;
+    break-inside: avoid;
+  }
+  .kpi::after { display: none; }
+  .kpi h3 { font-size: 8px !important; margin-bottom: 4px; letter-spacing: 0.2px; }
+  .kpi .value { font-size: 19px !important; }
+  .kpi .sub { font-size: 7px !important; margin-top: 3px; }
+  .meetings-grid .kpi h3 { font-size: 9px !important; }
+  .meetings-grid .kpi .value { font-size: 12px !important; }
+  .risk { box-shadow: none !important; padding: 10px; border-radius: 10px; }
+  .risk h4 { font-size: 10px; margin-bottom: 4px; }
+  .risk div { font-size: 8px; }
+  .upcoming-wrapper { box-shadow: none !important; border: 1px solid #e2e8f0; padding: 10px; }
+
+  /* CAROUSELS — print every slide as a grid instead of the 3-wide clipped
+     viewport the screen uses, so nothing hides behind a scroll position. */
+  .carousel-wrapper {
+    overflow: visible !important;
+    box-shadow: none !important;
+    border: 1px solid #e2e8f0;
+    padding: 12px !important;
+    break-inside: auto;
+  }
+  .carousel-viewport { overflow: visible !important; }
+  .carousel-track {
+    display: grid !important;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    transform: none !important;
+    transition: none !important;
+  }
+  .carousel-slide { width: auto !important; flex: none !important; padding: 0 !important; break-inside: avoid; }
+  .slide-content img, .slide-content img.portrait { height: 125px !important; }
+  .carousel-caption { padding: 18px 8px 6px; }
+  .carousel-caption h4 { font-size: 9px; }
+  .carousel-caption p { font-size: 7px; }
+
+  /* APPENDIX — the per-school raw data that sits behind the drill-down modals */
+  .print-appendix { display: block; break-before: page; }
+  .print-appendix-heading {
+    font-size: 17px; color: var(--primary); text-transform: uppercase;
+    border-bottom: 2px solid var(--primary); padding-bottom: 6px; margin: 0 0 14px;
+  }
+  .print-appendix-title {
+    font-size: 11px; color: #1e293b; text-transform: uppercase; background: #f1f5f9;
+    padding: 6px 10px; margin: 16px 0 8px; break-after: avoid;
+  }
+  .print-appendix table { width: 100%; border-collapse: collapse; margin-bottom: 12px; font-size: 8px; }
+  .print-appendix tr { break-inside: avoid; }
+  .print-appendix th { background: #e2e8f0; color: #1e293b; padding: 5px 6px; text-align: left; border: 1px solid #cbd5e1; }
+  .print-appendix td { border: 1px solid #e2e8f0; padding: 4px 6px; vertical-align: top; }
+  .print-appendix tr:nth-child(even) td { background: #f8fafc; }
+  .print-appendix .summary-row td { font-weight: bold; background: #e2e8f0 !important; }
+  .print-appendix-footer {
+    margin-top: 18px; padding-top: 8px; border-top: 1px solid #e2e8f0;
+    font-size: 8px; color: #94a3b8; text-align: center; font-weight: bold;
+  }
 }

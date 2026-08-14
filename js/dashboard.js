@@ -57,6 +57,7 @@
     // Update Result text based on month
     updateResultText(month);
     renderMeetings(month);
+    renderTopGallery(month);
   }
 
   // ------------------------------------------
@@ -86,6 +87,46 @@
         <h3>${m.name}</h3>
         <div class="value">${m.date}</div>
       </div>`).join('');
+  }
+
+  // ------------------------------------------
+  // TOP HIGHLIGHTS GALLERY (per month)
+  // Slides carry a `doc` only when they open a document viewer; without one the
+  // image itself is opened full-size. Add a month by adding a key here.
+  // ------------------------------------------
+  const TOP_GALLERY = {
+    May: [
+      { src: '{5C6CE9FC-5251-46A4-9607-085D23687C3A}.jpg', title: 'Times Higher Education (THE) Sustainability Rankings 2026', date: 'June 2026', doc: 'https://drive.google.com/file/d/1N8A-u1FG0NPe5FyYlccTQfebUkq8SFWU/preview' },
+      { src: 'igauge certificate.jpeg', title: 'IGAUGE Certificate', date: 'June 2026' },
+      { src: 'igauge ranking.jpeg', title: 'IGAUGE Ranking', date: 'June 2026' },
+      { src: 'Lokmat edu fair.jpeg', title: 'Lokmat Education fair and Health Expo', date: 'June 2026' }
+    ],
+    July: [
+      { src: 'gallery-aug-2026.jpeg', title: 'Pune Education Conclave 2026', date: 'August 2026' },
+      { src: 'web-tech-bootcamp-july-2026.jpeg', title: 'Web Technology Bootcamp Workshop', date: 'July 2026' },
+      { src: 'hack4humanity-winner.jpeg', title: '1st Prize — Hack4Humanity Hackathon', date: 'AI for Societal Good Track' }
+    ]
+  };
+  TOP_GALLERY.June = TOP_GALLERY.May;
+
+  function renderTopGallery(month) {
+    const track = document.getElementById('carouselTrack2');
+    if (!track) return;
+    const esc = s => String(s).replace(/'/g, "\\'");
+    track.innerHTML = (TOP_GALLERY[month] || []).map(g => {
+      const open = g.doc
+        ? `openDocModal('${esc(g.title)}', '${g.doc}')`
+        : `openImageModal(this.querySelector('img'))`;
+      return `
+      <div class="carousel-slide">
+        <div class="slide-content" onclick="${open}">
+          <img src="${g.src}" alt="${g.title}" onerror="this.src='https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=500&q=80';">
+          <div class="carousel-caption"><h4>${g.title}</h4><p>${g.date}</p></div>
+        </div>
+      </div>`;
+    }).join('');
+    // Slide count changed, so the offset and the dot strip both have to be rebuilt
+    if (typeof resetCarousel2 === 'function') resetCarousel2();
   }
 
   // ------------------------------------------

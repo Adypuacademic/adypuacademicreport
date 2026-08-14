@@ -199,6 +199,15 @@
   function togglePlayPause2() {
       isPlaying2 ? stopAutoplay2() : startAutoplay2();
   }
+
+  // Gallery 2 is re-rendered per month, so the slide count changes under us.
+  // Drop the dots to force a rebuild and rewind to the first slide.
+  function resetCarousel2() {
+      currentSlide2 = 0;
+      const dots = document.getElementById('carouselDots2');
+      if (dots) dots.innerHTML = '';
+      updateCarousel2();
+  }
   
   function pauseForInteraction2() {
       if(!isPlaying2) return;

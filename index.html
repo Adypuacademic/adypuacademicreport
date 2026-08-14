@@ -7,19 +7,18 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <link rel="stylesheet" href="css/dashboard.css">
 </head>
 <body>
 
-<div class="sidebar-overlay" onclick="toggleSidebar()" data-html2canvas-ignore></div>
+<div class="sidebar-overlay" onclick="toggleSidebar()"></div>
 
-<div class="mobile-header" data-html2canvas-ignore>
+<div class="mobile-header">
   <button class="hamburger-btn" onclick="toggleSidebar()">☰</button>
   <div class="mobile-logo">ADYPU Dashboard</div>
 </div>
 
-<div class="sidebar" data-html2canvas-ignore>
+<div class="sidebar">
   <button class="sidebar-close-btn" onclick="toggleSidebar()">✕</button>
   <div class="logo-container">
     <div class="logo-box">
@@ -84,6 +83,12 @@
 <div class="main" id="report-content">
 
   <div id="home-view" class="tab-content">
+      <!-- Print-only letterhead; hidden on screen, see @media print in css/dashboard.css -->
+      <div class="print-letterhead">
+        <img src="logo.png" alt="Ajeenkya D Y Patil University" onerror="this.style.display='none';">
+        <div class="print-meta" id="print-meta"></div>
+      </div>
+
       <div class="dashboard-header">
         <div class="header-top">
           <div>
@@ -92,7 +97,7 @@
           </div>
         </div>
 
-        <div class="month-tabs" data-html2canvas-ignore>
+        <div class="month-tabs">
           <button class="month-tab" data-month="May" onclick="switchMonth('May')">May</button>
           <button class="month-tab" data-month="June" onclick="switchMonth('June')">June</button>
           <button class="month-tab active" data-month="July" onclick="switchMonth('July')">July</button>
@@ -107,7 +112,7 @@
           <button class="month-tab disabled" data-month="April">April</button>
         </div>
 
-        <div class="trend-comparison" data-html2canvas-ignore>
+        <div class="trend-comparison">
           <h3>Month-wise trend comparison graphs</h3>
           <select id="compareMonth1">
             <option value="">Select Month</option>
@@ -130,54 +135,13 @@
       </div>
 
       <!-- TOP GALLERY SECTION -->
-      <div class="section" data-html2canvas-ignore style="margin-top: 0;">
+      <div class="section" style="margin-top: 0;">
         <div class="section-title"><span class="dot"></span><h2>HIGHLIGHTS OF UNIVERSITY ACHIEVEMENTS</h2></div>
         
         <div class="carousel-wrapper" id="carouselWrapper2">
           <div class="carousel-viewport">
-            <div class="carousel-track" id="carouselTrack2">
-
-              <!-- Slide 1: Times Higher Education (THE) Sustainability Rankings 2026 - CLICKABLE -->
-              <div class="carousel-slide">
-                <div class="slide-content" onclick="openDocModal('Times Higher Education (THE) Sustainability Rankings 2026', 'https://drive.google.com/file/d/1N8A-u1FG0NPe5FyYlccTQfebUkq8SFWU/preview')">
-                  <img src="{5C6CE9FC-5251-46A4-9607-085D23687C3A}.jpg" alt="Times Higher Education Sustainability Rankings" onerror="this.src='https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=500&q=80';">
-                  <div class="carousel-caption"><h4>Times Higher Education (THE) Sustainability Rankings 2026</h4><p>June 2026</p></div>
-                </div>
-              </div>
-
-              <!-- Slide 2: IGAUGE Certificate - FULL IMAGE VIEW -->
-              <div class="carousel-slide">
-                <div class="slide-content" onclick="openImageModal(this.querySelector('img'))">
-                  <img src="igauge certificate.jpeg" alt="IGAUGE Certificate" onerror="this.src='https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=500&q=80';">
-                  <div class="carousel-caption"><h4>IGAUGE Certificate</h4><p>June 2026</p></div>
-                </div>
-              </div>
-
-              <!-- Slide 3: IGAUGE Ranking - FULL IMAGE VIEW -->
-              <div class="carousel-slide">
-                <div class="slide-content" onclick="openImageModal(this.querySelector('img'))">
-                  <img src="igauge ranking.jpeg" alt="IGAUGE Ranking" onerror="this.src='https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=500&q=80';">
-                  <div class="carousel-caption"><h4>IGAUGE Ranking</h4><p>June 2026</p></div>
-                </div>
-              </div>
-
-              <!-- Slide 4: Lokmat Education fair and Health Expo - FULL IMAGE VIEW -->
-              <div class="carousel-slide">
-                <div class="slide-content" onclick="openImageModal(this.querySelector('img'))">
-                  <img src="Lokmat edu fair.jpeg" alt="Lokmat Education fair and Health Expo" onerror="this.src='https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=500&q=80';">
-                  <div class="carousel-caption"><h4>Lokmat Education fair and Health Expo</h4><p>June 2026</p></div>
-                </div>
-              </div>
-
-              <!-- Slide 5: University Highlight - FULL IMAGE VIEW -->
-              <div class="carousel-slide">
-                <div class="slide-content" onclick="openImageModal(this.querySelector('img'))">
-                  <img src="gallery-aug-2026.jpeg" alt="Pune Education Conclave 2026" onerror="this.src='https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=500&q=80';">
-                  <div class="carousel-caption"><h4>Pune Education Conclave 2026</h4><p>August 2026</p></div>
-                </div>
-              </div>
-
-            </div>
+            <!-- Slides are rendered per month by renderTopGallery() in js/dashboard.js -->
+            <div class="carousel-track" id="carouselTrack2"></div>
           </div>
 
           <button class="carousel-btn prev" onclick="moveSlide2(-1)">&#10094;</button>
@@ -363,7 +327,7 @@
         </div>
       </div>
 
-      <div class="section" data-html2canvas-ignore>
+      <div class="section">
         <div class="section-title"><span class="dot"></span><h2>UNIVERSITY ACHIEVEMENTS GALLERY</h2></div>
         
         <div class="carousel-wrapper" id="carouselWrapper">
@@ -449,6 +413,21 @@
                 </div>
               </div>
 
+              <!-- Phone screenshots: .portrait keeps the full frame instead of cropping to a band -->
+              <div class="carousel-slide">
+                <div class="slide-content" onclick="openImageModal(this.querySelector('img'))">
+                  <img class="portrait" src="ieeextreme-ambassador.jpeg" alt="IEEEXtreme 20.0 Student Ambassador">
+                  <div class="carousel-caption"><h4>IEEEXtreme 20.0 Student Ambassador</h4><p>Global Programming Competition</p></div>
+                </div>
+              </div>
+
+              <div class="carousel-slide">
+                <div class="slide-content" onclick="openImageModal(this.querySelector('img'))">
+                  <img class="portrait" src="ieee-yp-funding-grant.jpeg" alt="IEEE Young Professionals Activity Funding">
+                  <div class="carousel-caption"><h4>IEEE Young Professionals Activity Funding</h4><p>AI-Guided Robotics Research Grant</p></div>
+                </div>
+              </div>
+
             </div>
           </div>
           
@@ -478,7 +457,7 @@
         </div>
       </div>
 
-      <!-- Upcoming Schedule - NO data-html2canvas-ignore -->
+      <!-- Upcoming Schedule - NO -->
       <div class="section">
         <div class="section-title"><span class="dot"></span><h2>Upcoming Schedule</h2></div>
         <div class="upcoming-wrapper">
@@ -516,6 +495,9 @@
           </div>
         </div>
       </div>
+
+      <!-- Print-only appendix; filled from live data by buildPrintAppendix() in js/reports.js -->
+      <div class="print-appendix" id="print-appendix"></div>
   </div>
 
   <div id="event-reports-view" class="tab-content" style="display: none;">

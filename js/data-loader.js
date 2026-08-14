@@ -48,6 +48,7 @@
       // Don't auto-set dropdowns - keep them blank
       updateResultText(month);
       renderMeetings(month);
+      renderTopGallery(month);
     };
 
     Promise.all(SOURCES.map(source =>
