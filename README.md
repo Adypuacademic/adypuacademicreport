@@ -54,4 +54,5 @@ Open `http://localhost:8000`.
 1. Drop the raw report in the root as `ADYPU_Master_Dashboard_Data_<Month>_2026.xlsx`, matching the prior file's sheet/column structure.
 2. Add one entry to `SOURCES` in `js/data-loader.js` and set `DEFAULT_MONTH` if the new month should be the landing view.
 3. Enable the month's tab in `index.html` (drop `disabled`, add `onclick="switchMonth('<Month>')"`) and add it as an `<option>` in both compare dropdowns.
-4. If the admissions office has confirmed figures that differ from the raw sheet, add them to `ADMISSIONS_OVERRIDE` in `js/june-adapter.js` under the new month.
+4. Add the month's column indexes to `CUMULATIVE_COL` and `PARTNERS_COL` in `js/june-adapter.js` (each month adds three Admission MIS columns and one Partners column).
+5. If the admissions office has confirmed figures that differ from the raw sheet, add them to `ADMISSIONS_OVERRIDE` in `js/june-adapter.js` under the new month.

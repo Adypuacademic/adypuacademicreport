@@ -100,8 +100,8 @@
         <div class="month-tabs">
           <button class="month-tab" data-month="May" onclick="switchMonth('May')">May</button>
           <button class="month-tab" data-month="June" onclick="switchMonth('June')">June</button>
-          <button class="month-tab active" data-month="July" onclick="switchMonth('July')">July</button>
-          <button class="month-tab disabled" data-month="August">August</button>
+          <button class="month-tab" data-month="July" onclick="switchMonth('July')">July</button>
+          <button class="month-tab active" data-month="August" onclick="switchMonth('August')">August</button>
           <button class="month-tab disabled" data-month="September">September</button>
           <button class="month-tab disabled" data-month="October">October</button>
           <button class="month-tab disabled" data-month="November">November</button>
@@ -119,12 +119,14 @@
             <option value="May">May</option>
             <option value="June">June</option>
             <option value="July">July</option>
+            <option value="August">August</option>
           </select> vs
           <select id="compareMonth2">
             <option value="">Select Month</option>
             <option value="May">May</option>
             <option value="June">June</option>
             <option value="July">July</option>
+            <option value="August">August</option>
           </select>
           <button onclick="compareMonths()">Compare</button>
         </div>

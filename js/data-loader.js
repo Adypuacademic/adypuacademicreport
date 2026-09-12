@@ -2,15 +2,16 @@
   // AUTO-LOAD EXCEL/CSV LOGIC (MULTI-SHEET)
   // ------------------------------------------
   document.addEventListener('DOMContentLoaded', () => {
-    const DEFAULT_MONTH = 'July';
+    const DEFAULT_MONTH = 'August';
 
-    // May ships as a pre-flattened sheet; June and July are raw chairman reports
+    // May ships as a pre-flattened sheet; June onward are raw chairman reports
     // normalised by JuneAdapter. Add a month by appending one entry here, a tab in
-    // index.html, and an option in both compare dropdowns.
+    // index.html, an option in both compare dropdowns, and its columns in june-adapter.js.
     const SOURCES = [
       { month: 'May', file: 'ADYPU_Master_Dashboard_Data_MultiSheet.xlsx', raw: false },
       { month: 'June', file: 'ADYPU_Master_Dashboard_Data_June_2026.xlsx', raw: true },
-      { month: 'July', file: 'ADYPU_Master_Dashboard_Data_July_2026.xlsx', raw: true }
+      { month: 'July', file: 'ADYPU_Master_Dashboard_Data_July_2026.xlsx', raw: true },
+      { month: 'August', file: 'ADYPU_Master_Dashboard_Data_August_2026.xlsx', raw: true }
     ];
 
     const fetchWorkbook = filename =>

@@ -1,7 +1,8 @@
 (function () {
   const SCHOOL_ALIASES = {
-    'school of engineering': 'eng', 'soe': 'eng',
-    'school of management': 'mgmt', 'som': 'mgmt',
+    'school of engineering': 'eng', 'soe': 'eng', 'school of enginering': 'eng',
+    'school of management': 'mgmt', 'som': 'mgmt', 'school of managment': 'mgmt', 'school of mangement': 'mgmt',
+    'bba': 'mgmt', // August's Admission MIS labels the SOM subtotal "BBA"
     'school of law': 'law', 'sol': 'law',
     'school of design': 'design', 'sod': 'design',
     'school of science': 'science', 'sos': 'science',
@@ -14,9 +15,11 @@
     'total': 'TOTAL'
   };
 
+  // Placement rows can carry a batch suffix ("School of Engineering-2027 batch") or name
+  // several schools ("School of Engineering, School of Mangement"); credit the first one.
   function normalizeSchool(raw) {
     if (raw === null || raw === undefined) return null;
-    const key = String(raw).trim().toLowerCase();
+    const key = String(raw).split(',')[0].trim().replace(/[-\s]*\d{4}\s*batch$/i, '').trim().toLowerCase();
     if (!key) return null;
     return SCHOOL_ALIASES[key] || null;
   }
@@ -31,16 +34,20 @@
   }
 
   // Faculty-instructed override: Target 2558 holds the university total at 4009 (PhD row
-  // carries no Target, so it is excluded from both sums). July takes its Achieved straight
-  // from the sheet — the July column's program rows sum exactly, no undercount to patch.
+  // carries no Target, so it is excluded from both sums). July onward takes Achieved straight
+  // from the sheet (July's program rows sum exactly, no undercount to patch).
   // Fields left out fall through to the raw figure. Update/remove per faculty guidance.
   const ADMISSIONS_OVERRIDE = {
     June: { eng: { Target: 2558, Achieved: 775 } },
-    July: { eng: { Target: 2558 } }
+    July: { eng: { Target: 2558 } },
+    August: { eng: { Target: 2558 } }
   };
 
   // Each month adds three columns (Month Admission / Cumulative / Balance) to the sheet.
-  const CUMULATIVE_COL = { June: 8, July: 11 };
+  const CUMULATIVE_COL = { June: 8, July: 11, August: 14 };
+
+  // Partners adds one "<Month> Month Admission" column per month, May sitting at index 4.
+  const PARTNERS_COL = { June: 5, July: 6, August: 7 };
 
   function transformAdmissions(sheetRows, overrides, cumulativeCol) {
     const out = [];
@@ -65,7 +72,7 @@
     return out;
   }
 
-  function transformPartners(sheetRows) {
+  function transformPartners(sheetRows, achievedCol) {
     const out = [];
     let lastSchool = null, lastPartner = null;
     sheetRows.slice(1).forEach(row => {
@@ -79,7 +86,7 @@
         SchoolId: schoolId,
         Activity: 'Partners Admission MIS',
         Target: row[3] || 0,
-        Achieved: row[5] || 0,
+        Achieved: row[achievedCol] || 0,
         DetailName: detailStr(lastPartner),
         DetailInfo: detailStr(program),
         DetailMeta: 'NA', DetailDate: 'NA'
@@ -195,13 +202,13 @@
     return out;
   }
 
-  // month selects the admissions override and which month's cumulative column to read;
-  // every other sheet is cumulative already, so its layout is identical month to month.
+  // month selects the admissions override and which month's column to read in the Admission
+  // and Partners sheets; every other sheet is cumulative already, so its layout is identical month to month.
   function buildMonthData(workbook, month) {
     const sheet = name => XLSX.utils.sheet_to_json(workbook.Sheets[name], { header: 1, raw: true });
     return [].concat(
       transformAdmissions(sheet('ADYPU Admission MIS'), ADMISSIONS_OVERRIDE[month], CUMULATIVE_COL[month]),
-      transformPartners(sheet('Partners Admission MIS')),
+      transformPartners(sheet('Partners Admission MIS'), PARTNERS_COL[month]),
       transformPlacements(sheet('Placement Internship')),
       transformStudentAchievement(sheet('Student Achievement & Activitie')),
       transformFacultyAchievement(sheet('Faculty Achievement & Activitie')),

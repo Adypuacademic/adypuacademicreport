@@ -27,8 +27,8 @@
   let activePieChart = null;
   let globalRawData = [];
   let currentMonthData = [];
-  let monthData = { May: [], June: [], July: [] };
-  let activeMonth = 'July';
+  let monthData = { May: [], June: [], July: [], August: [] };
+  let activeMonth = 'August';
 
   Chart.register(ChartDataLabels);
   // ------------------------------------------
