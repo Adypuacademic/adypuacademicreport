@@ -49,6 +49,7 @@
       // Don't auto-set dropdowns - keep them blank
       updateResultText(month);
       renderMeetings(month);
+      renderMonthlyActivity(month);
       renderTopGallery(month);
     };
 

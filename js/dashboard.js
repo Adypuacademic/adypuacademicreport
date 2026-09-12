@@ -57,6 +57,7 @@
     // Update Result text based on month
     updateResultText(month);
     renderMeetings(month);
+    renderMonthlyActivity(month);
     renderTopGallery(month);
   }
 
@@ -79,14 +80,38 @@
   };
   MEETINGS.June = MEETINGS.May;
 
-  function renderMeetings(month) {
-    const grid = document.getElementById('meetings-grid');
-    if (!grid) return;
-    grid.innerHTML = (MEETINGS[month] || []).map(m => `
+  const docCards = items => (items || []).map(m => `
       <div class="kpi clickable" onclick="openDocModal('${m.name.replace(/'/g, "\\'")}', '${m.doc}')">
         <h3>${m.name}</h3>
         <div class="value">${m.date}</div>
       </div>`).join('');
+
+  function renderMeetings(month) {
+    const grid = document.getElementById('meetings-grid');
+    if (!grid) return;
+    grid.innerHTML = docCards(MEETINGS[month]);
+  }
+
+  // ------------------------------------------
+  // MONTHLY ACTIVITY (per section, per month): same card as meetings; a section
+  // hides for months without an entry.
+  // ------------------------------------------
+  const MONTHLY_ACTIVITY = {
+    'newsletter-section': {
+      August: [{ name: 'ADYPU Newsletter', date: 'August 2026', doc: 'adypu-newsletter-august-2026.pdf' }]
+    },
+    'induction-section': {
+      August: [{ name: 'Induction Program Report', date: 'August 2026', doc: 'first-year-induction-report-aug-2026.pdf' }]
+    }
+  };
+
+  function renderMonthlyActivity(month) {
+    Object.entries(MONTHLY_ACTIVITY).forEach(([id, byMonth]) => {
+      const section = document.getElementById(id);
+      if (!section) return;
+      section.querySelector('.meetings-grid').innerHTML = docCards(byMonth[month]);
+      section.style.display = byMonth[month] ? '' : 'none';
+    });
   }
 
   // ------------------------------------------
@@ -105,6 +130,12 @@
       { src: 'gallery-aug-2026.jpeg', title: 'Pune Education Conclave 2026', date: 'August 2026' },
       { src: 'web-tech-bootcamp-july-2026.jpeg', title: 'Web Technology Bootcamp Workshop', date: 'July 2026' },
       { src: 'hack4humanity-winner.jpeg', title: '1st Prize — Hack4Humanity Hackathon', date: 'AI for Societal Good Track' }
+    ],
+    // Cropped from the August newsletter; its photos are only ~350px wide, so slides open the newsletter instead
+    August: [
+      { src: 'loknetri-launch-aug-2026.jpeg', title: 'Launch of School of Governance & Public Policy and Loknetri Training Program', date: '3 August 2026', doc: 'adypu-newsletter-august-2026.pdf' },
+      { src: 'deeksharambh-2026.jpeg', title: 'Deeksharambh 2026: School of Engineering Induction', date: '4 to 6 August 2026', doc: 'adypu-newsletter-august-2026.pdf' },
+      { src: 'khelo-india-dialogue-aug-2026.jpeg', title: 'National Sports Day: Khelo India Dialogue', date: '27 August 2026', doc: 'adypu-newsletter-august-2026.pdf' }
     ]
   };
   TOP_GALLERY.June = TOP_GALLERY.May;
