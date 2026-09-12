@@ -222,6 +222,8 @@ body {
 .kpi::after{ content:''; position:absolute; right:-20px; top:-20px; width:90px; height:90px; border-radius:50%; background:linear-gradient(135deg,var(--primary),var(--accent)); opacity:.08; }
 .kpi h3{margin:0 0 8px;font-size:14px;color:#64748b;text-transform:uppercase}
 .kpi .value{font-size:34px;font-weight:800;color:var(--text)}
+/* Word values ("In Progress") are wider than numbers; 34px would wrap in a 4-up card */
+.kpi .value-word{font-size:26px}
 .kpi .sub{margin-top:6px;color:#64748b;font-size:13px}
 .kpis-compact { display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr)); gap:16px; }
 .kpis-compact .value { font-size: 26px; }
