@@ -47,7 +47,7 @@
           totalInternships: totalInternships,
           highestPackage: pkgs.length > 0 ? extractMaxPackage(pkgs) : "0",
           averagePackage: pkgs.length > 0 ? calculateAveragePackage(pkgs) : "0",
-          highestInternship: interns.length > 0 ? extractMaxPackage(interns) : "0",
+          highestInternship: extractMaxStipend(interns),
           totalCompanies: companies.size,
           examTotal: examAppeared > 0 ? examAppeared + 150 : 0,
           examReg: examAppeared > 0 ? (examAppeared + 150) - 25 : 0,
@@ -402,7 +402,7 @@
                   <div class="kpi-card"><div class="kpi-value">1370</div><div class="kpi-label">Registered</div></div>
                   <div class="kpi-card"><div class="kpi-value">1348</div><div class="kpi-label">Appeared</div></div>
                   <div class="kpi-card"><div class="kpi-value">22</div><div class="kpi-label">Absent</div></div>
-                  <div class="kpi-card"><div class="kpi-value">In Progress</div><div class="kpi-label">Result</div></div>
+                  <div class="kpi-card"><div class="kpi-value">Declared</div><div class="kpi-label">Result</div></div>
               </div>
               
               <div class="section-title">Risk Summary</div>

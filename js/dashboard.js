@@ -83,13 +83,14 @@
   const docCards = items => (items || []).map(m => `
       <div class="kpi clickable" onclick="openDocModal('${m.name.replace(/'/g, "\\'")}', '${m.doc}')">
         <h3>${m.name}</h3>
-        <div class="value">${m.date}</div>
+        ${m.date ? `<div class="value">${m.date}</div>` : ''}
       </div>`).join('');
 
   function renderMeetings(month) {
     const grid = document.getElementById('meetings-grid');
     if (!grid) return;
     grid.innerHTML = docCards(MEETINGS[month]);
+    grid.closest('.section').style.display = MEETINGS[month] ? '' : 'none';
   }
 
   // ------------------------------------------
@@ -97,11 +98,11 @@
   // hides for months without an entry.
   // ------------------------------------------
   const MONTHLY_ACTIVITY = {
-    'newsletter-section': {
-      August: [{ name: 'ADYPU Newsletter', date: 'August 2026', doc: 'adypu-newsletter-august-2026.pdf' }]
-    },
-    'induction-section': {
-      August: [{ name: 'Induction Program Report', date: 'August 2026', doc: 'first-year-induction-report-aug-2026.pdf' }]
+    'activities-section': {
+      August: [
+        { name: 'ADYPU Newsletter', doc: 'adypu-newsletter-august-2026.pdf' },
+        { name: 'Induction Program Report', doc: 'first-year-induction-report-aug-2026.pdf' }
+      ]
     }
   };
 
@@ -135,7 +136,10 @@
     August: [
       { src: 'loknetri-launch-aug-2026.jpeg', title: 'Launch of School of Governance & Public Policy and Loknetri Training Program', date: '3 August 2026', doc: 'adypu-newsletter-august-2026.pdf' },
       { src: 'deeksharambh-2026.jpeg', title: 'Deeksharambh 2026: School of Engineering Induction', date: '4 to 6 August 2026', doc: 'adypu-newsletter-august-2026.pdf' },
-      { src: 'khelo-india-dialogue-aug-2026.jpeg', title: 'National Sports Day: Khelo India Dialogue', date: '27 August 2026', doc: 'adypu-newsletter-august-2026.pdf' }
+      { src: 'khelo-india-dialogue-aug-2026.jpeg', title: 'National Sports Day: Khelo India Dialogue', date: '27 August 2026', doc: 'adypu-newsletter-august-2026.pdf' },
+      { src: 'fe-induction-aug-2026-1.jpeg', title: 'FE Induction Prog Photo', date: 'August 2026' },
+      { src: 'fe-induction-aug-2026-2.jpeg', title: 'FE Induction Prog Photo', date: 'August 2026' },
+      { src: 'fe-induction-aug-2026-3.jpeg', title: 'FE Induction Prog Photo', date: 'August 2026' }
     ]
   };
   TOP_GALLERY.June = TOP_GALLERY.May;
@@ -381,7 +385,7 @@
     document.getElementById('main-place-placed').innerText = execPlacementsPl;
     document.getElementById('main-place-high').innerText = placementPackages.length > 0 ? extractMaxPackage(placementPackages) : "0";
     document.getElementById('main-place-avg').innerText = placementPackages.length > 0 ? calculateAveragePackage(placementPackages) : "0";
-    document.getElementById('main-place-intern').innerText = placementInternships.length > 0 ? extractMaxPackage(placementInternships) : "0";
+    document.getElementById('main-place-intern').innerText = extractMaxStipend(placementInternships);
     document.getElementById('main-place-comp').innerText = placementCompanies.size;
     // Total Internships
     document.getElementById('main-place-internships').innerText = totalInternships;

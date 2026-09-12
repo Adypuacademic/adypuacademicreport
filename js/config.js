@@ -93,6 +93,17 @@
       return max > 0 ? max + " LPA" : "0";
   }
 
+  // Stipends are monthly rupee amounts in mixed formats ("20k", "36000/- Per month",
+  // "10,000/-per month"); cells without a number ("Internship cum PPO") are skipped.
+  function extractMaxStipend(stringArr) {
+      let max = 0;
+      stringArr.forEach(str => {
+          let match = String(str).replace(/,/g, '').match(/(\d+(?:\.\d+)?)\s*(k\b)?/i);
+          if(match) max = Math.max(max, parseFloat(match[1]) * (match[2] ? 1000 : 1));
+      });
+      return max > 0 ? "₹" + max.toLocaleString('en-IN') : "0";
+  }
+
   function calculateAveragePackage(stringArr) {
       let sum = 0;
       let count = 0;
