@@ -162,7 +162,8 @@
       { src: 'khelo-india-dialogue-aug-2026.jpeg', title: 'National Sports Day: Khelo India Dialogue', date: '27 August 2026', doc: 'adypu-newsletter-august-2026.pdf' },
       { src: 'fe-induction-aug-2026-1.jpeg', title: 'FE Induction Prog Photo', date: 'August 2026' },
       { src: 'fe-induction-aug-2026-2.jpeg', title: 'FE Induction Prog Photo', date: 'August 2026' },
-      { src: 'fe-induction-aug-2026-3.jpeg', title: 'FE Induction Prog Photo', date: 'August 2026' }
+      { src: 'fe-induction-aug-2026-3.jpeg', title: 'FE Induction Prog Photo', date: 'August 2026' },
+      { src: 'khelo-india-sports-day-aug-2026.jpeg', title: 'National Sports Day: Khelo India Dialogue', date: 'August 2026', portrait: true }
     ]
   };
   TOP_GALLERY.June = TOP_GALLERY.May;
@@ -178,7 +179,7 @@
       return `
       <div class="carousel-slide">
         <div class="slide-content" onclick="${open}">
-          <img src="${g.src}" alt="${g.title}" onerror="this.src='https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=500&q=80';">
+          <img class="${g.portrait ? 'portrait' : ''}" src="${g.src}" alt="${g.title}" onerror="this.src='https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=500&q=80';">
           <div class="carousel-caption"><h4>${g.title}</h4><p>${g.date}</p></div>
         </div>
       </div>`;
