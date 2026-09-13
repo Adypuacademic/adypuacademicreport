@@ -116,9 +116,32 @@
   }
 
   // ------------------------------------------
+  // MONTH-SPECIFIC CARD DOCUMENTS
+  // August ships compiled PDFs for these cards; other months keep the old behaviour
+  // (logging engine for achievements, the Drive portfolio for the incubator).
+  // ------------------------------------------
+  const AUGUST_DOCS = {
+    'Student Achievement': 'student-achievements-aug-2026.pdf',
+    'Faculty Achievement': 'faculty-achievements-aug-2026.pdf',
+    'Incubator': 'incubator-activity-aug-2026.pdf'
+  };
+
+  function openAchievementCard(activity, title) {
+    if (activeMonth === 'August') openDocModal(title, AUGUST_DOCS[activity]);
+    else openCombinedModal('achieved', activity);
+  }
+
+  function openIncubatorCard() {
+    openDocModal('ADYPU Incubator Portfolio', activeMonth === 'August'
+      ? AUGUST_DOCS['Incubator']
+      : 'https://drive.google.com/file/d/1RaXdR6tHVa1GmDYaKD0GTraoJXHcRB1z/preview');
+  }
+
+  // ------------------------------------------
   // TOP HIGHLIGHTS GALLERY (per month)
   // Slides carry a `doc` only when they open a document viewer; without one the
-  // image itself is opened full-size. Add a month by adding a key here.
+  // image itself is opened full-size. `portrait: true` letterboxes a slide whose
+  // aspect ratio the 240px cover box would crop badly. Add a month by adding a key here.
   // ------------------------------------------
   const TOP_GALLERY = {
     May: [
