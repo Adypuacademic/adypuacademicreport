@@ -59,6 +59,7 @@
     renderMeetings(month);
     renderMonthlyActivity(month);
     renderTopGallery(month);
+    renderBottomGallery(month);
   }
 
   // ------------------------------------------
@@ -168,24 +169,72 @@
   };
   TOP_GALLERY.June = TOP_GALLERY.May;
 
-  function renderTopGallery(month) {
-    const track = document.getElementById('carouselTrack2');
+  // ------------------------------------------
+  // UNIVERSITY ACHIEVEMENTS GALLERY (per month)
+  // Same slide shape as TOP_GALLERY. May/June/July keep the slides this gallery
+  // carried when it was static markup; August shows only its own photos.
+  // ------------------------------------------
+  const HIGHLIGHTS_DOC = 'https://docs.google.com/document/d/1-wVDe2bv5ZndwJuU3_M87LaVDpSxAIFJ/preview';
+  const LOKMAT_DOC = 'https://drive.google.com/file/d/1N8A-u1FG0NPe5FyYlccTQfebUkq8SFWU/preview';
+  const BOTTOM_GALLERY = {
+    May: [
+      { src: 'autocad-training.png', title: 'Auto CAD Hands-on Training Program', date: 'May 2026', doc: HIGHLIGHTS_DOC },
+      { src: 'research-publication.png', title: 'Research Publication on AI & Cloud Platforms', date: 'May 2026', doc: HIGHLIGHTS_DOC },
+      { src: '{34702617-3571-4261-8D41-660014D23FF3}.png', title: 'Dr. Ranjit Kumar\u2019s IEEE Leadership', date: 'Regional Recognition', doc: HIGHLIGHTS_DOC },
+      { src: '{0566F7C1-CC42-4648-8145-1B0B623020B8}.png', title: 'International Recognition in IEEE Region 10', date: 'April 30, 2026', doc: HIGHLIGHTS_DOC },
+      { src: '{5E3DAA53-98C1-42F6-9E66-78CD1CAE7943}.png', title: 'Ajeenkya Karandak Tournament', date: 'Sports Achievement', doc: HIGHLIGHTS_DOC },
+      { src: '{06C24A80-A093-4E1A-BE6B-060EDF0563F0}.png', title: 'MIT \u2013 ADT Cricket Tournament', date: '1st Place Victory', doc: HIGHLIGHTS_DOC },
+      { src: '{EDC1C369-397F-42E2-AB8A-B25A32567BA3}.png', title: 'Gaming Event with Redbull', date: 'Under25adypu Event', doc: HIGHLIGHTS_DOC },
+      { src: '{5598FC8B-1C75-4715-AB2B-C6FF68CA737D}.jpg', title: 'Under25adypu Nominated for "Best Club of the Batch"', date: 'National Recognition', doc: HIGHLIGHTS_DOC },
+      { src: '{1FD70957-4943-4122-BA1A-90A54182C1AD}.jpg', title: 'Best Paper Award at ICRAEST 2026', date: 'Academic Excellence', doc: HIGHLIGHTS_DOC },
+      { src: 'health_expo_1.jpeg', title: 'Lokmat Education fair and Health Expo', date: 'June 2026', doc: LOKMAT_DOC },
+      { src: 'health_expo_2.jpeg', title: 'Lokmat Education fair and Health Expo', date: 'June 2026', doc: LOKMAT_DOC },
+      { src: 'ieeextreme-ambassador.jpeg', title: 'IEEEXtreme 20.0 Student Ambassador', date: 'Global Programming Competition', portrait: true },
+      { src: 'ieee-yp-funding-grant.jpeg', title: 'IEEE Young Professionals Activity Funding', date: 'AI-Guided Robotics Research Grant', portrait: true }
+    ],
+    // Newsletter crops: wide and short, so they letterbox instead of cropping to a band
+    August: [
+      { src: 'loknetri-launch-gallery-aug-2026.jpeg', title: 'Launch of School of Governance & Public Policy and Loknetri Training Program', date: 'August 2026', portrait: true },
+      { src: 'art-of-living-triveni-ashram-aug-2026.jpeg', title: 'Visit to Art of Living Triveni Ashram', date: 'August 2026', portrait: true },
+      { src: 'industrial-visit-aug-2026.jpeg', title: 'Industrial Visit', date: 'August 2026', portrait: true },
+      { src: 'global-career-seminar-aug-2026.jpeg', title: 'Seminar on Global Career Opportunities', date: 'August 2026', portrait: true },
+      { src: 'hack4humanity-aug-2026.jpeg', title: 'Hack4Humanity', date: 'August 2026', portrait: true },
+      { src: 'nasha-mukti-poster-making-aug-2026.jpeg', title: 'Nasha Mukti Poster Making', date: 'August 2026', portrait: true }
+    ]
+  };
+  BOTTOM_GALLERY.June = BOTTOM_GALLERY.May;
+  BOTTOM_GALLERY.July = BOTTOM_GALLERY.May;
+
+  // Titles carry quotes and ampersands, so escape for the JS string first, then for
+  // the HTML attribute that string sits inside.
+  const attrEsc = v => String(v).replace(/&/g, '&amp;').replace(/"/g, '&quot;');
+  const jsEsc = v => attrEsc(String(v).replace(/\\/g, '\\\\').replace(/'/g, "\\'"));
+
+  function renderGallery(trackId, slides, reset) {
+    const track = document.getElementById(trackId);
     if (!track) return;
-    const esc = s => String(s).replace(/'/g, "\\'");
-    track.innerHTML = (TOP_GALLERY[month] || []).map(g => {
+    track.innerHTML = (slides || []).map(g => {
       const open = g.doc
-        ? `openDocModal('${esc(g.title)}', '${g.doc}')`
+        ? `openDocModal('${jsEsc(g.title)}', '${jsEsc(g.doc)}')`
         : `openImageModal(this.querySelector('img'))`;
       return `
       <div class="carousel-slide">
         <div class="slide-content" onclick="${open}">
-          <img class="${g.portrait ? 'portrait' : ''}" src="${g.src}" alt="${g.title}" onerror="this.src='https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=500&q=80';">
+          <img class="${g.portrait ? 'portrait' : ''}" src="${attrEsc(g.src)}" alt="${attrEsc(g.title)}" onerror="this.src='https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=500&amp;q=80';">
           <div class="carousel-caption"><h4>${g.title}</h4><p>${g.date}</p></div>
         </div>
       </div>`;
     }).join('');
     // Slide count changed, so the offset and the dot strip both have to be rebuilt
-    if (typeof resetCarousel2 === 'function') resetCarousel2();
+    if (typeof reset === 'function') reset();
+  }
+
+  function renderTopGallery(month) {
+    renderGallery('carouselTrack2', TOP_GALLERY[month], resetCarousel2);
+  }
+
+  function renderBottomGallery(month) {
+    renderGallery('carouselTrack', BOTTOM_GALLERY[month], resetCarousel);
   }
 
   // ------------------------------------------

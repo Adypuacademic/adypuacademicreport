@@ -51,6 +51,7 @@
       renderMeetings(month);
       renderMonthlyActivity(month);
       renderTopGallery(month);
+      renderBottomGallery(month);
     };
 
     Promise.all(SOURCES.map(source =>

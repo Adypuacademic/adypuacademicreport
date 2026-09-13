@@ -18,7 +18,7 @@
       const track = document.getElementById('carouselTrack');
       if(!track) return;
       const itemsPerPage = getItemsPerPage();
-      const maxIndex = totalSlides() - itemsPerPage;
+      const maxIndex = Math.max(0, totalSlides() - itemsPerPage);
       
       if (currentSlide > maxIndex) currentSlide = 0;
       if (currentSlide < 0) currentSlide = maxIndex;
@@ -51,7 +51,7 @@
   }
   
   function moveSlide(step) {
-      const maxIndex = totalSlides() - getItemsPerPage();
+      const maxIndex = Math.max(0, totalSlides() - getItemsPerPage());
       currentSlide += step;
       if (currentSlide > maxIndex) currentSlide = 0;
       if (currentSlide < 0) currentSlide = maxIndex;
@@ -67,7 +67,7 @@
   }
   
   function autoSlide() {
-      const maxIndex = totalSlides() - getItemsPerPage();
+      const maxIndex = Math.max(0, totalSlides() - getItemsPerPage());
       currentSlide++;
       if(currentSlide > maxIndex) currentSlide = 0;
       updateCarousel();
@@ -92,6 +92,15 @@
   
   function togglePlayPause() {
       isPlaying ? stopAutoplay() : startAutoplay();
+  }
+
+  // Gallery 1 is re-rendered per month, so the slide count changes under us.
+  // Drop the dots to force a rebuild and rewind to the first slide.
+  function resetCarousel() {
+      currentSlide = 0;
+      const dots = document.getElementById('carouselDots');
+      if (dots) dots.innerHTML = '';
+      updateCarousel();
   }
   
   function pauseForInteraction() {
