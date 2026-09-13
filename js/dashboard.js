@@ -419,9 +419,6 @@
     document.getElementById('main-exam-app').innerText = examAppeared; document.getElementById('main-exam-abs').innerText = (totalExam - 25) - examAppeared;
     // Result text is set by updateResultText() on month switch
 
-    // Student Awards hardcoded to 11
-    document.getElementById('exec-stu').innerText = 11; 
-    document.getElementById('exec-fac').innerText = execFac;
   }
 
 // Runs after school tiles exist (schools.js) and switchView is defined (above).
