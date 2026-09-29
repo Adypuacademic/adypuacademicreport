@@ -8,10 +8,10 @@
     // normalised by JuneAdapter. Add a month by appending one entry here, a tab in
     // index.html, an option in both compare dropdowns, and its columns in june-adapter.js.
     const SOURCES = [
-      { month: 'May', file: 'ADYPU_Master_Dashboard_Data_MultiSheet.xlsx', raw: false },
-      { month: 'June', file: 'ADYPU_Master_Dashboard_Data_June_2026.xlsx', raw: true },
-      { month: 'July', file: 'ADYPU_Master_Dashboard_Data_July_2026.xlsx', raw: true },
-      { month: 'August', file: 'ADYPU_Master_Dashboard_Data_August_2026.xlsx', raw: true }
+      { month: 'May', file: 'assets/data/ADYPU_Master_Dashboard_Data_MultiSheet.xlsx', raw: false },
+      { month: 'June', file: 'assets/data/ADYPU_Master_Dashboard_Data_June_2026.xlsx', raw: true },
+      { month: 'July', file: 'assets/data/ADYPU_Master_Dashboard_Data_July_2026.xlsx', raw: true },
+      { month: 'August', file: 'assets/data/ADYPU_Master_Dashboard_Data_August_2026.xlsx', raw: true }
     ];
 
     const fetchWorkbook = filename =>

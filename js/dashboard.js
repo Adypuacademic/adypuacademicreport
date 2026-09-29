@@ -76,7 +76,7 @@
       { name: 'Centre of Excellence (CoE) Planning', date: '25/06/2026', doc: MEETINGS_DOC }
     ],
     July: [
-      { name: 'Board of Examinations Meeting (BOE)', date: '15/07/2026', doc: 'boe-meeting-notice-agenda.pdf' }
+      { name: 'Board of Examinations Meeting (BOE)', date: '15/07/2026', doc: 'assets/documents/boe-meeting-notice-agenda.pdf' }
     ]
   };
   MEETINGS.June = MEETINGS.May;
@@ -101,8 +101,8 @@
   const MONTHLY_ACTIVITY = {
     'activities-section': {
       August: [
-        { name: 'ADYPU Newsletter', doc: 'adypu-newsletter-august-2026.pdf' },
-        { name: 'Induction Program Report', doc: 'first-year-induction-report-aug-2026.pdf' }
+        { name: 'ADYPU Newsletter', doc: 'assets/documents/adypu-newsletter-august-2026.pdf' },
+        { name: 'Induction Program Report', doc: 'assets/documents/first-year-induction-report-aug-2026.pdf' }
       ]
     }
   };
@@ -122,9 +122,9 @@
   // (logging engine for achievements, the Drive portfolio for the incubator).
   // ------------------------------------------
   const AUGUST_DOCS = {
-    'Student Achievement': 'student-achievements-aug-2026.pdf',
-    'Faculty Achievement': 'faculty-achievements-aug-2026.pdf',
-    'Incubator': 'incubator-activity-aug-2026.pdf'
+    'Student Achievement': 'assets/documents/student-achievements-aug-2026.pdf',
+    'Faculty Achievement': 'assets/documents/faculty-achievements-aug-2026.pdf',
+    'Incubator': 'assets/documents/incubator-activity-aug-2026.pdf'
   };
 
   function openAchievementCard(activity, title) {
@@ -146,25 +146,25 @@
   // ------------------------------------------
   const TOP_GALLERY = {
     May: [
-      { src: '{5C6CE9FC-5251-46A4-9607-085D23687C3A}.jpg', title: 'Times Higher Education (THE) Sustainability Rankings 2026', date: 'June 2026', doc: 'https://drive.google.com/file/d/1N8A-u1FG0NPe5FyYlccTQfebUkq8SFWU/preview' },
-      { src: 'igauge certificate.jpeg', title: 'IGAUGE Certificate', date: 'June 2026' },
-      { src: 'igauge ranking.jpeg', title: 'IGAUGE Ranking', date: 'June 2026' },
-      { src: 'Lokmat edu fair.jpeg', title: 'Lokmat Education fair and Health Expo', date: 'June 2026' }
+      { src: 'assets/images/{5C6CE9FC-5251-46A4-9607-085D23687C3A}.jpg', title: 'Times Higher Education (THE) Sustainability Rankings 2026', date: 'June 2026', doc: 'https://drive.google.com/file/d/1N8A-u1FG0NPe5FyYlccTQfebUkq8SFWU/preview' },
+      { src: 'assets/images/igauge certificate.jpeg', title: 'IGAUGE Certificate', date: 'June 2026' },
+      { src: 'assets/images/igauge ranking.jpeg', title: 'IGAUGE Ranking', date: 'June 2026' },
+      { src: 'assets/images/Lokmat edu fair.jpeg', title: 'Lokmat Education fair and Health Expo', date: 'June 2026' }
     ],
     July: [
-      { src: 'gallery-aug-2026.jpeg', title: 'Pune Education Conclave 2026', date: 'August 2026' },
-      { src: 'web-tech-bootcamp-july-2026.jpeg', title: 'Web Technology Bootcamp Workshop', date: 'July 2026' },
-      { src: 'hack4humanity-winner.jpeg', title: '1st Prize — Hack4Humanity Hackathon', date: 'AI for Societal Good Track' }
+      { src: 'assets/images/gallery-aug-2026.jpeg', title: 'Pune Education Conclave 2026', date: 'August 2026' },
+      { src: 'assets/images/web-tech-bootcamp-july-2026.jpeg', title: 'Web Technology Bootcamp Workshop', date: 'July 2026' },
+      { src: 'assets/images/hack4humanity-winner.jpeg', title: '1st Prize — Hack4Humanity Hackathon', date: 'AI for Societal Good Track' }
     ],
     // Cropped from the August newsletter; its photos are only ~350px wide, so slides open the newsletter instead
     August: [
-      { src: 'loknetri-launch-aug-2026.jpeg', title: 'Launch of School of Governance & Public Policy and Loknetri Training Program', date: '3 August 2026', doc: 'adypu-newsletter-august-2026.pdf' },
-      { src: 'deeksharambh-2026.jpeg', title: 'Deeksharambh 2026: School of Engineering Induction', date: '4 to 6 August 2026', doc: 'adypu-newsletter-august-2026.pdf' },
-      { src: 'khelo-india-dialogue-aug-2026.jpeg', title: 'National Sports Day: Khelo India Dialogue', date: '27 August 2026', doc: 'adypu-newsletter-august-2026.pdf' },
-      { src: 'fe-induction-aug-2026-1.jpeg', title: 'FE Induction Prog Photo', date: 'August 2026' },
-      { src: 'fe-induction-aug-2026-2.jpeg', title: 'FE Induction Prog Photo', date: 'August 2026' },
-      { src: 'fe-induction-aug-2026-3.jpeg', title: 'FE Induction Prog Photo', date: 'August 2026' },
-      { src: 'khelo-india-sports-day-aug-2026.jpeg', title: 'National Sports Day: Khelo India Dialogue', date: 'August 2026', portrait: true }
+      { src: 'assets/images/loknetri-launch-aug-2026.jpeg', title: 'Launch of School of Governance & Public Policy and Loknetri Training Program', date: '3 August 2026', doc: 'assets/documents/adypu-newsletter-august-2026.pdf' },
+      { src: 'assets/images/deeksharambh-2026.jpeg', title: 'Deeksharambh 2026: School of Engineering Induction', date: '4 to 6 August 2026', doc: 'assets/documents/adypu-newsletter-august-2026.pdf' },
+      { src: 'assets/images/khelo-india-dialogue-aug-2026.jpeg', title: 'National Sports Day: Khelo India Dialogue', date: '27 August 2026', doc: 'assets/documents/adypu-newsletter-august-2026.pdf' },
+      { src: 'assets/images/fe-induction-aug-2026-1.jpeg', title: 'FE Induction Prog Photo', date: 'August 2026' },
+      { src: 'assets/images/fe-induction-aug-2026-2.jpeg', title: 'FE Induction Prog Photo', date: 'August 2026' },
+      { src: 'assets/images/fe-induction-aug-2026-3.jpeg', title: 'FE Induction Prog Photo', date: 'August 2026' },
+      { src: 'assets/images/khelo-india-sports-day-aug-2026.jpeg', title: 'National Sports Day: Khelo India Dialogue', date: 'August 2026', portrait: true }
     ]
   };
   TOP_GALLERY.June = TOP_GALLERY.May;
@@ -178,28 +178,28 @@
   const LOKMAT_DOC = 'https://drive.google.com/file/d/1N8A-u1FG0NPe5FyYlccTQfebUkq8SFWU/preview';
   const BOTTOM_GALLERY = {
     May: [
-      { src: 'autocad-training.png', title: 'Auto CAD Hands-on Training Program', date: 'May 2026', doc: HIGHLIGHTS_DOC },
-      { src: 'research-publication.png', title: 'Research Publication on AI & Cloud Platforms', date: 'May 2026', doc: HIGHLIGHTS_DOC },
-      { src: '{34702617-3571-4261-8D41-660014D23FF3}.png', title: 'Dr. Ranjit Kumar\u2019s IEEE Leadership', date: 'Regional Recognition', doc: HIGHLIGHTS_DOC },
-      { src: '{0566F7C1-CC42-4648-8145-1B0B623020B8}.png', title: 'International Recognition in IEEE Region 10', date: 'April 30, 2026', doc: HIGHLIGHTS_DOC },
-      { src: '{5E3DAA53-98C1-42F6-9E66-78CD1CAE7943}.png', title: 'Ajeenkya Karandak Tournament', date: 'Sports Achievement', doc: HIGHLIGHTS_DOC },
-      { src: '{06C24A80-A093-4E1A-BE6B-060EDF0563F0}.png', title: 'MIT \u2013 ADT Cricket Tournament', date: '1st Place Victory', doc: HIGHLIGHTS_DOC },
-      { src: '{EDC1C369-397F-42E2-AB8A-B25A32567BA3}.png', title: 'Gaming Event with Redbull', date: 'Under25adypu Event', doc: HIGHLIGHTS_DOC },
-      { src: '{5598FC8B-1C75-4715-AB2B-C6FF68CA737D}.jpg', title: 'Under25adypu Nominated for "Best Club of the Batch"', date: 'National Recognition', doc: HIGHLIGHTS_DOC },
-      { src: '{1FD70957-4943-4122-BA1A-90A54182C1AD}.jpg', title: 'Best Paper Award at ICRAEST 2026', date: 'Academic Excellence', doc: HIGHLIGHTS_DOC },
-      { src: 'health_expo_1.jpeg', title: 'Lokmat Education fair and Health Expo', date: 'June 2026', doc: LOKMAT_DOC },
-      { src: 'health_expo_2.jpeg', title: 'Lokmat Education fair and Health Expo', date: 'June 2026', doc: LOKMAT_DOC },
-      { src: 'ieeextreme-ambassador.jpeg', title: 'IEEEXtreme 20.0 Student Ambassador', date: 'Global Programming Competition', portrait: true },
-      { src: 'ieee-yp-funding-grant.jpeg', title: 'IEEE Young Professionals Activity Funding', date: 'AI-Guided Robotics Research Grant', portrait: true }
+      { src: 'assets/images/autocad-training.png', title: 'Auto CAD Hands-on Training Program', date: 'May 2026', doc: HIGHLIGHTS_DOC },
+      { src: 'assets/images/research-publication.png', title: 'Research Publication on AI & Cloud Platforms', date: 'May 2026', doc: HIGHLIGHTS_DOC },
+      { src: 'assets/images/{34702617-3571-4261-8D41-660014D23FF3}.png', title: 'Dr. Ranjit Kumar\u2019s IEEE Leadership', date: 'Regional Recognition', doc: HIGHLIGHTS_DOC },
+      { src: 'assets/images/{0566F7C1-CC42-4648-8145-1B0B623020B8}.png', title: 'International Recognition in IEEE Region 10', date: 'April 30, 2026', doc: HIGHLIGHTS_DOC },
+      { src: 'assets/images/{5E3DAA53-98C1-42F6-9E66-78CD1CAE7943}.png', title: 'Ajeenkya Karandak Tournament', date: 'Sports Achievement', doc: HIGHLIGHTS_DOC },
+      { src: 'assets/images/{06C24A80-A093-4E1A-BE6B-060EDF0563F0}.png', title: 'MIT \u2013 ADT Cricket Tournament', date: '1st Place Victory', doc: HIGHLIGHTS_DOC },
+      { src: 'assets/images/{EDC1C369-397F-42E2-AB8A-B25A32567BA3}.png', title: 'Gaming Event with Redbull', date: 'Under25adypu Event', doc: HIGHLIGHTS_DOC },
+      { src: 'assets/images/{5598FC8B-1C75-4715-AB2B-C6FF68CA737D}.jpg', title: 'Under25adypu Nominated for "Best Club of the Batch"', date: 'National Recognition', doc: HIGHLIGHTS_DOC },
+      { src: 'assets/images/{1FD70957-4943-4122-BA1A-90A54182C1AD}.jpg', title: 'Best Paper Award at ICRAEST 2026', date: 'Academic Excellence', doc: HIGHLIGHTS_DOC },
+      { src: 'assets/images/health_expo_1.jpeg', title: 'Lokmat Education fair and Health Expo', date: 'June 2026', doc: LOKMAT_DOC },
+      { src: 'assets/images/health_expo_2.jpeg', title: 'Lokmat Education fair and Health Expo', date: 'June 2026', doc: LOKMAT_DOC },
+      { src: 'assets/images/ieeextreme-ambassador.jpeg', title: 'IEEEXtreme 20.0 Student Ambassador', date: 'Global Programming Competition', portrait: true },
+      { src: 'assets/images/ieee-yp-funding-grant.jpeg', title: 'IEEE Young Professionals Activity Funding', date: 'AI-Guided Robotics Research Grant', portrait: true }
     ],
     // Newsletter crops: wide and short, so they letterbox instead of cropping to a band
     August: [
-      { src: 'loknetri-launch-gallery-aug-2026.jpeg', title: 'Launch of School of Governance & Public Policy and Loknetri Training Program', date: 'August 2026', portrait: true },
-      { src: 'art-of-living-triveni-ashram-aug-2026.jpeg', title: 'Visit to Art of Living Triveni Ashram', date: 'August 2026', portrait: true },
-      { src: 'industrial-visit-aug-2026.jpeg', title: 'Industrial Visit', date: 'August 2026', portrait: true },
-      { src: 'global-career-seminar-aug-2026.jpeg', title: 'Seminar on Global Career Opportunities', date: 'August 2026', portrait: true },
-      { src: 'hack4humanity-aug-2026.jpeg', title: 'Hack4Humanity', date: 'August 2026', portrait: true },
-      { src: 'nasha-mukti-poster-making-aug-2026.jpeg', title: 'Nasha Mukti Poster Making', date: 'August 2026', portrait: true }
+      { src: 'assets/images/loknetri-launch-gallery-aug-2026.jpeg', title: 'Launch of School of Governance & Public Policy and Loknetri Training Program', date: 'August 2026', portrait: true },
+      { src: 'assets/images/art-of-living-triveni-ashram-aug-2026.jpeg', title: 'Visit to Art of Living Triveni Ashram', date: 'August 2026', portrait: true },
+      { src: 'assets/images/industrial-visit-aug-2026.jpeg', title: 'Industrial Visit', date: 'August 2026', portrait: true },
+      { src: 'assets/images/global-career-seminar-aug-2026.jpeg', title: 'Seminar on Global Career Opportunities', date: 'August 2026', portrait: true },
+      { src: 'assets/images/hack4humanity-aug-2026.jpeg', title: 'Hack4Humanity', date: 'August 2026', portrait: true },
+      { src: 'assets/images/nasha-mukti-poster-making-aug-2026.jpeg', title: 'Nasha Mukti Poster Making', date: 'August 2026', portrait: true }
     ]
   };
   BOTTOM_GALLERY.June = BOTTOM_GALLERY.May;
