@@ -165,6 +165,10 @@
       { src: 'assets/images/fe-induction-aug-2026-2.jpeg', title: 'FE Induction Prog Photo', date: 'August 2026' },
       { src: 'assets/images/fe-induction-aug-2026-3.jpeg', title: 'FE Induction Prog Photo', date: 'August 2026' },
       { src: 'assets/images/khelo-india-sports-day-aug-2026.jpeg', title: 'National Sports Day: Khelo India Dialogue', date: 'August 2026', portrait: true }
+    ],
+    September: [
+      { src: 'assets/images/icicis-2026-sep-2026-1.png', title: 'ICICIS 2026 Conference', date: '10–11 September 2026' },
+      { src: 'assets/images/icicis-2026-sep-2026-2.png', title: 'ICICIS 2026 Conference', date: '10–11 September 2026' }
     ]
   };
   TOP_GALLERY.June = TOP_GALLERY.May;
