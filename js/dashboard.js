@@ -27,8 +27,8 @@
   let activePieChart = null;
   let globalRawData = [];
   let currentMonthData = [];
-  let monthData = { May: [], June: [], July: [], August: [] };
-  let activeMonth = 'August';
+  let monthData = { May: [], June: [], July: [], August: [], September: [] };
+  let activeMonth = 'September';
 
   Chart.register(ChartDataLabels);
   // ------------------------------------------
@@ -213,6 +213,8 @@
   function renderGallery(trackId, slides, reset) {
     const track = document.getElementById(trackId);
     if (!track) return;
+    // A month without photos yet hides its gallery, like meetings do
+    track.closest('.section').style.display = (slides || []).length ? '' : 'none';
     track.innerHTML = (slides || []).map(g => {
       const open = g.doc
         ? `openDocModal('${jsEsc(g.title)}', '${jsEsc(g.doc)}')`
