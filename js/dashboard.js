@@ -170,7 +170,8 @@
       { src: 'assets/images/icicis-2026-sep-2026-1.png', title: 'ICICIS 2026 Conference', date: '10–11 September 2026' },
       { src: 'assets/images/icicis-2026-sep-2026-2.png', title: 'ICICIS 2026 Conference', date: '10–11 September 2026' },
       { src: 'assets/images/innovation-week-sep-2026.png', title: 'Innovation Week 2026', date: '21–25 September 2026', portrait: true },
-      { src: 'assets/images/ieee-medha-hackathon-sep-2026.png', title: 'IEEE MEDHA 2026 Hackathon', date: '22–23 September 2026' }
+      { src: 'assets/images/ieee-medha-hackathon-sep-2026.png', title: 'IEEE MEDHA 2026 Hackathon', date: '22–23 September 2026' },
+      { src: 'assets/images/copyrights-filed-sep-2026.webp', title: '150+ Copyrights Filed in a Single Day', date: '24 September 2026', portrait: true }
     ]
   };
   TOP_GALLERY.June = TOP_GALLERY.May;
