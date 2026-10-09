@@ -206,6 +206,11 @@
       { src: 'assets/images/global-career-seminar-aug-2026.jpeg', title: 'Seminar on Global Career Opportunities', date: 'August 2026', portrait: true },
       { src: 'assets/images/hack4humanity-aug-2026.jpeg', title: 'Hack4Humanity', date: 'August 2026', portrait: true },
       { src: 'assets/images/nasha-mukti-poster-making-aug-2026.jpeg', title: 'Nasha Mukti Poster Making', date: 'August 2026', portrait: true }
+    ],
+    September: [
+      { src: 'assets/images/ranjit-kumar-ieee-yp-chair-sep-2026.png', title: 'Dr. Ranjit Kumar: IEEE YP Chair and EMBS Vice Chair', date: 'IEEE Maharashtra Section', portrait: true },
+      { src: 'assets/images/google-guidix-agentic-ai-conclave-sep-2026.png', title: 'Dr. Atul Kathole at the Google & Guidix.ai Conclave', date: 'Agentic AI and the University of 2030' },
+      { src: 'assets/images/ieee-myosa-javitron-r10-hta-sep-2026.webp', title: 'IEEE MYOSA Funds, Team Javitron and R10 HTA Project Lead', date: 'September 2026', portrait: true }
     ]
   };
   BOTTOM_GALLERY.June = BOTTOM_GALLERY.May;
