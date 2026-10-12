@@ -211,7 +211,8 @@
     September: [
       { src: 'assets/images/ranjit-kumar-ieee-yp-chair-sep-2026.png', title: 'Dr. Ranjit Kumar: IEEE YP Chair and EMBS Vice Chair', date: 'IEEE Maharashtra Section', portrait: true },
       { src: 'assets/images/google-guidix-agentic-ai-conclave-sep-2026.png', title: 'Dr. Atul Kathole at the Google & Guidix.ai Conclave', date: 'Agentic AI and the University of 2030' },
-      { src: 'assets/images/ieee-myosa-javitron-r10-hta-sep-2026.webp', title: 'IEEE MYOSA Funds, Team Javitron and R10 HTA Project Lead', date: 'September 2026', portrait: true }
+      { src: 'assets/images/ieee-myosa-javitron-r10-hta-sep-2026.webp', title: 'IEEE MYOSA Funds, Team Javitron and R10 HTA Project Lead', date: 'September 2026', portrait: true },
+      { src: 'assets/images/atul-kathole-top1000-scholar-sep-2026.png', title: 'Dr. Atul Kathole: World Rank #33, Top1000 Scholar 2026', date: 'Currency Recognition and Detection', portrait: true }
     ]
   };
   BOTTOM_GALLERY.June = BOTTOM_GALLERY.May;
@@ -247,7 +248,11 @@
     renderGallery('carouselTrack2', TOP_GALLERY[month], resetCarousel2);
   }
 
+  // September's slides are staff recognitions, so the heading says so for that month
+  const BOTTOM_GALLERY_TITLE = { September: 'STAFF ACHIEVEMENTS GALLERY' };
+
   function renderBottomGallery(month) {
+    document.getElementById('bottom-gallery-title').textContent = BOTTOM_GALLERY_TITLE[month] || 'UNIVERSITY ACHIEVEMENTS GALLERY';
     renderGallery('carouselTrack', BOTTOM_GALLERY[month], resetCarousel);
   }
 
