@@ -195,8 +195,16 @@
       { src: 'assets/images/ieee-medha-hackathon-sep-2026.jpg', title: 'IEEE MEDHA 2026 Hackathon', date: '22–23 September 2026' },
       { src: 'assets/images/copyrights-filed-sep-2026.webp', title: '200+ Copyrights Filed in a Single Day', date: '24 September 2026', portrait: true }
     ],
-    // Cropped from the October newsletter; small photos, so slides open the newsletter
+    // First seven are photos and press clippings sent by the office (Dr. Ajeenkya D Y Patil
+    // first); the newsletter crops are small photos, so those slides open the newsletter
     October: [
+      { src: 'assets/images/ajeenkya-patil-gandhi-tribute-oct-2026.jpg', title: 'Dr. Ajeenkya D Y Patil Pays Tribute at Yerawada Central Prison', date: '22 October 2026' },
+      { src: 'assets/images/dy-patil-memorial-yerawada-oct-2026.jpg', title: 'A Living Memorial to Padmashri Dr. D. Y. Patil: Bhoomi Poojan at Yerawada Prison', date: 'Press coverage, October 2026', portrait: true },
+      { src: 'assets/images/law-35-guest-lectures-record-oct-2026.jpg', title: 'ADYPU Sets a World Record with 35 Guest Lectures in a Single Day', date: 'Press coverage, International Day of Non-Violence', portrait: true },
+      { src: 'assets/images/aacsb-membership-ceremony-oct-2026.jpg', title: 'School of Management Joins AACSB International', date: 'AACSB Membership Ceremony, October 2026' },
+      { src: 'assets/images/aacsb-membership-news-oct-2026.jpg', title: 'ADYPU School of Management Joins AACSB International as Member', date: 'Press coverage, October 2026', portrait: true },
+      { src: 'assets/images/cipu-roundtable-banner-oct-2026.jpg', title: 'ADYPU Hosts the CIPU National Industry-Academia Leadership Roundtable', date: '23 October 2026, Pune', portrait: true },
+      { src: 'assets/images/cipu-roundtable-felicitation-oct-2026.jpg', title: 'Felicitation at the National Industry-Academia Leadership Roundtable', date: '23 October 2026, Pune', portrait: true },
       { src: 'assets/images/sudhakar-shinde-els-speaker-oct-2026.jpeg', title: 'Registrar Dr. Sudhakar Shinde: Speaker at the Education Leadership Symposium', date: '30 October 2026, The Orchid Hotel, Pune', portrait: true },
       { src: 'assets/images/sudhakar-shinde-els-certificate-oct-2026.jpeg', title: 'Dr. Sudhakar Shinde Receives a Certificate of Appreciation', date: 'Education Leadership Symposium, 30 October 2026', portrait: true },
       { src: 'assets/images/industry-academia-roundtable-oct-2026.jpeg', title: 'National Industry-Academia Leadership Roundtable with CIPU', date: '23 October 2026', doc: OCT_NEWSLETTER, page: 9 },
