@@ -7,8 +7,8 @@
 <link rel="apple-touch-icon" href="assets/images/apple-touch-icon.png">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.6.1"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
@@ -157,7 +157,7 @@
 
           <button class="carousel-btn prev" onclick="moveSlide2(-1)">&#10094;</button>
           <button class="carousel-btn next" onclick="moveSlide2(1)">&#10095;</button>
-          <button class="carousel-btn play-pause" id="playPauseBtn2" onclick="togglePlayPause2()">⏸</button>
+          <button class="carousel-btn play-pause" id="playPauseBtn2" onclick="togglePlayPause2()" aria-label="Pause or play slideshow"><svg viewBox="0 0 24 24" width="1em" height="1em" fill="currentColor" aria-hidden="true"><rect x="6" y="5" width="4" height="14" rx="1"/><rect x="14" y="5" width="4" height="14" rx="1"/></svg></button>
           
           <div class="carousel-dots" id="carouselDots2"></div>
         </div>
@@ -354,7 +354,7 @@
           
           <button class="carousel-btn prev" onclick="moveSlide(-1)">&#10094;</button>
           <button class="carousel-btn next" onclick="moveSlide(1)">&#10095;</button>
-          <button class="carousel-btn play-pause" id="playPauseBtn" onclick="togglePlayPause()">⏸</button>
+          <button class="carousel-btn play-pause" id="playPauseBtn" onclick="togglePlayPause()" aria-label="Pause or play slideshow"><svg viewBox="0 0 24 24" width="1em" height="1em" fill="currentColor" aria-hidden="true"><rect x="6" y="5" width="4" height="14" rx="1"/><rect x="14" y="5" width="4" height="14" rx="1"/></svg></button>
           
           <div class="carousel-dots" id="carouselDots"></div>
         </div>
@@ -382,7 +382,7 @@
       <div class="section">
         <div class="section-title"><span class="dot"></span><h2>Upcoming Schedule</h2></div>
         <div class="upcoming-wrapper">
-          <img src="assets/images/upcoming-schedule-aug-2026.jpeg" alt="Upcoming Schedule" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+          <img loading="lazy" decoding="async" src="assets/images/upcoming-schedule-aug-2026.jpeg" alt="Upcoming Schedule" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
           <div style="display: none; text-align: center; padding: 40px 20px; color: #94a3b8;">
             <p>Upcoming schedule image not available. Please upload "assets/images/upcoming-schedule-aug-2026.jpeg".</p>
           </div>

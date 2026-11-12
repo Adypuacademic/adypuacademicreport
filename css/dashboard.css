@@ -340,6 +340,9 @@ body {
 .carousel-btn.next { right: 10px; }
 .carousel-btn.play-pause { top: 20px; right: 20px; transform: none; width: 32px; height: 32px; font-size: 14px; }
 .carousel-btn.play-pause:hover { transform: scale(1.1); }
+.carousel-btn.play-pause svg { display: block; margin: auto; }
+/* A month tab clicked before its data has arrived: dim the previous month's figures until it does */
+body.month-loading .kpi .value { opacity: 0.25; transition: opacity 0.15s; }
 
 .carousel-dots { position: absolute; bottom: 15px; left: 50%; transform: translateX(-50%); display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; z-index: 10; }
 .dot-btn { width: 10px; height: 10px; border-radius: 50%; background: #cbd5e1; border: none; cursor: pointer; transition: 0.2s; }

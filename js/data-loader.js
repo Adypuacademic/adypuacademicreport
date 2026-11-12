@@ -56,8 +56,11 @@
       renderBottomGallery(month);
     };
 
-    Promise.all(SOURCES.map(source =>
-      fetchWorkbook(source.file)
+    // The landing month is fetched and drawn first; every other month loads behind it.
+    // monthLoads holds each pending month so a tab click or Compare waits for its data
+    // instead of drawing another month's figures; a month drops out once it settles.
+    const load = source => {
+      const pending = fetchWorkbook(source.file)
         .then(workbook => {
           monthData[source.month] = source.raw
             ? JuneAdapter.buildMonthData(workbook, source.month)
@@ -65,5 +68,21 @@
           console.log('Successfully loaded: ' + source.file);
         })
         .catch(error => console.warn(source.month + ' data not available.', error))
-    )).then(render);
+        .finally(() => { delete monthLoads[source.month]; });
+      monthLoads[source.month] = pending;
+      return pending;
+    };
+
+    const first = SOURCES.find(s => s.month === DEFAULT_MONTH);
+    const rest = SOURCES.filter(s => s !== first);
+    (first ? load(first) : Promise.resolve())
+      .then(() => {
+        if (monthData[DEFAULT_MONTH].length > 0) {
+          render();
+          rest.forEach(load);
+        } else {
+          // Landing month failed: fall back to the old wait-for-everything path
+          Promise.all(rest.map(load)).then(render);
+        }
+      });
   });

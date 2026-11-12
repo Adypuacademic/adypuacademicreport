@@ -29,6 +29,8 @@
   let currentMonthData = [];
   let monthData = { May: [], June: [], July: [], August: [], September: [], October: [] };
   let activeMonth = 'October';
+  // Months still loading (filled by data-loader.js); switchMonth and Compare wait on these
+  const monthLoads = {};
 
   Chart.register(ChartDataLabels);
   // ------------------------------------------
@@ -39,6 +41,14 @@
       tab.classList.toggle('active', tab.dataset.month === month);
     });
     activeMonth = month;
+    // Still loading in the background: draw it once its data arrives, unless the
+    // viewer has moved to another month by then
+    if (!(monthData[month] || []).length && monthLoads[month]) {
+      document.body.classList.add('month-loading');
+      monthLoads[month].then(() => { if (activeMonth === month) switchMonth(month); });
+      return;
+    }
+    document.body.classList.remove('month-loading');
     if ((monthData[month] || []).length > 0) {
       globalRawData = monthData[month];
     } else {
@@ -179,10 +189,10 @@
       { src: 'assets/images/khelo-india-sports-day-aug-2026.jpeg', title: 'National Sports Day: Khelo India Dialogue', date: 'August 2026', portrait: true }
     ],
     September: [
-      { src: 'assets/images/icicis-2026-sep-2026-1.png', title: 'ICICIS 2026 Conference', date: '10–11 September 2026' },
-      { src: 'assets/images/icicis-2026-sep-2026-2.png', title: 'ICICIS 2026 Conference', date: '10–11 September 2026' },
-      { src: 'assets/images/innovation-week-sep-2026.png', title: 'Innovation Week 2026', date: '21–25 September 2026', portrait: true },
-      { src: 'assets/images/ieee-medha-hackathon-sep-2026.png', title: 'IEEE MEDHA 2026 Hackathon', date: '22–23 September 2026' },
+      { src: 'assets/images/icicis-2026-sep-2026-1.jpg', title: 'ICICIS 2026 Conference', date: '10–11 September 2026' },
+      { src: 'assets/images/icicis-2026-sep-2026-2.jpg', title: 'ICICIS 2026 Conference', date: '10–11 September 2026' },
+      { src: 'assets/images/innovation-week-sep-2026.jpg', title: 'Innovation Week 2026', date: '21–25 September 2026', portrait: true },
+      { src: 'assets/images/ieee-medha-hackathon-sep-2026.jpg', title: 'IEEE MEDHA 2026 Hackathon', date: '22–23 September 2026' },
       { src: 'assets/images/copyrights-filed-sep-2026.webp', title: '200+ Copyrights Filed in a Single Day', date: '24 September 2026', portrait: true }
     ],
     // Cropped from the October newsletter; small photos, so slides open the newsletter
@@ -209,13 +219,13 @@
   const LOKMAT_DOC = 'https://drive.google.com/file/d/1N8A-u1FG0NPe5FyYlccTQfebUkq8SFWU/preview';
   const BOTTOM_GALLERY = {
     May: [
-      { src: 'assets/images/autocad-training.png', title: 'Auto CAD Hands-on Training Program', date: 'May 2026', doc: HIGHLIGHTS_DOC },
-      { src: 'assets/images/research-publication.png', title: 'Research Publication on AI & Cloud Platforms', date: 'May 2026', doc: HIGHLIGHTS_DOC },
+      { src: 'assets/images/autocad-training.jpg', title: 'Auto CAD Hands-on Training Program', date: 'May 2026', doc: HIGHLIGHTS_DOC },
+      { src: 'assets/images/research-publication.jpg', title: 'Research Publication on AI & Cloud Platforms', date: 'May 2026', doc: HIGHLIGHTS_DOC },
       { src: 'assets/images/{34702617-3571-4261-8D41-660014D23FF3}.png', title: 'Dr. Ranjit Kumar\u2019s IEEE Leadership', date: 'Regional Recognition', doc: HIGHLIGHTS_DOC },
-      { src: 'assets/images/{0566F7C1-CC42-4648-8145-1B0B623020B8}.png', title: 'International Recognition in IEEE Region 10', date: 'April 30, 2026', doc: HIGHLIGHTS_DOC },
-      { src: 'assets/images/{5E3DAA53-98C1-42F6-9E66-78CD1CAE7943}.png', title: 'Ajeenkya Karandak Tournament', date: 'Sports Achievement', doc: HIGHLIGHTS_DOC },
-      { src: 'assets/images/{06C24A80-A093-4E1A-BE6B-060EDF0563F0}.png', title: 'MIT \u2013 ADT Cricket Tournament', date: '1st Place Victory', doc: HIGHLIGHTS_DOC },
-      { src: 'assets/images/{EDC1C369-397F-42E2-AB8A-B25A32567BA3}.png', title: 'Gaming Event with Redbull', date: 'Under25adypu Event', doc: HIGHLIGHTS_DOC },
+      { src: 'assets/images/{0566F7C1-CC42-4648-8145-1B0B623020B8}.jpg', title: 'International Recognition in IEEE Region 10', date: 'April 30, 2026', doc: HIGHLIGHTS_DOC },
+      { src: 'assets/images/{5E3DAA53-98C1-42F6-9E66-78CD1CAE7943}.jpg', title: 'Ajeenkya Karandak Tournament', date: 'Sports Achievement', doc: HIGHLIGHTS_DOC },
+      { src: 'assets/images/{06C24A80-A093-4E1A-BE6B-060EDF0563F0}.jpg', title: 'MIT \u2013 ADT Cricket Tournament', date: '1st Place Victory', doc: HIGHLIGHTS_DOC },
+      { src: 'assets/images/{EDC1C369-397F-42E2-AB8A-B25A32567BA3}.jpg', title: 'Gaming Event with Redbull', date: 'Under25adypu Event', doc: HIGHLIGHTS_DOC },
       { src: 'assets/images/{5598FC8B-1C75-4715-AB2B-C6FF68CA737D}.jpg', title: 'Under25adypu Nominated for "Best Club of the Batch"', date: 'National Recognition', doc: HIGHLIGHTS_DOC },
       { src: 'assets/images/{1FD70957-4943-4122-BA1A-90A54182C1AD}.jpg', title: 'Best Paper Award at ICRAEST 2026', date: 'Academic Excellence', doc: HIGHLIGHTS_DOC },
       { src: 'assets/images/health_expo_1.jpeg', title: 'Lokmat Education fair and Health Expo', date: 'June 2026', doc: LOKMAT_DOC },
@@ -233,10 +243,10 @@
       { src: 'assets/images/nasha-mukti-poster-making-aug-2026.jpeg', title: 'Nasha Mukti Poster Making', date: 'August 2026', portrait: true }
     ],
     September: [
-      { src: 'assets/images/ranjit-kumar-ieee-yp-chair-sep-2026.png', title: 'Dr. Ranjit Kumar: IEEE YP Chair and EMBS Vice Chair', date: 'IEEE Maharashtra Section', portrait: true },
-      { src: 'assets/images/google-guidix-agentic-ai-conclave-sep-2026.png', title: 'Dr. Atul Kathole at the Google & Guidix.ai Conclave', date: 'Agentic AI and the University of 2030' },
+      { src: 'assets/images/ranjit-kumar-ieee-yp-chair-sep-2026.jpg', title: 'Dr. Ranjit Kumar: IEEE YP Chair and EMBS Vice Chair', date: 'IEEE Maharashtra Section', portrait: true },
+      { src: 'assets/images/google-guidix-agentic-ai-conclave-sep-2026.jpg', title: 'Dr. Atul Kathole at the Google & Guidix.ai Conclave', date: 'Agentic AI and the University of 2030' },
       { src: 'assets/images/ieee-myosa-javitron-r10-hta-sep-2026.webp', title: 'IEEE MYOSA Funds, Team Javitron and R10 HTA Project Lead', date: 'September 2026', portrait: true },
-      { src: 'assets/images/atul-kathole-top1000-scholar-sep-2026.png', title: 'Dr. Atul Kathole: World Rank #33, Top1000 Scholar 2026', date: 'Currency Recognition and Detection', portrait: true }
+      { src: 'assets/images/atul-kathole-top1000-scholar-sep-2026.jpg', title: 'Dr. Atul Kathole: World Rank #33, Top1000 Scholar 2026', date: 'Currency Recognition and Detection', portrait: true }
     ],
     October: [
       { src: 'assets/images/vishal-shirsath-icoicet-oct-2026.jpeg', title: 'Dr. Vishal Shirsath: Paper at ICoICET 2026', date: '1 October 2026', doc: OCT_NEWSLETTER, page: 15 },
@@ -264,7 +274,7 @@
       return `
       <div class="carousel-slide">
         <div class="slide-content" onclick="${open}">
-          <img class="${g.portrait ? 'portrait' : ''}" src="${attrEsc(g.src)}" alt="${attrEsc(g.title)}" onerror="this.src='https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=500&amp;q=80';">
+          <img decoding="async" class="${g.portrait ? 'portrait' : ''}" src="${attrEsc(g.src)}" alt="${attrEsc(g.title)}" onerror="this.src='https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=500&amp;q=80';">
           <div class="carousel-caption"><h4>${g.title}</h4><p>${g.date}${g.page ? ` · Newsletter, p. ${g.page}` : ''}</p></div>
         </div>
       </div>`;
@@ -308,6 +318,13 @@
     
     if (m1 === m2) {
       alert('Please select two different months to compare.');
+      return;
+    }
+
+    // Either month still loading in the background: compare once both have arrived
+    const pending = [m1, m2].map(m => monthLoads[m]).filter(Boolean);
+    if (pending.length) {
+      Promise.all(pending).then(compareMonths);
       return;
     }
     

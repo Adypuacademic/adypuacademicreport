@@ -1,3 +1,7 @@
+  // Drawn icons: the ⏸ and ⏵ characters render as coloured emoji tiles on iPhones
+  const PAUSE_ICON = '<svg viewBox="0 0 24 24" width="1em" height="1em" fill="currentColor" aria-hidden="true"><rect x="6" y="5" width="4" height="14" rx="1"/><rect x="14" y="5" width="4" height="14" rx="1"/></svg>';
+  const PLAY_ICON = '<svg viewBox="0 0 24 24" width="1em" height="1em" fill="currentColor" aria-hidden="true"><path d="M8 5.5v13a1 1 0 0 0 1.5.86l10.5-6.5a1 1 0 0 0 0-1.72L9.5 4.64A1 1 0 0 0 8 5.5z"/></svg>';
+
   // ==========================================
   // RESPONSIVE 3-COLUMN CAROUSEL LOGIC (GALLERY 1)
   // ==========================================
@@ -78,7 +82,7 @@
       if(!playBtn) return;
       if(slideInterval) clearInterval(slideInterval);
       slideInterval = setInterval(autoSlide, 3500); 
-      playBtn.innerText = '⏸';
+      playBtn.innerHTML = PAUSE_ICON;
       isPlaying = true;
   }
   
@@ -86,7 +90,7 @@
       const playBtn = document.getElementById('playPauseBtn');
       if(!playBtn) return;
       clearInterval(slideInterval);
-      playBtn.innerText = '⏵';
+      playBtn.innerHTML = PLAY_ICON;
       isPlaying = false;
   }
   
@@ -108,7 +112,7 @@
       clearInterval(slideInterval);
       clearTimeout(resumeTimeout);
       const playBtn = document.getElementById('playPauseBtn');
-      if(playBtn) playBtn.innerText = '⏵';
+      if(playBtn) playBtn.innerHTML = PLAY_ICON;
       resumeTimeout = setTimeout(() => {
           if(isPlaying) startAutoplay();
       }, 6000); 
@@ -193,7 +197,7 @@
       if(!playBtn) return;
       if(slideInterval2) clearInterval(slideInterval2);
       slideInterval2 = setInterval(autoSlide2, 3500); 
-      playBtn.innerText = '⏸';
+      playBtn.innerHTML = PAUSE_ICON;
       isPlaying2 = true;
   }
   
@@ -201,7 +205,7 @@
       const playBtn = document.getElementById('playPauseBtn2');
       if(!playBtn) return;
       clearInterval(slideInterval2);
-      playBtn.innerText = '⏵';
+      playBtn.innerHTML = PLAY_ICON;
       isPlaying2 = false;
   }
   
@@ -223,7 +227,7 @@
       clearInterval(slideInterval2);
       clearTimeout(resumeTimeout2);
       const playBtn = document.getElementById('playPauseBtn2');
-      if(playBtn) playBtn.innerText = '⏵';
+      if(playBtn) playBtn.innerHTML = PLAY_ICON;
       resumeTimeout2 = setTimeout(() => {
           if(isPlaying2) startAutoplay2();
       }, 6000); 

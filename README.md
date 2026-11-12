@@ -55,7 +55,7 @@ Open `http://localhost:8000`.
 
 ## Adding a New Month
 
-1. Drop the raw report in `assets/data/` as `ADYPU_Master_Dashboard_Data_<Month>_2026.xlsx`, matching the prior file's sheet/column structure.
+1. Drop the raw report in `assets/data/` as `ADYPU_Master_Dashboard_Data_<Month>_2026.xlsx`, matching the prior file's sheet/column structure. Remove any pictures pasted into its sheets first (they are ~95% of the file and the dashboard never reads them), so each visit stays a few hundred KB per month instead of ~7 MB.
 2. Add one entry to `SOURCES` in `js/data-loader.js` and set `DEFAULT_MONTH` if the new month should be the landing view.
 3. Enable the month's tab in `index.html` (drop `disabled`, add `onclick="switchMonth('<Month>')"`) and add it as an `<option>` in both compare dropdowns.
 4. Add the month's column indexes to `CUMULATIVE_COL` and `PARTNERS_COL` in `js/june-adapter.js` (each month adds three Admission MIS columns and one Partners column). If the office hasn't extended the Admission MIS sheet yet, point the new month at the previous month's column.
