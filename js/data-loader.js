@@ -2,7 +2,7 @@
   // AUTO-LOAD EXCEL/CSV LOGIC (MULTI-SHEET)
   // ------------------------------------------
   document.addEventListener('DOMContentLoaded', () => {
-    const DEFAULT_MONTH = 'September';
+    const DEFAULT_MONTH = 'October';
 
     // May ships as a pre-flattened sheet; June onward are raw chairman reports
     // normalised by JuneAdapter. Add a month by appending one entry here, a tab in
@@ -12,7 +12,9 @@
       { month: 'June', file: 'assets/data/ADYPU_Master_Dashboard_Data_June_2026.xlsx', raw: true },
       { month: 'July', file: 'assets/data/ADYPU_Master_Dashboard_Data_July_2026.xlsx', raw: true },
       { month: 'August', file: 'assets/data/ADYPU_Master_Dashboard_Data_August_2026.xlsx', raw: true },
-      { month: 'September', file: 'assets/data/ADYPU_Master_Dashboard_Data_September_2026.xlsx', raw: true }
+      { month: 'September', file: 'assets/data/ADYPU_Master_Dashboard_Data_September_2026.xlsx', raw: true },
+      // October's workbook has not arrived yet, so October shows September's figures until it does
+      { month: 'October', file: 'assets/data/ADYPU_Master_Dashboard_Data_September_2026.xlsx', raw: true }
     ];
 
     const fetchWorkbook = filename =>

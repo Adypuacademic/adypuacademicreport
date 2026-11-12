@@ -41,15 +41,17 @@
     June: { eng: { Target: 2558, Achieved: 775 } },
     July: { eng: { Target: 2558 } },
     August: { eng: { Target: 2558 } },
-    September: { eng: { Target: 2558 } }
+    September: { eng: { Target: 2558 } },
+    October: { eng: { Target: 2558 } }
   };
 
   // Each month adds three columns (Month Admission / Cumulative / Balance) to the sheet.
   // September's workbook was not extended past August, so it reads August's cumulative.
-  const CUMULATIVE_COL = { June: 8, July: 11, August: 14, September: 14 };
+  // October reads September's workbook until its own arrives, so it uses September's columns.
+  const CUMULATIVE_COL = { June: 8, July: 11, August: 14, September: 14, October: 14 };
 
   // Partners adds one "<Month> Month Admission" column per month, May sitting at index 4.
-  const PARTNERS_COL = { June: 5, July: 6, August: 7, September: 8 };
+  const PARTNERS_COL = { June: 5, July: 6, August: 7, September: 8, October: 8 };
 
   function transformAdmissions(sheetRows, overrides, cumulativeCol) {
     const out = [];

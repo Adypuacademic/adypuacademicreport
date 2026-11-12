@@ -27,8 +27,8 @@
   let activePieChart = null;
   let globalRawData = [];
   let currentMonthData = [];
-  let monthData = { May: [], June: [], July: [], August: [], September: [] };
-  let activeMonth = 'September';
+  let monthData = { May: [], June: [], July: [], August: [], September: [], October: [] };
+  let activeMonth = 'October';
 
   Chart.register(ChartDataLabels);
   // ------------------------------------------
@@ -98,11 +98,15 @@
   // MONTHLY ACTIVITY (per section, per month): same card as meetings; a section
   // hides for months without an entry.
   // ------------------------------------------
+  const OCT_NEWSLETTER = 'assets/documents/adypu-newsletter-october-2026.pdf';
   const MONTHLY_ACTIVITY = {
     'activities-section': {
       August: [
         { name: 'ADYPU Newsletter', doc: 'assets/documents/adypu-newsletter-august-2026.pdf' },
         { name: 'Induction Program Report', doc: 'assets/documents/first-year-induction-report-aug-2026.pdf' }
+      ],
+      October: [
+        { name: 'ADYPU Newsletter', doc: OCT_NEWSLETTER }
       ]
     }
   };
@@ -172,6 +176,16 @@
       { src: 'assets/images/innovation-week-sep-2026.png', title: 'Innovation Week 2026', date: '21–25 September 2026', portrait: true },
       { src: 'assets/images/ieee-medha-hackathon-sep-2026.png', title: 'IEEE MEDHA 2026 Hackathon', date: '22–23 September 2026' },
       { src: 'assets/images/copyrights-filed-sep-2026.webp', title: '200+ Copyrights Filed in a Single Day', date: '24 September 2026', portrait: true }
+    ],
+    // Cropped from the October newsletter; small photos, so slides open the newsletter
+    October: [
+      { src: 'assets/images/industry-academia-roundtable-oct-2026.jpeg', title: 'National Industry-Academia Leadership Roundtable with CIPU', date: '23 October 2026', doc: OCT_NEWSLETTER },
+      { src: 'assets/images/pro-bono-impact-day-oct-2026.jpeg', title: 'Pro-Bono Impact Day: 35 Guest Lectures in a Single Day (World Record)', date: 'International Day of Non-Violence', doc: OCT_NEWSLETTER },
+      { src: 'assets/images/ipmun-pune-oct-2026.jpeg', title: 'IPMUN Pune 2.0 Model United Nations', date: '3 to 4 October 2026', doc: OCT_NEWSLETTER },
+      { src: 'assets/images/impetus-2026-oct-2026.jpeg', title: 'Impetus 2026: 12 Sports, about 1,000 Students', date: '13 to 14 October 2026', doc: OCT_NEWSLETTER },
+      { src: 'assets/images/indian-kart-racing-oct-2026.jpeg', title: 'Indian Kart Racing 2026: Endurance Runner-Up, Rs 95,000 Prize Money', date: '13 October 2026', doc: OCT_NEWSLETTER },
+      { src: 'assets/images/yerawada-bhoomi-poojan-oct-2026.jpeg', title: 'Bhoomi Poojan for the Prison Industry Sales Centre, Yerawada Jail', date: '22 October 2026', doc: OCT_NEWSLETTER },
+      { src: 'assets/images/pitch-room-oct-2026.jpeg', title: 'The Pitch Room at ADYPU Incubator', date: '26 October 2026', doc: OCT_NEWSLETTER }
     ]
   };
   TOP_GALLERY.June = TOP_GALLERY.May;
@@ -213,6 +227,13 @@
       { src: 'assets/images/google-guidix-agentic-ai-conclave-sep-2026.png', title: 'Dr. Atul Kathole at the Google & Guidix.ai Conclave', date: 'Agentic AI and the University of 2030' },
       { src: 'assets/images/ieee-myosa-javitron-r10-hta-sep-2026.webp', title: 'IEEE MYOSA Funds, Team Javitron and R10 HTA Project Lead', date: 'September 2026', portrait: true },
       { src: 'assets/images/atul-kathole-top1000-scholar-sep-2026.png', title: 'Dr. Atul Kathole: World Rank #33, Top1000 Scholar 2026', date: 'Currency Recognition and Detection', portrait: true }
+    ],
+    October: [
+      { src: 'assets/images/sudhakar-shinde-els-speaker-oct-2026.jpeg', title: 'Registrar Dr. Sudhakar Shinde: Speaker at the Education Leadership Symposium', date: '30 October 2026, The Orchid Hotel, Pune', portrait: true },
+      { src: 'assets/images/sudhakar-shinde-els-certificate-oct-2026.jpeg', title: 'Dr. Sudhakar Shinde Receives a Certificate of Appreciation', date: 'Education Leadership Symposium, 30 October 2026', portrait: true },
+      { src: 'assets/images/vishal-shirsath-icoicet-oct-2026.jpeg', title: 'Dr. Vishal Shirsath: Paper at ICoICET 2026', date: '1 October 2026', doc: OCT_NEWSLETTER },
+      { src: 'assets/images/susanta-das-publications-oct-2026.jpeg', title: 'Dr. Susanta Das: Book Chapters with CRC Press and IGI Global', date: 'October 2026', portrait: true, doc: OCT_NEWSLETTER },
+      { src: 'assets/images/amol-kasture-we-premier-authors-oct-2026.jpeg', title: 'Dr. Amol B. Kasture: Executive Membership, WE Premier Authors Club', date: '10 October 2026', doc: OCT_NEWSLETTER }
     ]
   };
   BOTTOM_GALLERY.June = BOTTOM_GALLERY.May;
@@ -248,8 +269,8 @@
     renderGallery('carouselTrack2', TOP_GALLERY[month], resetCarousel2);
   }
 
-  // September's slides are staff recognitions, so the heading says so for that month
-  const BOTTOM_GALLERY_TITLE = { September: 'STAFF ACHIEVEMENTS GALLERY' };
+  // September's and October's slides are staff recognitions, so the heading says so for that month
+  const BOTTOM_GALLERY_TITLE = { September: 'STAFF ACHIEVEMENTS GALLERY', October: 'STAFF ACHIEVEMENTS GALLERY' };
 
   function renderBottomGallery(month) {
     document.getElementById('bottom-gallery-title').textContent = BOTTOM_GALLERY_TITLE[month] || 'UNIVERSITY ACHIEVEMENTS GALLERY';
