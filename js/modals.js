@@ -171,8 +171,9 @@
       document.getElementById('docModalTitle').innerText = title;
       
       let cleanUrl = url.split('#')[0];
-      let iframeUrl = cleanUrl;
-      
+      // Local PDFs keep their #page=N so a slide opens the newsletter on its own page
+      let iframeUrl = /^https?:/.test(cleanUrl) ? cleanUrl : url;
+
       if (cleanUrl.includes('docs.google.com/document/d/')) {
           let baseUrl = cleanUrl.split('/edit')[0].split('/preview')[0];
           iframeUrl = baseUrl + '/preview';
@@ -184,7 +185,7 @@
       }
 
       document.getElementById('docModalIframe').src = iframeUrl;
-      document.getElementById('docModalLink').href = cleanUrl; 
+      document.getElementById('docModalLink').href = /^https?:/.test(cleanUrl) ? cleanUrl : url;
       document.getElementById('docModal').style.display = 'block';
   }
   

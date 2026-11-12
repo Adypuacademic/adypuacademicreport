@@ -146,7 +146,8 @@
   // TOP HIGHLIGHTS GALLERY (per month)
   // Slides carry a `doc` only when they open a document viewer; without one the
   // image itself is opened full-size. `portrait: true` letterboxes a slide whose
-  // aspect ratio the 240px cover box would crop badly. Add a month by adding a key here.
+  // aspect ratio the 240px cover box would crop badly. `page` notes the newsletter page in
+  // the caption and opens the newsletter there. Add a month by adding a key here.
   // ------------------------------------------
   const TOP_GALLERY = {
     May: [
@@ -179,13 +180,13 @@
     ],
     // Cropped from the October newsletter; small photos, so slides open the newsletter
     October: [
-      { src: 'assets/images/industry-academia-roundtable-oct-2026.jpeg', title: 'National Industry-Academia Leadership Roundtable with CIPU', date: '23 October 2026', doc: OCT_NEWSLETTER },
-      { src: 'assets/images/pro-bono-impact-day-oct-2026.jpeg', title: 'Pro-Bono Impact Day: 35 Guest Lectures in a Single Day (World Record)', date: 'International Day of Non-Violence', doc: OCT_NEWSLETTER },
-      { src: 'assets/images/ipmun-pune-oct-2026.jpeg', title: 'IPMUN Pune 2.0 Model United Nations', date: '3 to 4 October 2026', doc: OCT_NEWSLETTER },
-      { src: 'assets/images/impetus-2026-oct-2026.jpeg', title: 'Impetus 2026: 12 Sports, about 1,000 Students', date: '13 to 14 October 2026', doc: OCT_NEWSLETTER },
-      { src: 'assets/images/indian-kart-racing-oct-2026.jpeg', title: 'Indian Kart Racing 2026: Endurance Runner-Up, Rs 95,000 Prize Money', date: '13 October 2026', doc: OCT_NEWSLETTER },
-      { src: 'assets/images/yerawada-bhoomi-poojan-oct-2026.jpeg', title: 'Bhoomi Poojan for the Prison Industry Sales Centre, Yerawada Jail', date: '22 October 2026', doc: OCT_NEWSLETTER },
-      { src: 'assets/images/pitch-room-oct-2026.jpeg', title: 'The Pitch Room at ADYPU Incubator', date: '26 October 2026', doc: OCT_NEWSLETTER }
+      { src: 'assets/images/industry-academia-roundtable-oct-2026.jpeg', title: 'National Industry-Academia Leadership Roundtable with CIPU', date: '23 October 2026', doc: OCT_NEWSLETTER, page: 9 },
+      { src: 'assets/images/pro-bono-impact-day-oct-2026.jpeg', title: 'Pro-Bono Impact Day: 35 Guest Lectures in a Single Day (World Record)', date: 'International Day of Non-Violence', doc: OCT_NEWSLETTER, page: 11 },
+      { src: 'assets/images/ipmun-pune-oct-2026.jpeg', title: 'IPMUN Pune 2.0 Model United Nations', date: '3 to 4 October 2026', doc: OCT_NEWSLETTER, page: 13 },
+      { src: 'assets/images/impetus-2026-oct-2026.jpeg', title: 'Impetus 2026: 12 Sports, about 1,000 Students', date: '13 to 14 October 2026', doc: OCT_NEWSLETTER, page: 21 },
+      { src: 'assets/images/indian-kart-racing-oct-2026.jpeg', title: 'Indian Kart Racing 2026: Endurance Runner-Up, Rs 95,000 Prize Money', date: '13 October 2026', doc: OCT_NEWSLETTER, page: 17 },
+      { src: 'assets/images/yerawada-bhoomi-poojan-oct-2026.jpeg', title: 'Bhoomi Poojan for the Prison Industry Sales Centre, Yerawada Jail', date: '22 October 2026', doc: OCT_NEWSLETTER, page: 11 },
+      { src: 'assets/images/pitch-room-oct-2026.jpeg', title: 'The Pitch Room at ADYPU Incubator', date: '26 October 2026', doc: OCT_NEWSLETTER, page: 20 }
     ]
   };
   TOP_GALLERY.June = TOP_GALLERY.May;
@@ -231,9 +232,9 @@
     October: [
       { src: 'assets/images/sudhakar-shinde-els-speaker-oct-2026.jpeg', title: 'Registrar Dr. Sudhakar Shinde: Speaker at the Education Leadership Symposium', date: '30 October 2026, The Orchid Hotel, Pune', portrait: true },
       { src: 'assets/images/sudhakar-shinde-els-certificate-oct-2026.jpeg', title: 'Dr. Sudhakar Shinde Receives a Certificate of Appreciation', date: 'Education Leadership Symposium, 30 October 2026', portrait: true },
-      { src: 'assets/images/vishal-shirsath-icoicet-oct-2026.jpeg', title: 'Dr. Vishal Shirsath: Paper at ICoICET 2026', date: '1 October 2026', doc: OCT_NEWSLETTER },
-      { src: 'assets/images/susanta-das-publications-oct-2026.jpeg', title: 'Dr. Susanta Das: Book Chapters with CRC Press and IGI Global', date: 'October 2026', portrait: true, doc: OCT_NEWSLETTER },
-      { src: 'assets/images/amol-kasture-we-premier-authors-oct-2026.jpeg', title: 'Dr. Amol B. Kasture: Executive Membership, WE Premier Authors Club', date: '10 October 2026', doc: OCT_NEWSLETTER }
+      { src: 'assets/images/vishal-shirsath-icoicet-oct-2026.jpeg', title: 'Dr. Vishal Shirsath: Paper at ICoICET 2026', date: '1 October 2026', doc: OCT_NEWSLETTER, page: 15 },
+      { src: 'assets/images/susanta-das-publications-oct-2026.jpeg', title: 'Dr. Susanta Das: Book Chapters with CRC Press and IGI Global', date: 'October 2026', portrait: true, doc: OCT_NEWSLETTER, page: 16 },
+      { src: 'assets/images/amol-kasture-we-premier-authors-oct-2026.jpeg', title: 'Dr. Amol B. Kasture: Executive Membership, WE Premier Authors Club', date: '10 October 2026', doc: OCT_NEWSLETTER, page: 22 }
     ]
   };
   BOTTOM_GALLERY.June = BOTTOM_GALLERY.May;
@@ -251,13 +252,13 @@
     track.closest('.section').style.display = (slides || []).length ? '' : 'none';
     track.innerHTML = (slides || []).map(g => {
       const open = g.doc
-        ? `openDocModal('${jsEsc(g.title)}', '${jsEsc(g.doc)}')`
+        ? `openDocModal('${jsEsc(g.title)}', '${jsEsc(g.doc + (g.page ? '#page=' + g.page : ''))}')`
         : `openImageModal(this.querySelector('img'))`;
       return `
       <div class="carousel-slide">
         <div class="slide-content" onclick="${open}">
           <img class="${g.portrait ? 'portrait' : ''}" src="${attrEsc(g.src)}" alt="${attrEsc(g.title)}" onerror="this.src='https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=500&amp;q=80';">
-          <div class="carousel-caption"><h4>${g.title}</h4><p>${g.date}</p></div>
+          <div class="carousel-caption"><h4>${g.title}</h4><p>${g.date}${g.page ? ` · Newsletter, p. ${g.page}` : ''}</p></div>
         </div>
       </div>`;
     }).join('');
