@@ -61,3 +61,4 @@ Open `http://localhost:8000`.
 4. Add the month's column indexes to `CUMULATIVE_COL` and `PARTNERS_COL` in `js/june-adapter.js` (each month adds three Admission MIS columns and one Partners column). If the office hasn't extended the Admission MIS sheet yet, point the new month at the previous month's column.
 5. If the admissions office has confirmed figures that differ from the raw sheet, add them to `ADMISSIONS_OVERRIDE` in `js/june-adapter.js` under the new month.
 6. Add the month's photos to `TOP_GALLERY` / `BOTTOM_GALLERY` and any PDFs to `MEETINGS` / `MONTHLY_ACTIVITY` in `js/dashboard.js`. A gallery with no photos for the month is hidden.
+7. After changing any file under `js/` or `css/`, bump the `?v=` date on its tag in `index.html` so returning visitors get the new code instead of a cached copy.

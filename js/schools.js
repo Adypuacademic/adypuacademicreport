@@ -48,7 +48,9 @@
         `;
     });
 
-    html += `</div></div>`;
+    html += `</div>
+        <div class="school-achievements" id="${school.id}-achievements"></div>
+      </div>`;
   });
 
   container.innerHTML = html;

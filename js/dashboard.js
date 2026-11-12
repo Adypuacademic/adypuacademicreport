@@ -541,9 +541,169 @@
   // ------------------------------------------
   function renderDashboard(data) {
     updateDashboard(data);
+    renderSchoolAchievements(data);
     document.querySelectorAll('.kpi .value[id]').forEach(el => {
       const text = el.innerText.trim();
       if (/^-?\d+$/.test(text)) el.innerText = Number(text).toLocaleString('en-IN');
+    });
+  }
+
+  // ------------------------------------------
+  // SCHOOL ACHIEVEMENTS (per school, per selected month)
+  // Each school page lists the student, faculty and university achievements in the
+  // selected month's report. Dated entries come first, newest on top; the many undated
+  // student rows follow in sheet order. Long lists show the first few and expand.
+  // ------------------------------------------
+  const ACH_PREVIEW = 6;
+  const MONTH_ABBR = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+  const htmlEsc = v => String(v).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  const clean = v => (v === undefined || v === null || /^(na|none|-|)$/i.test(String(v).trim())) ? '' : String(v).trim();
+
+  // Sheet dates arrive as ISO strings, Excel serials (46296) or free text; returns a sortable time or null
+  function achievementTime(raw) {
+    const s = clean(raw);
+    if (/^\d{5}(\.\d+)?$/.test(s) && +s > 40000 && +s < 60000) return Date.UTC(1899, 11, 30) + Math.floor(+s) * 864e5;
+    const iso = s.match(/^(\d{4})-(\d{2})-(\d{2})/);
+    if (iso) return Date.UTC(+iso[1], +iso[2] - 1, +iso[3]);
+    return null;
+  }
+  function achievementDate(raw) {
+    const t = achievementTime(raw);
+    if (t === null) return /^\d{4}$/.test(clean(raw)) ? '' : clean(raw);
+    const d = new Date(t);
+    return d.getUTCDate() + ' ' + MONTH_ABBR[d.getUTCMonth()] + ' ' + d.getUTCFullYear();
+  }
+
+  function achievementItem(r) {
+    let what, extra;
+    if (r.Activity === 'Faculty Achievement') {
+      what = [clean(r.DetailInfo), clean(r.DetailTitle)].filter(Boolean).join(': ');
+      extra = clean(r.DetailOrg);
+    } else if (r.Activity === 'Student Achievement') {
+      what = clean(r.DetailInfo);
+      extra = clean(r.DetailMeta);
+    } else {
+      what = clean(r.DetailInfo);
+      extra = clean(r.DetailMeta);
+    }
+    const date = achievementDate(r.DetailDate);
+    const meta = [extra, date].filter(Boolean).map(htmlEsc).join(' · ');
+    const n = achShown.push(r) - 1;
+    const tags = achievementProof(r).map(p => `<span class="ach-tag">${p.tag}</span>`).join('');
+    return `<li class="ach-item" role="button" tabindex="0" onclick="openAchievementDetail(${n})" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openAchievementDetail(${n})}"><strong>${htmlEsc(clean(r.DetailName) || '-')}</strong>${what ? ' — ' + htmlEsc(what) : ''}${meta || tags ? `<span class="ach-meta">${meta}${tags}</span>` : ''}</li>`;
+  }
+
+  function achievementGroup(title, rows) {
+    if (!rows.length) return '';
+    const sorted = rows.map((r, i) => ({ r, i, t: achievementTime(r.DetailDate) }))
+      .sort((a, b) => (b.t !== null) - (a.t !== null) || (b.t || 0) - (a.t || 0) || a.i - b.i)
+      .map(x => x.r);
+    const items = sorted.map(achievementItem);
+    const more = items.length > ACH_PREVIEW
+      ? `<button class="ach-more" onclick="this.parentNode.classList.add('expanded'); this.remove();">Show all ${items.length}</button>`
+      : '';
+    return `<div class="ach-group${items.length > ACH_PREVIEW ? '' : ' expanded'}">
+        <h4>${title} <span class="ach-count">${items.length}</span></h4>
+        <ul>${items.join('')}</ul>${more}
+      </div>`;
+  }
+
+  // ------------------------------------------
+  // ACHIEVEMENT DETAIL POPUP
+  // Clicking an entry on a school page opens its full sheet record, with whatever
+  // backs it up: a photo from the sheet, its publication links, the newsletter page
+  // that covers it, and the month's compiled PDF for that category. Photos and
+  // newsletter pages are matched on the person and the achievement's own words, so
+  // they carry over to every later month's report.
+  // ------------------------------------------
+  const AUG_NEWSLETTER = 'assets/documents/adypu-newsletter-august-2026.pdf';
+  const ACHIEVEMENT_PHOTOS = [
+    { who: 'deepajoshi', text: /EPICS Workshop/i, src: 'assets/images/ach-epics-alliance-jul-2026.jpg', caption: 'EPICS Workshop, Alliance University, Bengaluru' },
+    { who: 'deepajoshi', text: /QS I-GAUGE/i, src: 'assets/images/ach-qs-igauge-diamond-aug-2026.jpg', caption: 'QS I-GAUGE Diamond Rating, National Summit on AI in Indian Education' }
+  ];
+  const NEWSLETTER_FEATURES = [
+    { who: 'debojyotilahari', text: /mathematics in nature/i, doc: AUG_NEWSLETTER, month: 'August', page: 32 },
+    { who: 'jyotisinha', text: /journal selection/i, doc: AUG_NEWSLETTER, month: 'August', page: 32 },
+    { who: 'ayushigodiya', text: /vibration analysis/i, doc: AUG_NEWSLETTER, month: 'August', page: 24 },
+    { who: 'tikshatawamborkar', text: /UTTHAN/i, doc: OCT_NEWSLETTER, month: 'October', page: 15 },
+    { who: 'susantadas', text: /Nanochemistry|Integration of AI in Pharmaceutical/i, doc: OCT_NEWSLETTER, month: 'October', page: 16 },
+    { who: 'abhilashamane', text: /Pro-Bono/i, doc: OCT_NEWSLETTER, month: 'October', page: 11 }
+  ];
+  const ACH_DOC_TITLE = { 'Student Achievement': 'Student Achievements', 'Faculty Achievement': 'Faculty Achievements' };
+  const personKey = n => String(n || '').toLowerCase().replace(/\b(dr|prof|mr|mrs|ms|asso|assoc|asst|adv|ar)\b\.?/g, '').replace(/[^a-z]/g, '');
+  let achShown = [];
+
+  function achievementProof(r) {
+    const who = personKey(r.DetailName);
+    const text = [r.DetailInfo, r.DetailTitle, r.DetailOrg, r.DetailMeta, r.DetailOutcome].filter(Boolean).join(' ');
+    const proof = [];
+    ACHIEVEMENT_PHOTOS.filter(p => p.who === who && p.text.test(text)).forEach(p => proof.push({ tag: 'Photo', photo: p }));
+    NEWSLETTER_FEATURES.filter(f => f.who === who && f.text.test(text)).forEach(f => proof.push({ tag: 'Newsletter', feature: f }));
+    if ((r.DetailLinks || []).length) proof.push({ tag: 'Link', links: r.DetailLinks });
+    return proof;
+  }
+
+  function openAchievementDetail(n) {
+    const r = achShown[n];
+    if (!r) return;
+    const school = (schools.find(s => s.id === (r.HomeSchool || r.SchoolId)) || {}).name || '';
+    const kind = { 'Student Achievement': 'Student', 'Faculty Achievement': 'Faculty', 'University Achievement': 'University-Level' }[r.Activity] || '';
+    const fields = r.Activity === 'Student Achievement'
+      ? [['Achievement', r.DetailInfo], ['Program', r.DetailProgram], ['Type', r.DetailType], ['Level', r.DetailMeta], ['Date', achievementDate(r.DetailDate)], ['Impact', r.DetailImpact]]
+      : r.Activity === 'Faculty Achievement'
+        ? [['Achievement', r.DetailInfo], ['Title', r.DetailTitle], ['Organiser / Publisher', r.DetailOrg], ['Date', achievementDate(r.DetailDate)], ['Status', r.DetailMeta]]
+        : [['Designation', r.DetailDesignation], ['Event', r.DetailInfo], ['Role', r.DetailMeta], ['Outcome', r.DetailOutcome], ['Date', achievementDate(r.DetailDate)]];
+    const rows = fields.filter(([, v]) => clean(v))
+      .map(([k, v]) => `<div class="ach-field"><span>${k}</span><div>${htmlEsc(clean(v))}</div></div>`).join('');
+
+    const proof = achievementProof(r);
+    const photos = proof.filter(p => p.photo).map(({ photo }) =>
+      `<figure class="ach-photo"><img src="${photo.src}" alt="${htmlEsc(photo.caption)}" onclick="openImageModal(this)"><figcaption>${htmlEsc(photo.caption)}</figcaption></figure>`).join('');
+    const actions = [];
+    proof.filter(p => p.feature).forEach(({ feature: f }) => actions.push(
+      `<button class="ach-action" onclick="openDocModal('ADYPU Newsletter, ${f.month} 2026', '${f.doc}#page=${f.page}')">Read in ${f.month} Newsletter, p. ${f.page}</button>`));
+    (r.DetailLinks || []).slice(0, 3).forEach(u => {
+      let host = '';
+      try { host = new URL(u).hostname.replace(/^www\./, ''); } catch (e) { return; }
+      actions.push(`<a class="ach-action" href="${htmlEsc(u)}" target="_blank" rel="noopener">View publication · ${htmlEsc(host)} ↗</a>`);
+    });
+    const monthPdf = monthDoc(r.Activity);
+    if (monthPdf) actions.push(`<button class="ach-action ghost" onclick="openDocModal('${ACH_DOC_TITLE[r.Activity] || r.Activity}, ${activeMonth} 2026', '${monthPdf}')">${activeMonth} ${ACH_DOC_TITLE[r.Activity] || r.Activity} PDF</button>`);
+
+    document.getElementById('achModalBody').innerHTML = `
+      <div class="ach-kicker">${htmlEsc(kind)} Achievement${school ? ' · ' + htmlEsc(school) : ''}</div>
+      <h2 class="ach-name">${htmlEsc(clean(r.DetailName) || '-')}</h2>
+      ${photos}
+      <div class="ach-fields">${rows}</div>
+      ${actions.length ? `<div class="ach-actions">${actions.join('')}</div>` : ''}`;
+    document.getElementById('achModal').style.display = 'block';
+  }
+
+  function closeAchievementDetail() { document.getElementById('achModal').style.display = 'none'; }
+  document.addEventListener('keydown', e => {
+    if (e.key !== 'Escape') return;
+    // Close the top-most popup first: the image or document opened from an achievement
+    if (document.getElementById('imageModal').style.display === 'block') closeImageModal();
+    else if (document.getElementById('docModal').style.display === 'block') closeDocModal();
+    else closeAchievementDetail();
+  });
+  document.getElementById('achModal').addEventListener('click', e => { if (e.target.id === 'achModal') closeAchievementDetail(); });
+
+  function renderSchoolAchievements(data) {
+    achShown = [];
+    schools.forEach(school => {
+      const box = document.getElementById(school.id + '-achievements');
+      if (!box) return;
+      const mine = (data || []).filter(r =>
+        (r.SchoolId === school.id && (r.Activity === 'Student Achievement' || r.Activity === 'Faculty Achievement')) ||
+        (r.Activity === 'University Achievement' && r.HomeSchool === school.id));
+      const groups =
+        achievementGroup('Faculty Achievements', mine.filter(r => r.Activity === 'Faculty Achievement')) +
+        achievementGroup('Student Achievements', mine.filter(r => r.Activity === 'Student Achievement')) +
+        achievementGroup('University-Level Recognition', mine.filter(r => r.Activity === 'University Achievement'));
+      box.innerHTML = `
+        <div class="section-title"><span class="dot"></span><h2>Achievements · ${htmlEsc(activeMonth)} 2026 Report</h2></div>
+        ${groups || '<p class="ach-empty">No achievements recorded for this school in this month\'s report.</p>'}`;
     });
   }
 

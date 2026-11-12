@@ -12,7 +12,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
-<link rel="stylesheet" href="css/dashboard.css">
+<link rel="stylesheet" href="css/dashboard.css?v=20261112b">
 </head>
 <body>
 
@@ -27,7 +27,7 @@
   <button class="sidebar-close-btn" onclick="toggleSidebar()">✕</button>
   <div class="logo-container">
     <div class="logo-box">
-        <img src="assets/images/logo.png" alt="ADYPU Logo" onerror="this.src='https://adypu.edu.in/wp-content/uploads/2024/02/adypu-logo.webp';">
+        <img src="assets/images/adypu-logo-2026.png" alt="ADYPU, Ajeenkya D Y Patil University: The Innovation University" onerror="this.src='https://adypu.edu.in/wp-content/uploads/2024/02/adypu-logo.webp';">
     </div>
   </div>
   
@@ -90,7 +90,7 @@
   <div id="home-view" class="tab-content">
       <!-- Print-only letterhead; hidden on screen, see @media print in css/dashboard.css -->
       <div class="print-letterhead">
-        <img src="assets/images/logo.png" alt="Ajeenkya D Y Patil University" onerror="this.style.display='none';">
+        <img src="assets/images/adypu-logo-2026.png" alt="ADYPU, Ajeenkya D Y Patil University" onerror="this.style.display='none';">
         <div class="print-meta" id="print-meta"></div>
       </div>
 
@@ -502,6 +502,13 @@
   </div>
 </div>
 
+<div id="achModal" class="modal" role="dialog" aria-modal="true" aria-label="Achievement details">
+  <div class="modal-content ach-modal">
+    <span class="close-btn" onclick="closeAchievementDetail()" aria-label="Close">&times;</span>
+    <div id="achModalBody"></div>
+  </div>
+</div>
+
 <div id="docModal" class="modal">
   <div class="modal-content" style="max-width: 1100px; height: 85vh; display: flex; flex-direction: column; padding: 25px;">
     <span class="close-btn" onclick="closeDocModal()">&times;</span>
@@ -536,14 +543,14 @@
 
 <!-- Load order matters: config -> schools -> carousel -> dashboard -> modals -> reports -> data-loader.
      Plain <script src>, NOT type="module" — inline onclick= handlers need these on window. -->
-<script src="js/config.js"></script>
-<script src="js/june-adapter.js"></script>
-<script src="js/schools.js"></script>
-<script src="js/carousel.js"></script>
-<script src="js/dashboard.js"></script>
-<script src="js/modals.js"></script>
-<script src="js/reports.js"></script>
-<script src="js/data-loader.js"></script>
+<script src="js/config.js?v=20261112b"></script>
+<script src="js/june-adapter.js?v=20261112b"></script>
+<script src="js/schools.js?v=20261112b"></script>
+<script src="js/carousel.js?v=20261112b"></script>
+<script src="js/dashboard.js?v=20261112b"></script>
+<script src="js/modals.js?v=20261112b"></script>
+<script src="js/reports.js?v=20261112b"></script>
+<script src="js/data-loader.js?v=20261112b"></script>
 <!-- "Back to ADYPU Compass" button and feedback note, shared by every ADYPU site. -->
 <script src="https://adypu.pages.dev/embed/compass-link.js" defer></script>
 </body>

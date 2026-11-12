@@ -134,15 +134,18 @@
         DetailName: detailStr(studentName),
         DetailInfo: detailStr(row[4]),
         DetailMeta: detailStr(row[5]),
-        DetailDate: formatCellDate(row[6])
+        DetailDate: formatCellDate(row[6]),
+        DetailProgram: detailStr(row[2]),
+        DetailType: detailStr(row[3]),
+        DetailImpact: detailStr(row[7])
       });
     });
     return out;
   }
 
-  function transformFacultyAchievement(sheetRows) {
+  function transformFacultyAchievement(sheetRows, links) {
     const out = [];
-    sheetRows.slice(1).forEach(row => {
+    sheetRows.slice(1).forEach((row, i) => {
       const school = row[0], facultyName = row[1];
       if (!facultyName || String(facultyName).trim() === '') return;
       const schoolId = normalizeSchool(school);
@@ -155,18 +158,40 @@
         DetailName: detailStr(facultyName),
         DetailInfo: detailStr(row[2]),
         DetailMeta: detailStr(row[6]),
-        DetailDate: formatCellDate(row[5])
+        DetailDate: formatCellDate(row[5]),
+        DetailTitle: detailStr(row[3]),
+        DetailOrg: detailStr(row[4]),
+        DetailLinks: (links && links[i + 1]) || []
       });
     });
     return out;
   }
 
-  function transformUniversityAchievement(sheetRows) {
+  // University rows carry no School column. HomeSchool places one on a school page:
+  // first a school named in the designation ("Dean SoE (Core)", "School of Law"), then
+  // the person's school in the faculty sheet; anyone else (Registrar, unlisted staff)
+  // stays university-wide. SchoolId stays 'exec' so university totals are unchanged.
+  const PERSON_KEY = n => String(n || '').toLowerCase().replace(/\b(dr|prof|mr|mrs|ms)\b\.?/g, '').replace(/[^a-z]/g, '');
+  function schoolInText(text) {
+    const t = String(text || '').toLowerCase();
+    const keys = Object.keys(SCHOOL_ALIASES).filter(k => !['phd', 'total', 'bba'].includes(k))
+      .sort((a, b) => b.length - a.length);
+    const hit = keys.find(k => new RegExp('\\b' + k.replace(/[&]/g, '\\&') + '\\b').test(t));
+    return hit ? SCHOOL_ALIASES[hit] : null;
+  }
+
+  function transformUniversityAchievement(sheetRows, facultyRows) {
+    const facultySchool = {};
+    (facultyRows || []).slice(1).forEach(r => {
+      const id = normalizeSchool(r[0]);
+      if (r[1] && id && id !== 'TOTAL') facultySchool[PERSON_KEY(r[1])] = id;
+    });
     const out = [];
     sheetRows.slice(1).forEach(row => {
       const name = row[0];
       if (!name || String(name).trim() === '') return;
       out.push({
+        HomeSchool: schoolInText(row[1]) || facultySchool[PERSON_KEY(name)] || null,
         SchoolId: 'exec',
         Activity: 'University Achievement',
         Target: 0,
@@ -174,7 +199,9 @@
         DetailName: detailStr(name),
         DetailInfo: detailStr(row[2]),
         DetailMeta: detailStr(row[3]),
-        DetailDate: formatCellDate(row[5])
+        DetailDate: formatCellDate(row[5]),
+        DetailDesignation: detailStr(row[1]),
+        DetailOutcome: detailStr(row[4])
       });
     });
     return out;
@@ -209,6 +236,26 @@
 
   // month selects the admissions override and which month's column to read in the Admission
   // and Partners sheets; every other sheet is cumulative already, so its layout is identical month to month.
+  // Web links per row of a sheet, indexed like sheet_to_json's header:1 rows: cell
+  // hyperlinks first, then any URL typed into the cell text. Duplicates dropped.
+  function sheetLinks(ws) {
+    const links = [];
+    if (!ws || !ws['!ref']) return links;
+    const start = XLSX.utils.decode_range(ws['!ref']).s.r;
+    Object.keys(ws).forEach(addr => {
+      if (addr[0] === '!') return;
+      const cell = ws[addr], r = XLSX.utils.decode_cell(addr).r - start;
+      const found = [];
+      if (cell.l && cell.l.Target && /^https?:/i.test(cell.l.Target)) found.push(cell.l.Target);
+      (String(cell.v == null ? '' : cell.v).match(/https?:\/\/[^\s,;"')]+/gi) || []).forEach(u => found.push(u.replace(/[.\]]+$/, '')));
+      found.forEach(u => {
+        links[r] = links[r] || [];
+        if (!links[r].includes(u)) links[r].push(u);
+      });
+    });
+    return links;
+  }
+
   function buildMonthData(workbook, month) {
     const sheet = name => XLSX.utils.sheet_to_json(workbook.Sheets[name], { header: 1, raw: true });
     return [].concat(
@@ -216,8 +263,8 @@
       transformPartners(sheet('Partners Admission MIS'), PARTNERS_COL[month]),
       transformPlacements(sheet('Placement Internship')),
       transformStudentAchievement(sheet('Student Achievement & Activitie')),
-      transformFacultyAchievement(sheet('Faculty Achievement & Activitie')),
-      transformUniversityAchievement(sheet('University Acheivement and Acti')),
+      transformFacultyAchievement(sheet('Faculty Achievement & Activitie'), sheetLinks(workbook.Sheets['Faculty Achievement & Activitie'])),
+      transformUniversityAchievement(sheet('University Acheivement and Acti'), sheet('Faculty Achievement & Activitie')),
       transformExaminationMIS(sheet('Examination MIS'))
     );
   }
