@@ -47,10 +47,11 @@
 
   // Each month adds three columns (Month Admission / Cumulative / Balance) to the sheet.
   // September's workbook was not extended past August, so it reads August's cumulative.
-  // October reads September's workbook until its own arrives, so it uses September's columns.
-  const CUMULATIVE_COL = { June: 8, July: 11, August: 14, September: 14, October: 14 };
+  // October's workbook adds one block after August's, so October reads that latest cumulative.
+  const CUMULATIVE_COL = { June: 8, July: 11, August: 14, September: 14, October: 17 };
 
   // Partners adds one "<Month> Month Admission" column per month, May sitting at index 4.
+  // October's Partners sheet has no October column yet, so October reads September's.
   const PARTNERS_COL = { June: 5, July: 6, August: 7, September: 8, October: 8 };
 
   function transformAdmissions(sheetRows, overrides, cumulativeCol) {

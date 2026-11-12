@@ -15,7 +15,7 @@
 body {
   margin: 0;
   padding: 0;
-  font-family: 'Segoe UI', Arial, sans-serif;
+  font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
   background: var(--bg);
   color: var(--text);
   overflow-x: hidden;
@@ -179,6 +179,11 @@ body {
 
 /* FLOATING BANNER — overlay on right side, content keeps full width */
 .dashboard-header{position:relative;}
+/* Keep the title clear of the floating accreditation strip (its width + gap), so it wraps instead of sliding under it */
+.dashboard-header .header-top{padding-right:560px;}
+@media(max-width:1200px){ .dashboard-header .header-top{padding-right:440px;} }
+@media(max-width:1024px){ .dashboard-header .header-top{padding-right:330px;} }
+@media(max-width:768px){ .dashboard-header .header-top{padding-right:0;} }
 .header-banner-float{
   position:absolute;
   right:25px;
@@ -207,7 +212,8 @@ body {
 .month-tabs { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 20px; }
 .month-tab { padding: 8px 16px; border-radius: 6px; border: none; font-weight: 600; cursor: pointer; background: rgba(255,255,255,0.2); color: #fff; transition: 0.2s; }
 .month-tab.active { background: #fff; color: var(--primary); }
-.month-tab.disabled { background: rgba(255,255,255,0.05); color: rgba(255,255,255,0.4); cursor: not-allowed; }
+.month-tab.disabled { background: transparent; color: rgba(255,255,255,0.35); font-weight: 500; cursor: not-allowed; }
+.month-tab:not(.disabled):not(.active):hover { background: rgba(255,255,255,0.3); }
 
 .trend-comparison { margin-top: 20px; background: rgba(0,0,0,0.15); padding: 15px; border-radius: 12px; display: flex; align-items: center; gap: 15px; flex-wrap: wrap; }
 .trend-comparison h3 { margin: 0; font-size: 14px; font-weight: normal; }
@@ -216,12 +222,13 @@ body {
 
 /* KPI CARDS */
 .kpis{ display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:16px; }
-.kpi{ background:var(--card); border-radius:18px; padding:18px; box-shadow:0 6px 18px rgba(15,23,42,.06); position:relative; overflow:hidden; transition: transform 0.2s, box-shadow 0.2s; }
+.kpi{ background:var(--card); border-radius:14px; padding:18px 18px 18px 22px; border:1px solid #e9eef4; box-shadow:0 1px 2px rgba(15,23,42,.04), 0 6px 16px rgba(15,23,42,.04); position:relative; overflow:hidden; transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s; }
 .kpi.clickable { cursor: pointer; }
-.kpi.clickable:hover { transform: translateY(-5px); box-shadow: 0 12px 25px rgba(194, 27, 39, 0.15); border: 1px solid rgba(194, 27, 39, 0.3); }
-.kpi::after{ content:''; position:absolute; right:-20px; top:-20px; width:90px; height:90px; border-radius:50%; background:linear-gradient(135deg,var(--primary),var(--accent)); opacity:.08; }
-.kpi h3{margin:0 0 8px;font-size:14px;color:#64748b;text-transform:uppercase}
-.kpi .value{font-size:34px;font-weight:800;color:var(--text)}
+.kpi.clickable:hover { transform: translateY(-3px); box-shadow: 0 10px 24px rgba(194, 27, 39, 0.12); border-color: rgba(194, 27, 39, 0.3); }
+/* Thin brand bar down the left edge replaces the old faded corner circle */
+.kpi::after{ content:''; position:absolute; left:0; top:14px; bottom:14px; width:3px; border-radius:0 3px 3px 0; background:linear-gradient(180deg,var(--primary),var(--secondary)); opacity:.85; }
+.kpi h3{margin:0 0 8px;font-size:12px;font-weight:600;letter-spacing:.05em;color:#64748b;text-transform:uppercase}
+.kpi .value{font-size:34px;font-weight:800;color:var(--dark);letter-spacing:-0.02em;font-variant-numeric:tabular-nums}
 /* Word values ("In Progress") are wider than numbers; 34px would wrap in a 4-up card */
 .kpi .value-word{font-size:26px}
 .kpi .sub{margin-top:6px;color:#64748b;font-size:13px}
@@ -262,7 +269,7 @@ body {
 
 .section{ margin-top:28px; }
 .section-title{ display:flex; align-items:center; gap:10px; margin-bottom:14px; }
-.section-title h2{margin:0;font-size:24px}
+.section-title h2{margin:0;font-size:22px;font-weight:700;color:var(--dark);letter-spacing:-0.01em}
 .dot{ width:12px;height:12px;border-radius:50%; background:linear-gradient(135deg,var(--primary),var(--secondary)); }
 
 /* ========================================= */

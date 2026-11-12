@@ -51,7 +51,7 @@
     if (document.getElementById('compareMonth1').value === '') {
       // Don't auto-set, keep as is
     }
-    updateDashboard(globalRawData);
+    renderDashboard(globalRawData);
     updateSchoolTiles(globalRawData);
 
     // Update Result text based on month
@@ -122,24 +122,31 @@
 
   // ------------------------------------------
   // MONTH-SPECIFIC CARD DOCUMENTS
-  // August ships compiled PDFs for these cards; other months keep the old behaviour
-  // (logging engine for achievements, the Drive portfolio for the incubator).
+  // A month that ships a compiled PDF for one of these cards opens it; any card
+  // without one keeps the old behaviour (logging engine for achievements, the
+  // Drive portfolio for the incubator).
   // ------------------------------------------
-  const AUGUST_DOCS = {
-    'Student Achievement': 'assets/documents/student-achievements-aug-2026.pdf',
-    'Faculty Achievement': 'assets/documents/faculty-achievements-aug-2026.pdf',
-    'Incubator': 'assets/documents/incubator-activity-aug-2026.pdf'
+  const MONTH_DOCS = {
+    August: {
+      'Student Achievement': 'assets/documents/student-achievements-aug-2026.pdf',
+      'Faculty Achievement': 'assets/documents/faculty-achievements-aug-2026.pdf',
+      'Incubator': 'assets/documents/incubator-activity-aug-2026.pdf'
+    },
+    October: {
+      'Student Achievement': 'assets/documents/student-corner-oct-2026.pdf',
+      'Incubator': 'assets/documents/incubator-activity-oct-2026.pdf'
+    }
   };
+  const monthDoc = card => (MONTH_DOCS[activeMonth] || {})[card];
 
   function openAchievementCard(activity, title) {
-    if (activeMonth === 'August') openDocModal(title, AUGUST_DOCS[activity]);
+    if (monthDoc(activity)) openDocModal(title, monthDoc(activity));
     else openCombinedModal('achieved', activity);
   }
 
   function openIncubatorCard() {
-    openDocModal('ADYPU Incubator Portfolio', activeMonth === 'August'
-      ? AUGUST_DOCS['Incubator']
-      : 'https://drive.google.com/file/d/1RaXdR6tHVa1GmDYaKD0GTraoJXHcRB1z/preview');
+    openDocModal('ADYPU Incubator Portfolio', monthDoc('Incubator')
+      || 'https://drive.google.com/file/d/1RaXdR6tHVa1GmDYaKD0GTraoJXHcRB1z/preview');
   }
 
   // ------------------------------------------
@@ -180,6 +187,8 @@
     ],
     // Cropped from the October newsletter; small photos, so slides open the newsletter
     October: [
+      { src: 'assets/images/sudhakar-shinde-els-speaker-oct-2026.jpeg', title: 'Registrar Dr. Sudhakar Shinde: Speaker at the Education Leadership Symposium', date: '30 October 2026, The Orchid Hotel, Pune', portrait: true },
+      { src: 'assets/images/sudhakar-shinde-els-certificate-oct-2026.jpeg', title: 'Dr. Sudhakar Shinde Receives a Certificate of Appreciation', date: 'Education Leadership Symposium, 30 October 2026', portrait: true },
       { src: 'assets/images/industry-academia-roundtable-oct-2026.jpeg', title: 'National Industry-Academia Leadership Roundtable with CIPU', date: '23 October 2026', doc: OCT_NEWSLETTER, page: 9 },
       { src: 'assets/images/pro-bono-impact-day-oct-2026.jpeg', title: 'Pro-Bono Impact Day: 35 Guest Lectures in a Single Day (World Record)', date: 'International Day of Non-Violence', doc: OCT_NEWSLETTER, page: 11 },
       { src: 'assets/images/ipmun-pune-oct-2026.jpeg', title: 'IPMUN Pune 2.0 Model United Nations', date: '3 to 4 October 2026', doc: OCT_NEWSLETTER, page: 13 },
@@ -230,8 +239,6 @@
       { src: 'assets/images/atul-kathole-top1000-scholar-sep-2026.png', title: 'Dr. Atul Kathole: World Rank #33, Top1000 Scholar 2026', date: 'Currency Recognition and Detection', portrait: true }
     ],
     October: [
-      { src: 'assets/images/sudhakar-shinde-els-speaker-oct-2026.jpeg', title: 'Registrar Dr. Sudhakar Shinde: Speaker at the Education Leadership Symposium', date: '30 October 2026, The Orchid Hotel, Pune', portrait: true },
-      { src: 'assets/images/sudhakar-shinde-els-certificate-oct-2026.jpeg', title: 'Dr. Sudhakar Shinde Receives a Certificate of Appreciation', date: 'Education Leadership Symposium, 30 October 2026', portrait: true },
       { src: 'assets/images/vishal-shirsath-icoicet-oct-2026.jpeg', title: 'Dr. Vishal Shirsath: Paper at ICoICET 2026', date: '1 October 2026', doc: OCT_NEWSLETTER, page: 15 },
       { src: 'assets/images/susanta-das-publications-oct-2026.jpeg', title: 'Dr. Susanta Das: Book Chapters with CRC Press and IGI Global', date: 'October 2026', portrait: true, doc: OCT_NEWSLETTER, page: 16 },
       { src: 'assets/images/amol-kasture-we-premier-authors-oct-2026.jpeg', title: 'Dr. Amol B. Kasture: Executive Membership, WE Premier Authors Club', date: '10 October 2026', doc: OCT_NEWSLETTER, page: 22 }
@@ -271,10 +278,10 @@
   }
 
   // September's and October's slides are staff recognitions, so the heading says so for that month
-  const BOTTOM_GALLERY_TITLE = { September: 'STAFF ACHIEVEMENTS GALLERY', October: 'STAFF ACHIEVEMENTS GALLERY' };
+  const BOTTOM_GALLERY_TITLE = { September: 'Staff Achievements Gallery', October: 'Staff Achievements Gallery' };
 
   function renderBottomGallery(month) {
-    document.getElementById('bottom-gallery-title').textContent = BOTTOM_GALLERY_TITLE[month] || 'UNIVERSITY ACHIEVEMENTS GALLERY';
+    document.getElementById('bottom-gallery-title').textContent = BOTTOM_GALLERY_TITLE[month] || 'University Achievements Gallery';
     renderGallery('carouselTrack', BOTTOM_GALLERY[month], resetCarousel);
   }
 
@@ -509,6 +516,18 @@
     document.getElementById('main-exam-app').innerText = examAppeared; document.getElementById('main-exam-abs').innerText = (totalExam - 25) - examAppeared;
     // Result text is set by updateResultText() on month switch
 
+  }
+
+  // ------------------------------------------
+  // KPI NUMBER FORMATTING
+  // updateDashboard writes plain counts; give them Indian digit grouping (1,05,000).
+  // ------------------------------------------
+  function renderDashboard(data) {
+    updateDashboard(data);
+    document.querySelectorAll('.kpi .value[id]').forEach(el => {
+      const text = el.innerText.trim();
+      if (/^-?\d+$/.test(text)) el.innerText = Number(text).toLocaleString('en-IN');
+    });
   }
 
 // Runs after school tiles exist (schools.js) and switchView is defined (above).

@@ -77,11 +77,14 @@
 
   // Package cells sometimes carry monthly stipends ("60k stipend", "15k") instead of an
   // annual figure. Those are not LPA and would dwarf every real package, so skip them.
+  // A cell Excel turned into a date arrives as its serial (October's UNLOX row reads
+  // 46149), so anything past 1000 LPA is not a package either.
   function parseLPA(str) {
       if(!str || typeof str !== 'string') return null;
       if(/stipend/i.test(str) || /\d\s*k\b/i.test(str)) return null;
       let match = str.match(/(\d+(\.\d+)?)/);
-      return match && match[0] ? parseFloat(match[0]) : null;
+      let num = match && match[0] ? parseFloat(match[0]) : null;
+      return num !== null && num > 1000 ? null : num;
   }
 
   function extractMaxPackage(stringArr) {

@@ -13,8 +13,7 @@
       { month: 'July', file: 'assets/data/ADYPU_Master_Dashboard_Data_July_2026.xlsx', raw: true },
       { month: 'August', file: 'assets/data/ADYPU_Master_Dashboard_Data_August_2026.xlsx', raw: true },
       { month: 'September', file: 'assets/data/ADYPU_Master_Dashboard_Data_September_2026.xlsx', raw: true },
-      // October's workbook has not arrived yet, so October shows September's figures until it does
-      { month: 'October', file: 'assets/data/ADYPU_Master_Dashboard_Data_September_2026.xlsx', raw: true }
+      { month: 'October', file: 'assets/data/ADYPU_Master_Dashboard_Data_October_2026.xlsx', raw: true }
     ];
 
     const fetchWorkbook = filename =>
@@ -44,7 +43,7 @@
       }
       globalRawData = monthData[month];
       activeMonth = month;
-      updateDashboard(globalRawData);
+      renderDashboard(globalRawData);
       updateSchoolTiles(globalRawData);
       document.querySelectorAll('.month-tab').forEach(tab => {
         tab.classList.toggle('active', tab.dataset.month === month);
